@@ -1,0 +1,77 @@
+{
+  // https://standardjs.com/
+  "extends": "standard",
+
+  "env": {
+    "browser": true
+  },
+
+  // These are known global variables we reference. By default, any reference
+  // to an undeclared variable causes a warning. These overrides that warning
+  // because we know what we are doing with these.
+  // https://eslint.org/docs/user-guide/configuring#specifying-globals
+  "globals": {
+    // Please keep this list alphabetized.
+    "Romo": false
+  },
+
+  // These are overrides to StandardJS rules.
+  "rules": {
+    // This enforces using `===` and `!==` except for comparing two literal
+    // values, evaluating the value of typeof, and comparing against null
+    // https://eslint.org/docs/rules/eqeqeq
+    // if (foo === true) {}
+    // if (foo == null) {} // allows for checking both null/undefined at once
+    // if (typeof foo == 'undefined') {}
+    "comma-dangle": ["error", "always-multiline"],
+
+    // This enforces using `===` and `!==` except for comparing two literal
+    // values, evaluating the value of typeof, and comparing against null
+    // https://eslint.org/docs/rules/eqeqeq
+    // if (foo === true) {}
+    // if (foo == null) {} // allows for checking both null/undefined at once
+    // if (typeof foo == 'undefined') {}
+    "eqeqeq": ["error", "smart"],
+
+    // This rule enforces a maximum line length to increase code readability
+    // and maintainability. The length of a line is defined as the number of
+    // Unicode characters in the line.
+    "max-len": ["error", {
+      "code": 100, // prefer 80 or less, but fail on more than 100
+      "ignoreUrls": true, // ignores lines that contain  a URL
+      "ignoreTemplateLiterals": true, // ignores lines that contain a literal
+      "ignoreRegExpLiterals": true // ignores lines that contain a RegExp
+    }],
+
+    // This is good by default except when you are doing meta-programming and
+    // you have a dynamic class stored as a variable or returned from a
+    // function. This should be rare outside of code that touches 3rd-party
+    // libraries or our internal libraries. We should avoid this in our
+    // standard feature code. Therefore, as libraries need to use a technique
+    // like this, we can call it out here.
+    // https://eslint.org/docs/rules/new-cap
+    "new-cap": ["error", {
+      "newIsCapExceptions": [
+        // Please keep this list alphabetized.
+        "this.class" // `this.class` is always a constructor for Romo-defined objects
+      ]
+    }],
+
+    // Allow creating instances of objects and not keeping a reference to them.
+    // Since we are OO developers we like creating objects to encapsulate
+    // state and behavior. Many times that object is autonomous, not needing
+    // any further interaction from the thing that created it.
+    // https://eslint.org/docs/rules/no-new
+    "no-new": ["off"],
+
+    // This keeps function definitions looking more like they do in Ruby.
+    // https://eslint.org/docs/rules/space-before-function-paren
+    // var foo = function(x) {}
+    // var foo = async (x) => 1
+    "space-before-function-paren": ["error", {
+      "anonymous": "never",
+      "named": "never",
+      "asyncArrow": "always"
+    }]
+  }
+}

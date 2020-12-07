@@ -9,5 +9,5 @@ TODO
 ## Installation
 
 ```
-$ npm install @reddingjs/romo-js
+$ yarn install @reddingjs/romo-js
 ```
