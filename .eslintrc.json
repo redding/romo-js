@@ -12,6 +12,7 @@
   // https://eslint.org/docs/user-guide/configuring#specifying-globals
   "globals": {
     // Please keep this list alphabetized.
+    "$": false,
     "Romo": false
   },
 
