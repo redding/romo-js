@@ -1,0 +1,23 @@
+{
+  "name": "@reddingjs/romo-js",
+  "version": "0.0.1",
+  "description": "A JS toolkit.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/redding/romo-js.git"
+  },
+  "keywords": [
+    "JS",
+    "Utilities"
+  ],
+  "author": "Kelly Redding & Collin Redding",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/redding/romo-js/issues"
+  },
+  "homepage": "https://github.com/redding/romo-js#readme"
+}
