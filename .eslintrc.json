@@ -76,6 +76,9 @@
     // https://eslint.org/docs/rules/no-new
     "no-new": ["off"],
 
+    // Too many false-positives
+    "no-useless-escape": ["off"],
+
     // This keeps function definitions looking more like they do in Ruby.
     // https://eslint.org/docs/rules/space-before-function-paren
     // var foo = function(x) {}
