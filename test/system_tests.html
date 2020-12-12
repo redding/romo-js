@@ -2,8 +2,56 @@
 <html lang="en">
 <head>
   <script src="romo.js"></script>
+  <style>
+    .test:before {
+      display: inline-block;
+    }
+    .test.pass:before {
+      content: '\2705';
+    }
+    .test.fail:before {
+      content: '\274C';
+    }
+  </style>
 </head>
 <body>
   <h1>Romo JS system tests</h1>
 </body>
+<script type="text/javascript">
+  function test_group(name, fn) {
+    Romo.f('body').appendHTML(`<h3>${name}</h3>`)
+
+    fn()
+  }
+  function test(description, fn) {
+    try {
+      testDOM =
+        Romo.f('body').appendHTML(`<div class="test">${description}</description>`)
+
+      fn()
+
+      testDOM.addClass('pass')
+    } catch (error) {
+      testDOM.addClass('fail')
+      console.error(error)
+    }
+  }
+  function assert(assertion) {
+    if(!assertion) {
+      throw new Error()
+    }
+  }
+
+  Romo.onReady(function() {
+    test_group('Setup', function() {
+      test('Romo constant', function() {
+        assert(Romo !== undefined)
+      })
+
+      test('Romo.env', function() {
+        assert(Romo.env !== undefined)
+      })
+    })
+  })
+</script>
 </html>
