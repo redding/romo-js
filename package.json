@@ -6,17 +6,20 @@
   "dependencies": {
   },
   "devDependencies": {
+    "browserify": "^17.0.0",
     "eslint": "^6.8.0",
     "eslint-config-standard": "^14.1.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.1",
+    "esmify": "^2.1.1",
     "standard": "^16.0.3"
   },
   "scripts": {
     "lint": "./node_modules/.bin/eslint .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test":
+      "./node_modules/.bin/browserify -p esmify lib/romo.js > test/romo.js && open test/system_tests.html"
   },
   "repository": {
     "type": "git",
