@@ -7,13 +7,15 @@ require("./api/bind.js");
 
 require("./api/define.js");
 
-require("./api/dom_query.js");
+require("./api/dom_attributes.js");
+
+require("./api/dom_events.js");
 
 require("./api/dom_mutate.js");
 
-require("./api/events.js");
+require("./api/dom_query.js");
 
-},{"./api/array.js":2,"./api/bind.js":3,"./api/define.js":4,"./api/dom_mutate.js":5,"./api/dom_query.js":6,"./api/events.js":7}],2:[function(require,module,exports){
+},{"./api/array.js":2,"./api/bind.js":3,"./api/define.js":4,"./api/dom_attributes.js":5,"./api/dom_events.js":6,"./api/dom_mutate.js":7,"./api/dom_query.js":8}],2:[function(require,module,exports){
 /* eslint-disable no-multi-spaces */
 Romo.array =
   function(value) {
@@ -81,7 +83,12 @@ Romo.array =
 },{}],3:[function(require,module,exports){
 Romo.bind =
   function(fn, context) {
-    return Romo.fid(context ? fn.bind(context) : fn)
+    Romo.fid(fn)
+    if (context) {
+      return Romo.fid(fn.bind(context), { aliasFn: fn })
+    } else {
+      return fn
+    }
   }
 
 Romo.fid =
@@ -273,339 +280,240 @@ Romo.memoize =
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],5:[function(require,module,exports){
-Romo.remove =
-  function(elements) {
-    return Romo.array(elements).map(function(element) {
-      if (element.parentElement) {
-        element.parentElement.removeChild(element)
-      }
-      return element
-    })
+// TODO add DOM support
+Romo.attr =
+  function(element, attributeName) {
+    return Romo.dom(element).firstElement.getAttribute(attributeName)
   }
 
-Romo.removeChildren =
-  function(parentElements) {
-    return Romo.array(parentElements).map(function(parentElement) {
-      Romo.children(parentElement).forEach(function(childElement) {
-        parentElement.removeChild(childElement)
-      })
-      return parentElement
-    })
-  }
-
-Romo.replace =
-  function(element, replacementElement) {
-    element.parentElement.replaceChild(replacementElement, element)
-    return Romo.env.applyAutoInitTo(replacementElement)
-  }
-
-Romo.replaceHTML =
-  function(element, htmlString) {
-    const replacementElement = Romo.elements(htmlString)[0]
-    if (!replacementElement) {
-      throw new Error(`"${htmlString}" doesn't contain HTML elements.`)
-    }
-    return Romo.replace(element, replacementElement)
-  }
-
-Romo.update =
-  function(element, childElements) {
-    Romo.clearHTML(element)
-    return Romo.array(childElements).map(function(childElement) {
-      element.appendChild(childElement)
-      return Romo.env.applyAutoInitTo(childElement)
-    })
-  }
-
-Romo.updateHTML =
-  function(element, htmlString) {
-    if (typeof htmlString === 'string' && htmlString.trim() === '') {
-      return Romo.clearHTML(element)
-    }
-
-    const childElements = Romo.elements(htmlString)
-    if (childElements.length === 0) {
-      throw new Error(`"${htmlString}" doesn't contain HTML elements.`)
-    }
-    return Romo.update(element, childElements)
-  }
-
-Romo.updateText =
-  function(element, textString) {
-    element.innerText = textString
-    return element
-  }
-
-Romo.clearHTML =
-  function(elements) {
-    Romo.array(elements).forEach(function(element) {
-      element.innerHTML = ''
+Romo.setAttr =
+  function(elements, attributeName, attributeValue) {
+    const value = String(attributeValue)
+    Romo.dom(elements).forEach(function(element) {
+      element.setAttribute(attributeName, value)
     })
     return elements
   }
 
-Romo.prepend =
-  function(element, childElements) {
-    var referenceElement = element.firstChild
+Romo.rmAttr =
+  function(elements, attributeName) {
+    Romo.dom(elements).forEach(function(element) {
+      element.removeAttribute(attributeName)
+    })
+    return elements
+  }
+
+Romo.data =
+  function(element, dataName) {
+    return Romo.env.decodeDataValue(Romo.attr(element, `data-${dataName}`))
+  }
+
+Romo.setData =
+  function(elements, dataName, dataValue) {
+    return Romo.setAttr(elements, `data-${dataName}`, dataValue)
+  }
+
+Romo.rmData =
+  function(elements, dataName) {
+    Romo.rmAttr(elements, `data-${dataName}`)
+  }
+
+Romo.style =
+  function(element, styleName) {
+    return Romo.dom(element).firstElement.style[styleName]
+  }
+
+Romo.setStyle =
+  function(elements, styleName, styleValue) {
+    Romo.dom(elements).forEach(function(element) {
+      element.style[styleName] = styleValue
+    })
+    return elements
+  }
+
+Romo.rmStyle =
+  function(elements, styleName) {
+    Romo.dom(elements).forEach(function(element) {
+      element.style[styleName] = ''
+    })
+    return elements
+  }
+
+Romo.css =
+  function(element, styleName) {
     return (
-      Romo
-        .array(childElements)
-        .reverse()
-        .map(function(childElement) {
-          referenceElement =
-            element.insertBefore(childElement, referenceElement)
-          return Romo.env.applyAutoInitTo(referenceElement)
-        })
-        .reverse()
+      window
+        .getComputedStyle(Romo.dom(element).firstElement, null)
+        .getPropertyValue(styleName)
     )
   }
 
-Romo.prependHtml =
-  function(element, htmlString) {
-    const childElements = Romo.elements(htmlString)
-    if (childElements.length === 0) {
-      throw new Error(`"${htmlString}" doesn't contain HTML elements.`)
+Romo.hasClass =
+  function(element, className) {
+    return Romo.dom(element).firstElement.classList.contains(className)
+  }
+
+Romo.addClass =
+  function(elements, className) {
+    const splitClassNames =
+      className.split(' ').filter(function(n) { return n })
+    Romo.dom(elements).forEach(function(element) {
+      splitClassNames.forEach(function(splitClassName) {
+        element.classList.add(splitClassName)
+      })
+    })
+    return elements
+  }
+
+Romo.removeClass =
+  function(elements, className) {
+    const splitClassNames =
+      className.split(' ').filter(function(n) { return n })
+    Romo.dom(elements).forEach(function(element) {
+      splitClassNames.forEach(function(splitClassNames) {
+        element.classList.remove(splitClassNames)
+      })
+    })
+    return elements
+  }
+
+Romo.toggleClass =
+  function(elements, className) {
+    const splitClassNames =
+      className.split(' ').filter(function(n) { return n })
+    Romo.dom(elements).forEach(function(element) {
+      splitClassNames.forEach(function(splitClassNames) {
+        element.classList.toggle(splitClassNames)
+      })
+    })
+    return elements
+  }
+
+Romo.show =
+  function(elements) {
+    Romo.dom(elements).forEach(function(element) {
+      element.style.display = ''
+    })
+    return elements
+  }
+
+Romo.hide =
+  function(elements) {
+    Romo.dom(elements).forEach(function(element) {
+      element.style.display = 'none'
+    })
+    return elements
+  }
+
+// This returns the given element's bounding rectangle. This is used by the
+// `rect*` methods and is convenience method for the native call.
+Romo.rect =
+  function(element) {
+    const dom = Romo.dom(element)
+    if (dom.firstElement) {
+      return dom.firstElement.getBoundingClientRect()
     }
-    return Romo.prepend(element, childElements)
+    return { height: 0, width: 0, top: 0, left: 0 }
   }
 
-Romo.append =
-  function(element, childElements) {
-    return (
-      Romo
-        .array(childElements)
-        .map(function(childElement) {
-          element.appendChild(childElement)
-          return Romo.env.applyAutoInitTo(childElement)
-        })
-    )
-  }
-
-Romo.appendHtml =
-  function(element, htmlString) {
-    const childElements = Romo.elements(htmlString)
-    if (childElements.length === 0) {
-      throw new Error(`"${htmlString}" doesn't contain HTML elements.`)
+Romo.height =
+  function(element) {
+    var heightPx = Romo.rect(element).height
+    if (heightPx === 0) {
+      heightPx = parseInt(Romo.css(element, 'height'), 10)
     }
-    return Romo.append(element, childElements)
-  }
-
-Romo.before =
-  function(element, siblingElements) {
-    const parentElement = element.parentElement
-    var referenceElement = element
-    return (
-      Romo
-        .array(siblingElements)
-        .reverse()
-        .map(function(siblingElement) {
-          referenceElement =
-            parentElement.insertBefore(siblingElement, referenceElement)
-          return Romo.env.applyAutoInitTo(referenceElement)
-        })
-        .reverse()
-    )
-  }
-
-Romo.beforeHtml =
-  function(element, htmlString) {
-    const siblingElements = Romo.elements(htmlString)
-    if (siblingElements.length === 0) {
-      throw new Error(`"${htmlString}" doesn't contain HTML elements.`)
+    if (isNaN(heightPx)) {
+      heightPx = 0
     }
-    return Romo.before(element, siblingElements)
+
+    return heightPx
   }
 
-Romo.after =
-  function(element, siblingElements) {
-    const parentElement = element.parentElement
-    var referenceElement = Romo.next(element)
-    return (
-      Romo
-        .array(siblingElements)
-        .map(function(siblingElement) {
-          parentElement.insertBefore(siblingElement, referenceElement)
-          return Romo.env.applyAutoInitTo(siblingElement)
-        })
-    )
-  }
-
-Romo.afterHtml =
-  function(element, htmlString) {
-    const siblingElements = Romo.elements(htmlString)
-    if (siblingElements.length === 0) {
-      throw new Error(`"${htmlString}" doesn't contain HTML elements.`)
+Romo.width =
+  function(element) {
+    var widthPx = Romo.rect(element).width
+    if (widthPx === 0) {
+      widthPx = parseInt(Romo.css(element, 'width'), 10)
     }
-    return Romo.after(element, siblingElements)
+    if (isNaN(widthPx)) {
+      widthPx = 0
+    }
+
+    return widthPx
+  }
+
+Romo.offset =
+  function(element, relativeToElement) {
+    const elementRect = Romo.rect(element)
+    const relativeToRect = Romo.rect(relativeToElement || document.body)
+
+    /* eslint-disable no-multi-spaces */
+    return {
+      top:  elementRect.top  - relativeToRect.top,
+      left: elementRect.left - relativeToRect.left,
+    }
+    /* eslint-enable no-multi-spaces */
+  }
+
+Romo.scrollTop =
+  function(element) {
+    const dom = Romo.dom(element)
+    if ('scrollTop' in dom.firstElement) {
+      return dom.firstElement.scrollTop
+    } else {
+      return dom.firstElement.pageYOffset
+    }
+  }
+
+Romo.scrollLeft =
+  function(element) {
+    const dom = Romo.dom(element)
+    if ('scrollLeft' in dom.firstElement) {
+      return dom.firstElement.scrollLeft
+    } else {
+      return dom.firstElement.pageXOffset
+    }
+  }
+
+Romo.setScrollTop =
+  function(elements, value) {
+    Romo.dom(elements).forEach(function(element) {
+      if ('scrollTop' in element) {
+        element.scrollTop = value
+      } else {
+        element.scrollTo(element.scrollX, value)
+      }
+    })
+    return elements
+  }
+
+Romo.setScrollLeft =
+  function(elements, value) {
+    Romo.dom(elements).forEach(function(element) {
+      if ('scrollLeft' in element) {
+        element.scrollLeft = value
+      } else {
+        element.scrollTo(value, element.scrollY)
+      }
+    })
+    return elements
+  }
+
+Romo.zIndex =
+  function(element) {
+    var value = parseInt(Romo.css(element, 'z-index'), 10)
+    if (isNaN(value)) {
+      value = 0
+    }
+
+    if (value !== 0 || Romo.is(element, 'body')) {
+      return value
+    } else {
+      return Romo.zIndex(Romo.parent(element))
+    }
   }
 
 },{}],6:[function(require,module,exports){
-Romo.elements =
-  function(htmlString) {
-    var context = document.implementation.createHTMLDocument('')
-
-    // Set the base href for the created document so any parsed
-    // elements with URLs are based on the document's URL
-    var base = context.createElement('base')
-    base.href = document.location.href
-    context.head.appendChild(base)
-
-    var results = Romo.env.elementTagNameRegex.exec(htmlString)
-    if (!results) {
-      return []
-    }
-
-    var tagName = results[1].toLowerCase()
-    var wrap = Romo.env.elementWrapMap[tagName]
-    if (!wrap) {
-      context.body.innerHTML = htmlString
-      return Romo.array(context.body.children)
-    } else {
-      context.body.innerHTML = wrap[1] + htmlString + wrap[2]
-      var parentElement = context.body
-      var i = wrap[0]
-      while (i-- !== 0) {
-        parentElement = parentElement.lastChild
-      }
-      return Romo.array(parentElement.children)
-    }
-  }
-
-Romo.f =
-  function(selector) {
-    return Romo.array(document.querySelectorAll(selector))
-  }
-
-Romo.find =
-  function(parentElements, selector) {
-    return (
-      Romo.array(parentElements).reduce(function(foundElements, parentElement) {
-        return foundElements.concat(
-          Romo.array(parentElement.querySelectorAll(selector))
-        )
-      }, [])
-    )
-  }
-
-Romo.is =
-  function(element, selector) {
-    return (
-      element.matches ||
-      element.matchesSelector ||
-      element.msMatchesSelector ||
-      element.mozMatchesSelector ||
-      element.webkitMatchesSelector ||
-      element.oMatchesSelector
-    ).call(element, selector)
-  }
-
-Romo.children =
-  function(parentElement, selector) {
-    var childElements = Romo.array(parentElement.children)
-    if (selector) {
-      return childElements.filter(function(childElement) {
-        return Romo.is(childElement, selector)
-      })
-    } else {
-      return childElements
-    }
-  }
-
-Romo.parent =
-  function(childElement) {
-    return childElement.parentElement
-  }
-
-Romo.parents =
-  function(childElement, selector) {
-    var parentElement = Romo.parent(childElement)
-    if (parentElement && parentElement !== document) {
-      if (!selector || Romo.is(parentElement, selector)) {
-        if (Romo.is(parentElement, 'body')) {
-          return [parentElement]
-        } else {
-          return [parentElement].concat(Romo.parents(parentElement, selector))
-        }
-      } else {
-        if (Romo.is(parentElement, 'body')) {
-          return []
-        } else {
-          return Romo.parents(parentElement, selector)
-        }
-      }
-    } else {
-      return []
-    }
-  }
-
-// Get the closest ancestor element that is scrollable. This mimics jQuery
-// UI's `.scrollParent`. See https://api.jqueryui.com/scrollParent/.
-Romo.scrollableParent =
-  function(childElement) {
-    if (Romo.env.isAScrollableElement(childElement)) {
-      return childElement
-    } else {
-      return Romo.scrollableParent(Romo.parent(childElement))
-    }
-  }
-
-// Get all ancestor elements that are scrollable.
-Romo.scrollableParents =
-  function(childElement, selector) {
-    return (
-      Romo
-        .parents(childElement, selector)
-        .filter(function(parentElement) {
-          return Romo.env.isAScrollableElement(parentElement)
-        })
-    )
-  }
-
-Romo.closest =
-  function(fromElement, selector) {
-    if (fromElement.closest) {
-      return fromElement.closest(selector)
-    } else if (Romo.is(fromElement, selector)) {
-      return fromElement
-    } else if (fromElement.parentElement) {
-      return Romo.closest(fromElement.parentElement, selector)
-    } else {
-      return null
-    }
-  }
-
-Romo.siblings =
-  function(element, selector) {
-    return (
-      Romo
-        .children(Romo.parent(element), selector)
-        .filter(function(childElement) { return childElement !== element })
-    )
-  }
-
-Romo.prev =
-  function(fromElement, selector) {
-    const prevElement = fromElement.previousElementSibling
-
-    if (!selector || Romo.is(prevElement, selector)) {
-      return prevElement
-    } else {
-      return Romo.prev(prevElement, selector)
-    }
-  }
-
-Romo.next =
-  function(fromElement, selector) {
-    const nextElement = fromElement.nextElementSibling
-
-    if (!selector || Romo.is(nextElement, selector)) {
-      return nextElement
-    } else {
-      return Romo.next(nextElement, selector)
-    }
-  }
-
-},{}],7:[function(require,module,exports){
 Romo.on =
   function(elements, eventName, eventHandlerFn) {
     const listenerFn =
@@ -623,14 +531,14 @@ Romo.on =
     Romo.fid(eventHandlerFn)
     Romo.fid(listenerFn, { aliasFn: eventHandlerFn })
 
-    Romo.array(elements).forEach(Romo.bind(function(element) {
+    Romo.dom(elements).forEach(Romo.bind(function(element) {
       Romo.env.addEventListener(element, eventName, listenerFn)
     }, this))
   }
 
 Romo.off =
   function(elements, eventName, eventHandlerFn) {
-    Romo.array(elements).forEach(Romo.bind(function(element) {
+    Romo.dom(elements).forEach(Romo.bind(function(element) {
       Romo.env.removeEventListener(element, eventName, eventHandlerFn)
     }, this))
   }
@@ -640,7 +548,7 @@ Romo.trigger =
     const event =
       new CustomEvent(customEventName, { bubbles: false, detail: args })
 
-    Romo.array(elements).forEach(function(element) {
+    Romo.dom(elements).forEach(function(element) {
       element.dispatchEvent(event)
     })
   }
@@ -677,7 +585,349 @@ Romo.delayFn =
     setTimeout(fn, delayMs)
   }
 
+},{}],7:[function(require,module,exports){
+Romo.remove =
+  function(elements) {
+    return Romo.dom(elements).map(function(element) {
+      if (element.parentElement) {
+        element.parentElement.removeChild(element)
+      }
+      return element
+    })
+  }
+
+Romo.removeChildren =
+  function(parentElements) {
+    return Romo.dom(parentElements).map(function(parentElement) {
+      Romo.children(parentElement).forEach(function(childElement) {
+        parentElement.removeChild(childElement)
+      })
+      return parentElement
+    })
+  }
+
+Romo.replace =
+  function(element, replacementElement) {
+    const dom = Romo.dom(element)
+    const replacementDOM = Romo.dom(replacementElement)
+    Romo
+      .parent(dom)
+      .replaceChild(replacementDOM.firstElement, dom.firstElement)
+    return Romo.env.applyAutoInitTo(replacementDOM.firstElement)
+  }
+
+Romo.replaceHTML =
+  function(element, htmlString) {
+    const replacementDOM = Romo.dom(Romo.elements(htmlString))
+    if (replacementDOM.length === 0) {
+      throw new Error(`"${htmlString}" doesn't contain HTML elements.`)
+    }
+    return Romo.replace(element, replacementDOM)
+  }
+
+Romo.update =
+  function(element, childElements) {
+    const dom = Romo.dom(element)
+    const childDOM = Romo.dom(childElements)
+    Romo.clearHTML(dom.firstElement)
+    return Romo.array(childDOM.elements).map(function(childElement) {
+      dom.firstElement.appendChild(childElement)
+      return Romo.env.applyAutoInitTo(childElement)
+    })
+  }
+
+Romo.updateHTML =
+  function(element, htmlString) {
+    if (typeof htmlString === 'string' && htmlString.trim() === '') {
+      return Romo.clearHTML(element)
+    }
+
+    const childDOM = Romo.dom(Romo.elements(htmlString))
+    if (childDOM.length === 0) {
+      throw new Error(`"${htmlString}" doesn't contain HTML elements.`)
+    }
+    return Romo.update(element, childDOM)
+  }
+
+Romo.updateText =
+  function(element, textString) {
+    const dom = Romo.dom(element)
+    dom.firstElement.innerText = textString
+    return dom.firstElement
+  }
+
+Romo.clearHTML =
+  function(elements) {
+    const dom = Romo.dom(elements)
+    dom.forEach(function(element) { element.innerHTML = '' })
+    return dom.elements
+  }
+
+Romo.prepend =
+  function(element, childElements) {
+    const dom = Romo.dom(element)
+    const childDOM = Romo.dom(childElements)
+    var referenceElement = dom.firstElement.firstChild
+    return (
+      childDOM
+        .reverseMap(function(childElement) {
+          referenceElement =
+            dom.firstElement.insertBefore(childElement, referenceElement)
+          return Romo.env.applyAutoInitTo(referenceElement)
+        })
+        .reverse()
+    )
+  }
+
+Romo.prependHTML =
+  function(element, htmlString) {
+    const childDOM = Romo.dom(Romo.elements(htmlString))
+    if (childDOM.length === 0) {
+      throw new Error(`"${htmlString}" doesn't contain HTML elements.`)
+    }
+    return Romo.prepend(element, childDOM)
+  }
+
+Romo.append =
+  function(element, childElements) {
+    const dom = Romo.dom(element)
+    const childDOM = Romo.dom(childElements)
+    return (
+      childDOM.map(function(childElement) {
+        dom.firstElement.appendChild(childElement)
+        return Romo.env.applyAutoInitTo(childElement)
+      })
+    )
+  }
+
+Romo.appendHTML =
+  function(element, htmlString) {
+    const childDOM = Romo.dom(Romo.elements(htmlString))
+    if (childDOM.length === 0) {
+      throw new Error(`"${htmlString}" doesn't contain HTML elements.`)
+    }
+    return Romo.append(element, childDOM)
+  }
+
+Romo.before =
+  function(element, siblingElements) {
+    const dom = Romo.dom(element)
+    const siblingDOM = Romo.dom(siblingElements)
+    const parentElement = Romo.parent(dom)
+    var referenceElement = dom.firstElement
+    return (
+      siblingDOM
+        .reverseMap(function(siblingElement) {
+          referenceElement =
+            parentElement.insertBefore(siblingElement, referenceElement)
+          return Romo.env.applyAutoInitTo(referenceElement)
+        })
+        .reverse()
+    )
+  }
+
+Romo.beforeHTML =
+  function(element, htmlString) {
+    const siblingDOM = Romo.dom(Romo.elements(htmlString))
+    if (siblingDOM.length === 0) {
+      throw new Error(`"${htmlString}" doesn't contain HTML elements.`)
+    }
+    return Romo.before(element, siblingDOM)
+  }
+
+Romo.after =
+  function(element, siblingElements) {
+    const dom = Romo.dom(element)
+    const siblingDOM = Romo.dom(siblingElements)
+    const parentElement = Romo.parent(dom)
+    var referenceElement = Romo.next(element)
+    return (
+      siblingDOM.map(function(siblingElement) {
+        parentElement.insertBefore(siblingElement, referenceElement)
+        return Romo.env.applyAutoInitTo(siblingElement)
+      })
+    )
+  }
+
+Romo.afterHTML =
+  function(element, htmlString) {
+    const siblingDOM = Romo.dom(Romo.elements(htmlString))
+    if (siblingDOM.length === 0) {
+      throw new Error(`"${htmlString}" doesn't contain HTML elements.`)
+    }
+    return Romo.after(element, siblingDOM)
+  }
+
 },{}],8:[function(require,module,exports){
+Romo.elements =
+  function(htmlString) {
+    var context = document.implementation.createHTMLDocument('')
+
+    // Set the base href for the created document so any parsed
+    // elements with URLs are based on the document's URL
+    var base = context.createElement('base')
+    base.href = document.location.href
+    context.head.appendChild(base)
+
+    var results = Romo.env.elementTagNameRegex.exec(htmlString)
+    if (!results) {
+      return []
+    }
+
+    var tagName = results[1].toLowerCase()
+    var wrap = Romo.env.elementWrapMap[tagName]
+    if (!wrap) {
+      context.body.innerHTML = htmlString
+      return Romo.array(context.body.children)
+    } else {
+      context.body.innerHTML = wrap[1] + htmlString + wrap[2]
+      var parentElement = context.body
+      var i = wrap[0]
+      while (i-- !== 0) {
+        parentElement = parentElement.lastChild
+      }
+      return Romo.array(parentElement.children)
+    }
+  }
+
+Romo.dom =
+  function(elements) {
+    if (typeof elements === 'object' && elements.isRomoDOM === true) {
+      return elements
+    } else {
+      return new Romo.DOM(elements)
+    }
+  }
+
+Romo.f =
+  function(selector) {
+    return Romo.dom(document.querySelectorAll(selector))
+  }
+
+Romo.find =
+  function(parentElements, selector) {
+    return Romo.dom(
+      Romo.dom(parentElements).reduce(function(foundElements, parentElement) {
+        return foundElements.concat(
+          Romo.array(parentElement.querySelectorAll(selector))
+        )
+      }, [])
+    )
+  }
+
+Romo.is =
+  function(element, selector) {
+    return Romo.dom(element).firstElement.matches(selector)
+  }
+
+Romo.children =
+  function(parentElement, selector) {
+    const childElements =
+      Romo.array(Romo.dom(parentElement).firstElement.children)
+    if (selector) {
+      return childElements.filter(function(childElement) {
+        return Romo.is(childElement, selector)
+      })
+    } else {
+      return childElements
+    }
+  }
+
+Romo.parent =
+  function(childElement) {
+    return Romo.dom(childElement).firstElement.parentElement
+  }
+
+Romo.parents =
+  function(childElement, selector) {
+    var parentElement = Romo.parent(Romo.dom(childElement).firstElement)
+    if (parentElement && parentElement !== document) {
+      if (!selector || Romo.is(parentElement, selector)) {
+        if (Romo.is(parentElement, 'body')) {
+          return [parentElement]
+        } else {
+          return [parentElement].concat(Romo.parents(parentElement, selector))
+        }
+      } else {
+        if (Romo.is(parentElement, 'body')) {
+          return []
+        } else {
+          return Romo.parents(parentElement, selector)
+        }
+      }
+    } else {
+      return []
+    }
+  }
+
+// Get the closest ancestor element that is scrollable. This mimics jQuery
+// UI's `.scrollParent`. See https://api.jqueryui.com/scrollParent/.
+Romo.scrollableParent =
+  function(childElement) {
+    const childDOM = Romo.dom(childElement)
+    if (
+      !childDOM.firstElement ||
+      Romo.env.isAScrollableElement(childDOM.firstElement)
+    ) {
+      return childDOM.firstElement
+    } else {
+      return Romo.scrollableParent(Romo.parent(childDOM.firstElement))
+    }
+  }
+
+// Get all ancestor elements that are scrollable.
+Romo.scrollableParents =
+  function(childElement, selector) {
+    return (
+      Romo
+        .parents(childElement, selector)
+        .filter(function(parentElement) {
+          return Romo.env.isAScrollableElement(parentElement)
+        })
+    )
+  }
+
+Romo.closest =
+  function(fromElement, selector) {
+    return Romo.dom(fromElement).closest(selector)
+  }
+
+Romo.siblings =
+  function(element, selector) {
+    const dom = Romo.dom(element)
+    return (
+      Romo
+        .children(Romo.parent(dom.firstElement), selector)
+        .filter(function(childElement) {
+          return childElement !== dom.firstElement
+        })
+    )
+  }
+
+Romo.prev =
+  function(fromElement, selector) {
+    const prevElement =
+      Romo.dom(fromElement).firstElement.previousElementSibling
+
+    if (!prevElement || !selector || Romo.is(prevElement, selector)) {
+      return prevElement
+    } else {
+      return Romo.prev(prevElement, selector)
+    }
+  }
+
+Romo.next =
+  function(fromElement, selector) {
+    const nextElement = Romo.dom(fromElement).firstElement.nextElementSibling
+
+    if (!nextElement || !selector || Romo.is(nextElement, selector)) {
+      return nextElement
+    } else {
+      return Romo.next(nextElement, selector)
+    }
+  }
+
+},{}],9:[function(require,module,exports){
 if (window.Romo === undefined) {
   window.Romo = {}
 }
@@ -736,11 +986,11 @@ class RomoEnv {
   }
 
   addAutoInitSelector(selector, componentClass) {
-    this.autoInit.addSelector(selector, componentClass)
+    return this.autoInit.addSelector(selector, componentClass)
   }
 
   applyAutoInitTo(elements) {
-    this.autoInit.applyTo(elements)
+    return this.autoInit.applyTo(elements)
   }
 
   isAScrollableElement(element) {
@@ -782,7 +1032,7 @@ Romo.addAutoInitSelector =
 
 Romo.env = new RomoEnv()
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 "use strict";
 
 require("./env.js");
@@ -793,14 +1043,16 @@ require("./utilities.js");
 
 Romo.setup();
 
-},{"./api.js":1,"./env.js":8,"./utilities.js":10}],10:[function(require,module,exports){
+},{"./api.js":1,"./env.js":9,"./utilities.js":11}],11:[function(require,module,exports){
 "use strict";
 
 require("./utilities/auto_init.js");
 
+require("./utilities/dom.js");
+
 require("./utilities/event_listeners.js");
 
-},{"./utilities/auto_init.js":11,"./utilities/event_listeners.js":12}],11:[function(require,module,exports){
+},{"./utilities/auto_init.js":12,"./utilities/dom.js":13,"./utilities/event_listeners.js":14}],12:[function(require,module,exports){
 Romo.define('Romo.AutoInit', function() {
   return class {
     constructor() {
@@ -842,7 +1094,268 @@ Romo.define('Romo.AutoInit', function() {
   }
 })
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
+Romo.define('Romo.DOM', function() {
+  return class {
+    constructor(elements) {
+      this.elements = Romo.array(elements)
+    }
+
+    get isRomoDOM() {
+      return true
+    }
+
+    get length() {
+      return this.elements.length
+    }
+
+    get firstElement() {
+      return this.elements[0]
+    }
+
+    forEach(fn) {
+      this.elements.forEach(fn)
+    }
+
+    map(fn) {
+      return this.elements.map(fn)
+    }
+
+    reverseMap(fn) {
+      return this.elements.reverse().map(fn)
+    }
+
+    reduce(fn, acc) {
+      return this.elements.reduce(fn, acc)
+    }
+
+    // DOM attributes API method proxies
+
+    attr(attributeName) {
+      return Romo.attr(this, attributeName)
+    }
+
+    setAttr(attributeName, attributeValue) {
+      return Romo.dom(Romo.setAttr(this, attributeName, attributeValue))
+    }
+
+    rmAttr(attributeName) {
+      return Romo.dom(Romo.rmAttr(this, attributeName))
+    }
+
+    data(dataName) {
+      return Romo.data(this, dataName)
+    }
+
+    setData(dataName, dataValue) {
+      return Romo.dom(Romo.setData(this, dataName, dataValue))
+    }
+
+    rmData(dataName) {
+      return Romo.dom(Romo.rmData(this, dataName))
+    }
+
+    style(styleName) {
+      return Romo.style(this, styleName)
+    }
+
+    setStyle(styleName, styleValue) {
+      return Romo.dom(Romo.setStyle(this, styleName, styleValue))
+    }
+
+    rmStyle(styleName) {
+      return Romo.dom(Romo.rmStyle(this, styleName))
+    }
+
+    css(styleName) {
+      return Romo.css(this, styleName)
+    }
+
+    hasClass(className) {
+      return Romo.hasClass(this, className)
+    }
+
+    addClass(className) {
+      return Romo.dom(Romo.addClass(this, className))
+    }
+
+    removeClass(className) {
+      return Romo.dom(Romo.removeClass(this, className))
+    }
+
+    toggleClass(className) {
+      return Romo.dom(Romo.toggleClass(this, className))
+    }
+
+    show() {
+      return Romo.dom(Romo.show(this))
+    }
+
+    hide() {
+      return Romo.dom(Romo.hide(this))
+    }
+
+    rect() {
+      return Romo.rect(this)
+    }
+
+    height() {
+      return Romo.height(this)
+    }
+
+    width() {
+      return Romo.width(this)
+    }
+
+    offset() {
+      return Romo.offset(this)
+    }
+
+    scrollTop() {
+      return Romo.scrollTop(this)
+    }
+
+    scrollLeft() {
+      return Romo.scrollLeft(this)
+    }
+
+    setScrollTop(value) {
+      return Romo.dom(Romo.setScrollTop(this, value))
+    }
+
+    setScrollLeft(value) {
+      return Romo.dom(Romo.setScrollLeft(this, value))
+    }
+
+    zIndex() {
+      return Romo.zIndex(this)
+    }
+
+    // DOM query API method proxies
+
+    is(selector) {
+      return Romo.is(this, selector)
+    }
+
+    children(selector) {
+      return Romo.dom(Romo.children(this, selector))
+    }
+
+    parent() {
+      return Romo.dom(Romo.parent(this))
+    }
+
+    parents(selector) {
+      return Romo.dom(Romo.parents(this, selector))
+    }
+
+    scrollableParent() {
+      return Romo.dom(Romo.scrollableParent(this))
+    }
+
+    scrollableParents(selector) {
+      return Romo.dom(Romo.scrollableParents(this, selector))
+    }
+
+    closest(selector) {
+      return Romo.dom(Romo.closest(this, selector))
+    }
+
+    siblings(selector) {
+      return Romo.dom(Romo.siblings(this, selector))
+    }
+
+    prev(selector) {
+      return Romo.dom(Romo.prev(this, selector))
+    }
+
+    next(selector) {
+      return Romo.dom(Romo.next(this, selector))
+    }
+
+    // DOM mutate API method proxies
+
+    remove() {
+      return Romo.dom(Romo.remove(this))
+    }
+
+    removeChildren() {
+      return Romo.dom(Romo.removeChildren(this))
+    }
+
+    replace(replacementElement) {
+      return Romo.dom(Romo.replace(this, replacementElement))
+    }
+
+    replaceHTML(htmlString) {
+      return Romo.dom(Romo.replaceHTML(this, htmlString))
+    }
+
+    update(childElements) {
+      return Romo.dom(Romo.update(this, childElements))
+    }
+
+    updateHTML(htmlString) {
+      return Romo.dom(Romo.updateHTML(this, htmlString))
+    }
+
+    updateText(textString) {
+      return Romo.dom(Romo.updateText(this, textString))
+    }
+
+    clearHTML() {
+      return Romo.dom(Romo.clearHTML(this))
+    }
+
+    prepend(childElements) {
+      return Romo.dom(Romo.prepend(this, childElements))
+    }
+
+    prependHTML(htmlString) {
+      return Romo.dom(Romo.prependHTML(this, htmlString))
+    }
+
+    append(childElements) {
+      return Romo.dom(Romo.append(this, childElements))
+    }
+
+    appendHTML(htmlString) {
+      return Romo.dom(Romo.appendHTML(this, htmlString))
+    }
+
+    before(siblingElements) {
+      return Romo.dom(Romo.before(this, siblingElements))
+    }
+
+    beforeHTML(htmlString) {
+      return Romo.dom(Romo.beforeHTML(this, htmlString))
+    }
+
+    after(siblingElements) {
+      return Romo.dom(Romo.after(this, siblingElements))
+    }
+
+    afterHTML(htmlString) {
+      return Romo.dom(Romo.afterHTML(this, htmlString))
+    }
+
+    // DOM events API method proxies
+
+    on(eventName, eventHandlerFn) {
+      return Romo.on(this, eventName, eventHandlerFn)
+    }
+
+    off(eventName, eventHandlerFn) {
+      return Romo.off(this, eventName, eventHandlerFn)
+    }
+
+    trigger(customEventName, args) {
+      return Romo.triger(this, customEventName, args)
+    }
+  }
+})
+
+},{}],14:[function(require,module,exports){
 Romo.define('Romo.EventListeners', function() {
   return class {
     constructor() {
@@ -884,4 +1397,4 @@ Romo.define('Romo.EventListeners', function() {
   }
 })
 
-},{}]},{},[9]);
+},{}]},{},[10]);
