@@ -18,8 +18,7 @@
   },
   "scripts": {
     "lint": "./bin/lint",
-    "test": "./bin/test",
-    "release": "./bin/release"
+    "test": "./bin/test"
   },
   "repository": {
     "type": "git",
