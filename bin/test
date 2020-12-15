@@ -1,0 +1,2 @@
+#!/bin/bash
+./node_modules/.bin/browserify -p esmify ./lib/romo.js > ./test/romo.js && open ./test/system_tests.html

@@ -1,0 +1,2 @@
+#!/bin/bash
+git tag `cat package.json | jq .version  | sed "s/\"//g"`
