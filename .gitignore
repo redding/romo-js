@@ -2,3 +2,4 @@ node_modules/
 package.lock
 yarn.lock
 *.log
+test/smoke_tests.html

@@ -1,0 +1,2 @@
+#!/bin/bash
+cat ./test/system_tests.html | sed "s/^.*\"romo\.js\".*$//" | sed "s|^\(.*\"module\".*\)$|<script type="module"> import 'https://cdn.skypack.dev/@reddingjs/romo-js@`./bin/version`'|" > ./test/smoke_tests.html && open ./test/smoke_tests.html

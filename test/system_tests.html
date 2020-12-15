@@ -1,8 +1,6 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <script src="romo.js"></script>
-  <script src="tests.js"></script>
   <style>
     .test:before {
       display: inline-block;
@@ -23,7 +21,64 @@
     <div data-support-div-b style="display: none">Div B</div>
   </div>
 </body>
-<script type="text/javascript">
+<script src="romo.js"></script>
+<script type="module">
+  Romo.define('Tests', function() {
+    return class {
+      constructor(dom) {
+        this.dom = dom
+      }
+
+      group(name, fn) {
+        this.dom.appendHTML(`<h3>${name}</h3>`)
+        fn()
+      }
+
+      test(description, fn) {
+        const testDOM =
+          this.dom.appendHTML(`<div class="test">${description}</description>`)
+
+        // eslint-disable-next-line no-undef
+        new Tests.Test(testDOM).run(fn)
+      }
+    }
+  })
+
+  Romo.define('Tests.Test', function() {
+    return class {
+      constructor(dom) {
+        this.dom = dom
+        this.success = true
+      }
+
+      run(fn) {
+        try {
+          fn(this)
+        } catch (error) {
+          console.error(error)
+          this.fail()
+        }
+        return this
+      }
+
+      assert(assertion) {
+        if (assertion) {
+          this.pass()
+        } else {
+          throw new Error('test assertion failed.')
+        }
+      }
+
+      pass() {
+        this.dom.addClass('pass').rmClass('fail')
+      }
+
+      fail() {
+        this.dom.addClass('fail').rmClass('pass')
+      }
+    }
+  })
+
   Romo.onReady(function() {
     const tests = new Tests(Romo.f('[data-test-output]'))
 
@@ -39,8 +94,8 @@
 
     tests.group('Env', function() {
       tests.test('Function/Element ID stamping', function(test) {
-        test.assert(Romo.env.currentFid > 1)
-        test.assert(Romo.env.currentEid > 1)
+        test.assert(Romo.env.currentFid > 0)
+        test.assert(Romo.env.currentEid > 0)
       })
 
       tests.test('Has JQuery', function(test) {
