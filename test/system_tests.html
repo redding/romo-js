@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <script src="romo.js"></script>
+  <script src="tests.js"></script>
   <style>
     .test:before {
       display: inline-block;
@@ -16,40 +17,856 @@
 </head>
 <body>
   <h1>Romo JS system tests</h1>
+  <div data-test-output></div>
+  <div data-test-support>
+    <div data-support-div-a style="display: none">Div A</div>
+    <div data-support-div-b style="display: none">Div B</div>
+  </div>
 </body>
 <script type="text/javascript">
-  function test_group(name, fn) {
-    Romo.f('body').appendHTML(`<h3>${name}</h3>`)
-
-    fn()
-  }
-  function test(description, fn) {
-    try {
-      testDOM =
-        Romo.f('body').appendHTML(`<div class="test">${description}</description>`)
-
-      fn()
-
-      testDOM.addClass('pass')
-    } catch (error) {
-      testDOM.addClass('fail')
-      console.error(error)
-    }
-  }
-  function assert(assertion) {
-    if(!assertion) {
-      throw new Error()
-    }
-  }
-
   Romo.onReady(function() {
-    test_group('Setup', function() {
-      test('Romo constant', function() {
-        assert(Romo !== undefined)
+    const tests = new Tests(Romo.f('[data-test-output]'))
+
+    tests.group('Setup', function() {
+      tests.test('<code>Romo</code> constant', function(test) {
+        test.assert(Romo !== undefined)
       })
 
-      test('Romo.env', function() {
-        assert(Romo.env !== undefined)
+      tests.test('<code>Romo.env</code>', function(test) {
+        test.assert(Romo.env !== undefined)
+      })
+    })
+
+    tests.group('Env', function() {
+      tests.test('Function/Element ID stamping', function(test) {
+        test.assert(Romo.env.currentFid > 1)
+        test.assert(Romo.env.currentEid > 1)
+      })
+
+      tests.test('Has JQuery', function(test) {
+        test.assert(Romo.env.hasJQuery === false)
+      })
+
+      tests.test('<code>Romo.env.eventListeners</code>', function(test) {
+        test.assert(Romo.env.eventListeners !== undefined)
+      })
+
+      tests.test('<code>Romo.env.autoInit</code>', function(test) {
+        test.assert(Romo.env.autoInit !== undefined)
+      })
+
+      tests.test('<code>Romo.env.isAScrollableElement</code>', function(test) {
+        test.assert(Romo.env.isAScrollableElement(Romo.f('html').firstElement))
+      })
+    })
+
+    tests.group('Auto Init', function() {
+      tests.test('Auto Init', function(test) {
+        Romo.define('Factory.TestAutoInit', function() {
+          return class {
+            constructor(dom) {
+              this.dom = dom
+              this._bind()
+            }
+
+            _bind() {
+              this.dom.on('custom:event', Romo.bind(function(e, value) {
+                this.customEventValue = value
+                this.dom.trigger('custom:eventHandled', [this])
+              }, this))
+            }
+          }
+        })
+        Romo.addAutoInitSelector('[data-test-auto-init]', Factory.TestAutoInit)
+
+        const testAutoInitDOM =
+          Romo.f('[data-test-support]').appendHTML('<div data-test-auto-init></div>')
+
+        testAutoInitDOM
+          .on('custom:eventHandled', function(e, testAutoInit) {
+            test.assert(testAutoInit.customEventValue === 1)
+
+            Romo.remove(testAutoInitDOM)
+          })
+          .trigger('custom:event', [1])
+
+        // expect an event handler to pass the test, fail if it isn't invoked
+        test.fail()
+      })
+
+    })
+
+    tests.group('API: <code>Romo.array()</code>', function() {
+      tests.test('Given an Array', function(test) {
+        const array = [1, 2]
+        const romoArray = Romo.array(array)
+        test.assert(romoArray.length === array.length)
+        test.assert(romoArray[0] === array[0])
+      })
+
+      tests.test('Given a NodeList', function(test) {
+        const nodeList = Romo.f('[data-test-support]').firstElement.childNodes
+        const romoArray = Romo.array(nodeList)
+        test.assert(romoArray.length === nodeList.length)
+      })
+
+      tests.test('Given an HTMLCollection', function(test) {
+        const htmlCollection = document.forms
+        const romoArray = Romo.array(htmlCollection)
+        test.assert(romoArray.length === htmlCollection.length)
+      })
+
+      tests.test('Given a single value', function(test) {
+        [
+          undefined,
+          null,
+          1,
+          '1',
+          Romo.f('body'),
+          function() {}
+        ].forEach(function(value) {
+          const romoArray = Romo.array(value)
+          test.assert(romoArray.length === 1)
+          test.assert(romoArray[0] === value)
+        })
+      })
+    })
+
+    tests.group('API: Function/Element binding', function() {
+      tests.test('<code>Romo.fid()</code>', function(test) {
+        const fn1 = function() {}
+        const fn2 = function() {}
+        const fidFn1 = Romo.fid(fn1)
+        const fidFn2 = Romo.fid(fn2, { aliasFn: fn1 })
+
+        test.assert(fidFn1 === fn1)
+        test.assert(Romo.getFid(fn1) === (Romo.env.currentFid - 1))
+        test.assert(Romo.getFid(fn2) === Romo.getFid(fn1))
+      })
+
+      tests.test('<code>Romo.eid()</code>', function(test) {
+        const element = Romo.elements('<div></div')[0]
+        const eidElement = Romo.eid(element)
+
+        test.assert(eidElement === element)
+        test.assert(Romo.getEid(element) === (Romo.env.currentEid - 1))
+      })
+
+      tests.test('<code>Romo.bind()</code>', function(test) {
+        const fn1 = function() { this.functionBindTestValue = "function binding works!" }
+        const boundFn1 = Romo.bind(fn1, test)
+
+        boundFn1()
+
+        test.assert(Romo.getFid(fn1) !== undefined)
+        test.assert(Romo.getFid(boundFn1) === Romo.getFid(fn1))
+      })
+    })
+
+    tests.group('API: Class definition', function() {
+      tests.test('Class definition', function(test) {
+        Romo.define('Factory.Class', function() {
+          return class {}
+        })
+
+        const classInstance = new Factory.Class()
+
+        test.assert(classInstance.class === Factory.Class)
+        test.assert(classInstance.className === 'Factory.Class')
+      })
+
+      tests.test('Wrap method', function(test) {
+        Romo.define('Factory.WrapClass', function() {
+          return class {
+            constructor(value) {
+              this.wrapClassValue = value
+            }
+          }
+        })
+
+        const rawValues = [1, 2, 3]
+        const wrappedValues = Factory.WrapClass.wrap(rawValues)
+        const mappedWrappedValues =
+          wrappedValues.map(function(wrappedValue) { return wrappedValue.wrapClassValue })
+
+        test.assert(mappedWrappedValues.length === rawValues.length)
+        mappedWrappedValues.forEach(function(wrappedMappedValue, index) {
+          test.assert(wrappedMappedValue === rawValues[index])
+        })
+      })
+
+      tests.test('Memoization', function(test) {
+        Romo.define('Factory.MemoizeClass', function() {
+          return class {
+            constructor() {
+              this.rawCallCount = 0
+            }
+
+            get memoizedValue() {
+              return Romo.memoize(this, 'memoizedValue', function() {
+                this.rawCallCount++
+                return 1
+              })
+            }
+          }
+        })
+
+        const memoizeClassInstance = new Factory.MemoizeClass()
+
+        test.assert(memoizeClassInstance.rawCallCount === 0)
+
+        memoizeClassInstance.memoizedValue
+        memoizeClassInstance.memoizedValue
+
+        test.assert(memoizeClassInstance.memoizedValue === 1)
+        test.assert(memoizeClassInstance.rawCallCount === 1)
+      })
+    })
+
+    tests.group('API: DOM Attributes', function() {
+      tests.test('<code>attr</code>, <code>setAttr</code>, <code>rmAttr</code>', function(test) {
+        const dom = Romo.f('[data-support-div-a]')
+
+        const setAttrDOM = dom.setAttr('custom', 'value')
+        test.assert(dom.attr('custom') === 'value')
+        test.assert(setAttrDOM === dom)
+
+        const rmAttrDOM = dom.rmAttr('custom')
+        test.assert(dom.attr('custom') === null)
+        test.assert(rmAttrDOM === dom)
+      })
+
+      tests.test('<code>data</code>, <code>setData</code>, <code>rmData</code>', function(test) {
+        const dom = Romo.f('[data-support-div-a]')
+
+        const setDataDOM = dom.setData('custom', 'value')
+        test.assert(dom.data('custom') === 'value')
+        test.assert(dom.attr('data-custom') === 'value')
+        test.assert(setDataDOM === dom)
+
+        dom.setData('custom', 1)
+        test.assert(dom.data('custom') === 1)
+        test.assert(dom.attr('data-custom') === '1')
+
+        dom.setAttr('data-custom', '1')
+        test.assert(dom.data('custom') === 1)
+        dom.setAttr('data-custom', 'true')
+        test.assert(dom.data('custom') === true)
+        dom.setAttr('data-custom', 'false')
+        test.assert(dom.data('custom') === false)
+        dom.setAttr('data-custom', 'undefined')
+        test.assert(dom.data('custom') === undefined)
+        dom.setAttr('data-custom', 'null')
+        test.assert(dom.data('custom') === null)
+        dom.setAttr('data-custom', '42.5')
+        test.assert(dom.data('custom') === 42.5)
+        dom.setAttr('data-custom', '{ "key": ["value"] }')
+        test.assert(dom.data('custom')['key'][0] === 'value')
+
+        const rmDataDOM = dom.rmData('custom')
+        test.assert(dom.data('custom') === undefined)
+        test.assert(rmDataDOM === dom)
+      })
+
+      tests.test('<code>style</code>, <code>setStyle</code>, <code>rmStyle</code>', function(test) {
+        const dom = Romo.f('[data-support-div-a]')
+
+        const setStyleDOM = dom.setStyle('color', 'red')
+        test.assert(dom.style('color') === 'red')
+        test.assert(setStyleDOM === dom)
+
+        const rmStyleDOM = dom.rmStyle('color')
+        test.assert(dom.style('color') === '')
+        test.assert(rmStyleDOM === dom)
+      })
+
+      tests.test('<code>css</code>', function(test) {
+        const dom = Romo.f('[data-support-div-a]')
+        const originalCSSColor = dom.css('color')
+
+        dom.parent().setStyle('color', 'red')
+        test.assert(dom.style('color') === '')
+        test.assert(dom.css('color') === 'rgb(255, 0, 0)')
+
+        dom.parent().rmStyle('color', 'red')
+        test.assert(dom.style('color') === '')
+        test.assert(dom.css('color') === originalCSSColor)
+      })
+
+      tests.test('<code>hasClass</code>, <code>addClass</code>, <code>rmClass</code>, <code>toggleClass</code>', function(test) {
+        const dom = Romo.f('[data-support-div-a]')
+
+        const addClassDOM = dom.addClass('custom')
+        test.assert(dom.hasClass('custom') === true)
+        test.assert(addClassDOM === dom)
+
+        const rmClassDOM = dom.rmClass('custom')
+        test.assert(dom.hasClass('custom') === false)
+        test.assert(rmClassDOM === dom)
+
+        const toggleClassDOM = dom.toggleClass('custom')
+        test.assert(dom.hasClass('custom') === true)
+        test.assert(toggleClassDOM === dom)
+
+        dom.rmClass('custom')
+      })
+
+      tests.test('<code>show</code>, <code>hide</code>', function(test) {
+        const dom = Romo.f('[data-support-div-a]')
+
+        const showDOM = dom.show()
+        test.assert(dom.style('display') === '')
+        test.assert(showDOM === dom)
+
+        const hideDOM = dom.hide()
+        test.assert(dom.style('display') === 'none')
+        test.assert(hideDOM === dom)
+      })
+
+      tests.test('<code>rect</code>', function(test) {
+        const dom = Romo.f('[data-support-div-a]')
+
+        var actRect = dom.rect()
+        var expRect = dom.firstElement.getBoundingClientRect()
+        test.assert(actRect.height === expRect.height)
+        test.assert(actRect.width === expRect.width)
+        test.assert(actRect.top === expRect.top)
+        test.assert(actRect.left === expRect.left)
+
+        actRect = Romo.dom().rect()
+        test.assert(actRect.height === 0)
+        test.assert(actRect.width === 0)
+        test.assert(actRect.top === 0)
+        test.assert(actRect.left === 0)
+      })
+
+      tests.test('<code>height</code>, <code>width</code>', function(test) {
+        var dom = Romo.f('[data-support-div-a]')
+
+        test.assert(dom.height() === dom.rect().height)
+        test.assert(dom.width() === dom.rect().width)
+
+        dom = Romo.dom()
+        test.assert(dom.height() === 0)
+        test.assert(dom.width() === 0)
+      })
+
+      tests.test('<code>offset</code>', function(test) {
+        const dom = Romo.f('[data-support-div-a]')
+        const relativeDOM = Romo.f('[data-test-support]')
+        const bodyDOM = Romo.f('body')
+
+        var actRect = dom.rect()
+        var bodyRect = bodyDOM.rect()
+        test.assert(dom.offset().top === (actRect.top - bodyRect.top))
+        test.assert(dom.offset().left === (actRect.left - bodyRect.left))
+
+        var relativeRect = relativeDOM.rect()
+        test.assert(dom.offset(relativeDOM).top === (actRect.top - relativeRect.top))
+        test.assert(dom.offset(relativeDOM).left === (actRect.left - relativeRect.left))
+      })
+
+      tests.test('<code>scrollTop</code>, <code>scrollLeft</code>', function(test) {
+        var dom = Romo.f('[data-support-div-a]')
+
+        test.assert(dom.scrollTop() === dom.firstElement.scrollTop)
+        test.assert(dom.scrollLeft() === dom.firstElement.scrollLeft)
+      })
+
+      tests.test('<code>setScrollTop</code>, <code>setScrollLeft</code>', function(test) {
+        var dom = Romo.f('[data-support-div-a]')
+
+        dom.setScrollTop(0).setScrollLeft(0)
+        test.assert(dom.scrollTop() === 0)
+        test.assert(dom.scrollLeft() === 0)
+      })
+
+      tests.test('<code>zIndex</code>', function(test) {
+        var dom = Romo.f('[data-support-div-a]')
+
+        test.assert(dom.zIndex() === 0)
+      })
+    })
+
+    tests.group('API: DOM Events', function() {
+      tests.test('Bind an event', function(test) {
+        test
+          .dom
+          .on('My.Custom.Event:happened', Romo.bind(function(e, msg) {
+            test.run(function() {
+              test.assert(msg === 'event binding works!')
+            })
+          }, this))
+          .trigger('My.Custom.Event:happened', ['event binding works!'])
+
+        // expect an event handler to pass the test, fail if it isn't invoked
+        test.fail()
+      })
+
+      tests.test('Unbind an event', function(test) {
+        const handlerFn = function(e) { test.fail() }
+
+        test
+          .dom
+          .on('My.Custom.Event:happened', handlerFn)
+          .off('My.Custom.Event:happened', handlerFn)
+          .trigger('My.Custom.Event:happened')
+
+        // the test only fails if the event handler is invoked
+        test.pass()
+      })
+
+      tests.test('<code>Romo.onReady()</code>', function(test) {
+        test.assert(typeof Romo.onReady === 'function')
+      })
+
+      tests.test('<code>Romo.proxyEvent()</code>', function(test) {
+        const fromDOM = Romo.f('[data-support-div-a]')
+        const toDOM = Romo.f('[data-support-div-b]')
+
+        Romo.proxyEvent({
+          fromElement: fromDOM,
+          toElement: toDOM,
+          fromEventName: 'proxyTest:from',
+          toEventName: 'proxyTest:to',
+          toArgs: ['toArg1', 'toArg2']
+        })
+
+        toDOM.on('proxyTest:to', function(e, toArg1, toArg2, fromArg1, fromArg2) {
+          test.run(function() {
+            test.assert(toArg1 === 'toArg1')
+            test.assert(toArg2 === 'toArg2')
+            test.assert(fromArg1 === 'fromArg1')
+            test.assert(fromArg2 === 'fromArg2')
+          })
+        })
+        fromDOM.trigger('proxyTest:from', ['fromArg1', 'fromArg2'])
+
+        // expect an event handler to pass the test, fail if it isn't invoked
+        test.fail()
+      })
+    })
+
+    tests.group('API: DOM Query', function() {
+      tests.test('<code>innerText</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject"></div>')
+
+        test.assert(subjectDOM.children().length === 0)
+
+        subjectDOM.firstElement.innerText = 'test'
+        test.assert(subjectDOM.innerText === 'test')
+
+        subjectDOM.remove()
+      })
+
+      tests.test('<code>innerHTML</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject"></div>')
+
+        test.assert(subjectDOM.children().length === 0)
+
+        subjectDOM.firstElement.innerHTML = 'test'
+        test.assert(subjectDOM.innerHTML === 'test')
+
+        subjectDOM.remove()
+      })
+
+      tests.test('<code>is</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject"></div>')
+
+        test.assert(subjectDOM.is('div.subject') === true)
+        test.assert(subjectDOM.is('li.subject') === false)
+
+        subjectDOM.remove()
+      })
+
+      tests.test('<code>children</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject"></div>')
+
+        test.assert(subjectDOM.children().length === 0)
+
+        subjectDOM.appendHTML('<div class="child-a"></div>')
+        test.assert(subjectDOM.children().length === 1)
+
+        subjectDOM.remove()
+      })
+
+      tests.test('<code>parent</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject"></div>')
+        const childADOM = subjectDOM.appendHTML('<div class="child-a"></div>')
+
+        test.assert(childADOM.parent().is('div.subject') === true)
+
+        subjectDOM.remove()
+      })
+
+      tests.test('<code>parents</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject"></div>')
+        const childADOM = subjectDOM.appendHTML('<div class="child-a"></div>')
+
+        test.assert(childADOM.parents().length === 4)
+        test.assert(childADOM.parents().first.is('div.subject') === true)
+        test.assert(childADOM.parents().last.is('html') === true)
+
+        subjectDOM.remove()
+      })
+
+      tests.test('<code>scrollableParent</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject"></div>')
+        const childADOM = subjectDOM.appendHTML('<div class="child-a"></div>')
+
+        test.assert(childADOM.scrollableParent().length === 1)
+        test.assert(childADOM.scrollableParent().first.is('html') === true)
+
+        subjectDOM.remove()
+      })
+
+      tests.test('<code>scrollableParents</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject"></div>')
+        const childADOM = subjectDOM.appendHTML('<div class="child-a"></div>')
+
+        test.assert(childADOM.scrollableParents().length === 1)
+        test.assert(childADOM.scrollableParent().first.is('html') === true)
+
+        subjectDOM.remove()
+      })
+
+      tests.test('<code>closest</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject parent"></div>')
+        const childADOM = subjectDOM.appendHTML('<div class="child-a"></div>')
+
+        test.assert(childADOM.closest('div').length === 1)
+        test.assert(childADOM.closest('div').first.is('div.child-a') === true)
+        test.assert(childADOM.closest('div.parent').length === 1)
+        test.assert(childADOM.closest('div.parent').first.is('div.subject') === true)
+
+        subjectDOM.remove()
+      })
+
+      tests.test('<code>siblings</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject parent"></div>')
+        const childADOM = subjectDOM.appendHTML('<div class="child-a"></div>')
+        const childBDOM = subjectDOM.appendHTML('<div class="child-b"></div>')
+
+        test.assert(childADOM.siblings('div').length === 1)
+        test.assert(childADOM.siblings('div').first.is('div.child-b') === true)
+
+        subjectDOM.remove()
+      })
+
+      tests.test('<code>prev</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject parent"></div>')
+        const childADOM = subjectDOM.appendHTML('<div class="child-a"></div>')
+        const childBDOM = subjectDOM.appendHTML('<div class="child-b"></div>')
+
+        test.assert(childBDOM.prev('div').length === 1)
+        test.assert(childBDOM.prev('div').first.is('div.child-a') === true)
+
+        subjectDOM.remove()
+      })
+
+      tests.test('<code>next</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject parent"></div>')
+        const childADOM = subjectDOM.appendHTML('<div class="child-a"></div>')
+        const childBDOM = subjectDOM.appendHTML('<div class="child-b"></div>')
+
+        test.assert(childADOM.next('div').length === 1)
+        test.assert(childADOM.next('div').first.is('div.child-b') === true)
+
+        subjectDOM.remove()
+      })
+    })
+
+    tests.group('API: DOM Mutate', function() {
+      tests.test('<code>innerText=</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject"></div>')
+
+        test.assert(subjectDOM.children().length === 0)
+
+        subjectDOM.innerText = 'test'
+        test.assert(subjectDOM.innerText === 'test')
+
+        subjectDOM.remove()
+      })
+
+      tests.test('<code>innerHTML=</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject"></div>')
+
+        test.assert(subjectDOM.children().length === 0)
+
+        subjectDOM.innerHTML = 'test'
+        test.assert(subjectDOM.innerHTML === 'test')
+
+        subjectDOM.remove()
+      })
+
+      tests.test('<code>remove</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject"></div>')
+
+        test.assert(supportDOM.children().last.hasClass('subject') === true)
+
+        const removeDOM = subjectDOM.remove()
+        test.assert(supportDOM.children().last.hasClass('subject') === false)
+        test.assert(removeDOM.isRomoDOM)
+      })
+
+      tests.test('<code>removeChildren</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject"></div>')
+
+        subjectDOM.appendHTML('<div class="child-a"></div>')
+        test.assert(subjectDOM.children().length === 1)
+
+        const removeChildrenDOM = subjectDOM.removeChildren()
+        test.assert(subjectDOM.children().length === 0)
+        test.assert(removeChildrenDOM.isRomoDOM)
+
+        subjectDOM.remove()
+      })
+
+      tests.test('<code>replace</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject"></div>')
+        const childADOM = subjectDOM.appendHTML('<div class="child-a"></div>')
+        const childBDOM = Romo.dom(Romo.elements('<div class="child-b"></div>'))
+
+        test.assert(subjectDOM.children().length === 1)
+        test.assert(subjectDOM.children().first.hasClass('child-a') === true)
+
+        const replaceDOM = childADOM.replace(childBDOM)
+        test.assert(subjectDOM.children().length === 1)
+        test.assert(subjectDOM.children().first.hasClass('child-b') === true)
+        test.assert(replaceDOM.isRomoDOM)
+
+        subjectDOM.remove()
+      })
+
+      tests.test('<code>replaceHTML</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject"></div>')
+        const childADOM = subjectDOM.appendHTML('<div class="child-a"></div>')
+        const childBHTML = '<div class="child-b"></div>'
+
+        test.assert(subjectDOM.children().length === 1)
+        test.assert(subjectDOM.children().first.hasClass('child-a') === true)
+
+        const replaceHTMLDOM = childADOM.replaceHTML(childBHTML)
+        test.assert(subjectDOM.children().length === 1)
+        test.assert(subjectDOM.children().first.hasClass('child-b') === true)
+        test.assert(replaceHTMLDOM.isRomoDOM)
+
+        subjectDOM.remove()
+      })
+
+      tests.test('<code>update</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject"></div>')
+        const childADOM = subjectDOM.appendHTML('<div class="child-a"></div>')
+        const childBDOM = Romo.dom(Romo.elements('<div class="child-b"></div>'))
+
+        test.assert(subjectDOM.children().length === 1)
+        test.assert(subjectDOM.children().first.hasClass('child-a') === true)
+
+        const updateDOM = subjectDOM.update(childBDOM)
+        test.assert(subjectDOM.children().length === 1)
+        test.assert(subjectDOM.children().first.hasClass('child-b') === true)
+        test.assert(updateDOM.isRomoDOM)
+
+        subjectDOM.remove()
+      })
+
+      tests.test('<code>updateHTML</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject"></div>')
+        const childADOM = subjectDOM.appendHTML('<div class="child-a"></div>')
+        const childBHTML = '<div class="child-b"></div>'
+
+        test.assert(subjectDOM.children().length === 1)
+        test.assert(subjectDOM.children().first.hasClass('child-a') === true)
+
+        const updateHTMLDOM = subjectDOM.updateHTML(childBHTML)
+        test.assert(subjectDOM.children().length === 1)
+        test.assert(subjectDOM.children().first.hasClass('child-b') === true)
+        test.assert(updateHTMLDOM.isRomoDOM)
+
+        subjectDOM.remove()
+      })
+
+      tests.test('<code>updateText</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject"></div>')
+
+        test.assert(subjectDOM.children().length === 0)
+
+        const updateTextDOM = subjectDOM.updateText('test')
+        test.assert(subjectDOM.innerText === 'test')
+        test.assert(updateTextDOM.isRomoDOM)
+
+        subjectDOM.remove()
+      })
+
+      tests.test('<code>clearHTML</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject"></div>')
+        const childADOM = subjectDOM.appendHTML('<div class="child-a"></div>')
+
+        test.assert(subjectDOM.children().length === 1)
+
+        const clearHTMLDOM = subjectDOM.clearHTML()
+        test.assert(subjectDOM.children().length === 0)
+        test.assert(clearHTMLDOM.isRomoDOM)
+
+        subjectDOM.remove()
+      })
+
+      tests.test('<code>prepend</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject"></div>')
+        const childADOM = subjectDOM.appendHTML('<div class="child-a"></div>')
+        const childBDOM = Romo.dom(Romo.elements('<div class="child-b"></div>'))
+
+        test.assert(subjectDOM.children().length === 1)
+        test.assert(subjectDOM.children().first.hasClass('child-a') === true)
+
+        const prependDOM = subjectDOM.prepend(childBDOM)
+        test.assert(subjectDOM.children().length === 2)
+        test.assert(subjectDOM.children().first.hasClass('child-b') === true)
+        test.assert(prependDOM.isRomoDOM)
+
+        subjectDOM.remove()
+      })
+
+      tests.test('<code>prependHTML</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject"></div>')
+        const childADOM = subjectDOM.appendHTML('<div class="child-a"></div>')
+        const childBHTML = '<div class="child-b"></div>'
+
+        test.assert(subjectDOM.children().length === 1)
+        test.assert(subjectDOM.children().first.hasClass('child-a') === true)
+
+        const prependHTMLDOM = subjectDOM.prependHTML(childBHTML)
+        test.assert(subjectDOM.children().length === 2)
+        test.assert(subjectDOM.children().first.hasClass('child-b') === true)
+        test.assert(prependHTMLDOM.isRomoDOM)
+
+        subjectDOM.remove()
+      })
+
+      tests.test('<code>append</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject"></div>')
+        const childADOM = subjectDOM.appendHTML('<div class="child-a"></div>')
+        const childBDOM = Romo.dom(Romo.elements('<div class="child-b"></div>'))
+
+        test.assert(subjectDOM.children().length === 1)
+        test.assert(subjectDOM.children().first.hasClass('child-a') === true)
+
+        const appendDOM = subjectDOM.append(childBDOM)
+        test.assert(subjectDOM.children().length === 2)
+        test.assert(subjectDOM.children().last.hasClass('child-b') === true)
+        test.assert(appendDOM.isRomoDOM)
+
+        subjectDOM.remove()
+      })
+
+      tests.test('<code>appendHTML</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject"></div>')
+        const childADOM = subjectDOM.appendHTML('<div class="child-a"></div>')
+        const childBHTML = '<div class="child-b"></div>'
+
+        test.assert(subjectDOM.children().length === 1)
+        test.assert(subjectDOM.children().first.hasClass('child-a') === true)
+
+        const appendHTMLDOM = subjectDOM.appendHTML(childBHTML)
+        test.assert(subjectDOM.children().length === 2)
+        test.assert(subjectDOM.children().last.hasClass('child-b') === true)
+        test.assert(appendHTMLDOM.isRomoDOM)
+
+        subjectDOM.remove()
+      })
+
+      tests.test('<code>before</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject"></div>')
+        const childADOM = subjectDOM.appendHTML('<div class="child-a"></div>')
+        const childBDOM = Romo.dom(Romo.elements('<div class="child-b"></div>'))
+
+        test.assert(subjectDOM.children().length === 1)
+        test.assert(subjectDOM.children().first.hasClass('child-a') === true)
+
+        const beforeDOM = childADOM.before(childBDOM)
+        test.assert(subjectDOM.children().length === 2)
+        test.assert(subjectDOM.children().first.hasClass('child-b') === true)
+        test.assert(beforeDOM.isRomoDOM)
+
+        subjectDOM.remove()
+      })
+
+      tests.test('<code>beforeHTML</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject"></div>')
+        const childADOM = subjectDOM.appendHTML('<div class="child-a"></div>')
+        const childBHTML = '<div class="child-b"></div>'
+
+        test.assert(subjectDOM.children().length === 1)
+        test.assert(subjectDOM.children().first.hasClass('child-a') === true)
+
+        const beforeHTMLDOM = childADOM.beforeHTML(childBHTML)
+        test.assert(subjectDOM.children().length === 2)
+        test.assert(subjectDOM.children().first.hasClass('child-b') === true)
+        test.assert(beforeHTMLDOM.isRomoDOM)
+
+        subjectDOM.remove()
+      })
+
+      tests.test('<code>after</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject"></div>')
+        const childADOM = subjectDOM.appendHTML('<div class="child-a"></div>')
+        const childBDOM = Romo.dom(Romo.elements('<div class="child-b"></div>'))
+
+        test.assert(subjectDOM.children().length === 1)
+        test.assert(subjectDOM.children().first.hasClass('child-a') === true)
+
+        const afterDOM = childADOM.after(childBDOM)
+        test.assert(subjectDOM.children().length === 2)
+        test.assert(subjectDOM.children().last.hasClass('child-b') === true)
+        test.assert(afterDOM.isRomoDOM)
+
+        subjectDOM.remove()
+      })
+
+      tests.test('<code>afterHTML</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        const subjectDOM = supportDOM.appendHTML('<div class="subject"></div>')
+        const childADOM = subjectDOM.appendHTML('<div class="child-a"></div>')
+        const childBHTML = '<div class="child-b"></div>'
+
+        test.assert(subjectDOM.children().length === 1)
+        test.assert(subjectDOM.children().first.hasClass('child-a') === true)
+
+        const afterHTMLDOM = childADOM.afterHTML(childBHTML)
+        test.assert(subjectDOM.children().length === 2)
+        test.assert(subjectDOM.children().last.hasClass('child-b') === true)
+        test.assert(afterHTMLDOM.isRomoDOM)
+
+        subjectDOM.remove()
       })
     })
   })

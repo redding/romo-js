@@ -207,6 +207,7 @@ Romo.define =
       Romo.namespace(namespaceString, function(ns) {
         ns[objectName] = objectFunction()
         ns[objectName].prototype.class = ns[objectName]
+        ns[objectName].prototype.className = namespacedObjectName
         ns[objectName].wrap = Romo.wrapMethod(ns[objectName])
 
         if (object) {
@@ -315,7 +316,7 @@ Romo.setData =
 
 Romo.rmData =
   function(elements, dataName) {
-    Romo.rmAttr(elements, `data-${dataName}`)
+    return Romo.rmAttr(elements, `data-${dataName}`)
   }
 
 Romo.style =
@@ -365,7 +366,7 @@ Romo.addClass =
     return elements
   }
 
-Romo.removeClass =
+Romo.rmClass =
   function(elements, className) {
     const splitClassNames =
       className.split(' ').filter(function(n) { return n })
@@ -419,7 +420,7 @@ Romo.rect =
 Romo.height =
   function(element) {
     var heightPx = Romo.rect(element).height
-    if (heightPx === 0) {
+    if (heightPx === 0 && Romo.dom(element).firstElement) {
       heightPx = parseInt(Romo.css(element, 'height'), 10)
     }
     if (isNaN(heightPx)) {
@@ -432,7 +433,7 @@ Romo.height =
 Romo.width =
   function(element) {
     var widthPx = Romo.rect(element).width
-    if (widthPx === 0) {
+    if (widthPx === 0 && Romo.dom(element).firstElement) {
       widthPx = parseInt(Romo.css(element, 'width'), 10)
     }
     if (isNaN(widthPx)) {
@@ -534,6 +535,8 @@ Romo.on =
     Romo.dom(elements).forEach(Romo.bind(function(element) {
       Romo.env.addEventListener(element, eventName, listenerFn)
     }, this))
+
+    return elements
   }
 
 Romo.off =
@@ -541,6 +544,8 @@ Romo.off =
     Romo.dom(elements).forEach(Romo.bind(function(element) {
       Romo.env.removeEventListener(element, eventName, eventHandlerFn)
     }, this))
+
+    return elements
   }
 
 Romo.trigger =
@@ -549,8 +554,12 @@ Romo.trigger =
       new CustomEvent(customEventName, { bubbles: false, detail: args })
 
     Romo.dom(elements).forEach(function(element) {
-      element.dispatchEvent(event)
+      // Use pushFn to make event dispatches asynchronous like "native" events
+      // (`dispatchEvent` runs event handlers synchronously).
+      Romo.pushFn(function() { element.dispatchEvent(event) })
     })
+
+    return elements
   }
 
 Romo.proxyEvent =
@@ -586,6 +595,16 @@ Romo.delayFn =
   }
 
 },{}],7:[function(require,module,exports){
+Romo.setInnerText =
+  function(element, value) {
+    Romo.dom(element).firstElement.innerText = value || ''
+  }
+
+Romo.setInnerHTML =
+  function(element, value) {
+    Romo.dom(element).firstElement.innerHTML = value || ''
+  }
+
 Romo.remove =
   function(elements) {
     return Romo.dom(elements).map(function(element) {
@@ -652,7 +671,7 @@ Romo.updateHTML =
 Romo.updateText =
   function(element, textString) {
     const dom = Romo.dom(element)
-    dom.firstElement.innerText = textString
+    dom.innerText = textString
     return dom.firstElement
   }
 
@@ -815,6 +834,16 @@ Romo.find =
     )
   }
 
+Romo.innerText =
+  function(element) {
+    return Romo.dom(element).firstElement.innerText
+  }
+
+Romo.innerHTML =
+  function(element) {
+    return Romo.dom(element).firstElement.innerHTML
+  }
+
 Romo.is =
   function(element, selector) {
     return Romo.dom(element).firstElement.matches(selector)
@@ -843,13 +872,13 @@ Romo.parents =
     var parentElement = Romo.parent(Romo.dom(childElement).firstElement)
     if (parentElement && parentElement !== document) {
       if (!selector || Romo.is(parentElement, selector)) {
-        if (Romo.is(parentElement, 'body')) {
+        if (Romo.is(parentElement, 'html')) {
           return [parentElement]
         } else {
           return [parentElement].concat(Romo.parents(parentElement, selector))
         }
       } else {
-        if (Romo.is(parentElement, 'body')) {
+        if (Romo.is(parentElement, 'html')) {
           return []
         } else {
           return Romo.parents(parentElement, selector)
@@ -889,7 +918,7 @@ Romo.scrollableParents =
 
 Romo.closest =
   function(fromElement, selector) {
-    return Romo.dom(fromElement).closest(selector)
+    return Romo.dom(fromElement).firstElement.closest(selector)
   }
 
 Romo.siblings =
@@ -1074,19 +1103,19 @@ Romo.define('Romo.AutoInit', function() {
 
     find(parentElements, selector) {
       return (
-        Romo
-          .array(parentElements)
-          .filter(function(onElement) {
-            return Romo.is(onElement, selector)
-          })
-          .concat(Romo.find(parentElements, selector))
+        Romo.dom(
+          Romo
+            .dom(parentElements)
+            .filter(function(parentDOM) { return Romo.is(parentDOM, selector) })
+            .concat(Romo.find(parentElements, selector))
+        )
       )
     }
 
     applyTo(elements) {
       for (var selector in this.componentClasses) {
         this.find(elements, selector).forEach(Romo.bind(function(element) {
-          new this.componentClasses[selector](element)
+          new this.componentClasses[selector](Romo.dom(element))
         }, this))
       }
       return elements
@@ -1098,7 +1127,17 @@ Romo.define('Romo.AutoInit', function() {
 Romo.define('Romo.DOM', function() {
   return class {
     constructor(elements) {
-      this.elements = Romo.array(elements)
+      // Accespt nested Romo.DOM instances and flatten to a list of elements.
+      this.elements =
+        Romo
+          .array(elements)
+          .reduce(function(acc, element) {
+            if (element) {
+              return acc.concat(element.isRomoDOM ? element.elements : [element])
+            } else {
+              return acc
+            }
+          }, [])
     }
 
     get isRomoDOM() {
@@ -1113,6 +1152,30 @@ Romo.define('Romo.DOM', function() {
       return this.elements[0]
     }
 
+    get lastElement() {
+      return this.elements[this.elements.length - 1]
+    }
+
+    get first() {
+      return Romo.dom(this.firstElement)
+    }
+
+    get last() {
+      return Romo.dom(this.lastElement)
+    }
+
+    reverse() {
+      return Romo.dom(this.elements.reverse())
+    }
+
+    filter(fn) {
+      return Romo.dom(this.elements.filter(fn))
+    }
+
+    concat(elements) {
+      return Romo.dom(this.elements.concat(Romo.dom(elements).elements))
+    }
+
     forEach(fn) {
       this.elements.forEach(fn)
     }
@@ -1122,7 +1185,7 @@ Romo.define('Romo.DOM', function() {
     }
 
     reverseMap(fn) {
-      return this.elements.reverse().map(fn)
+      return this.reverse().map(fn)
     }
 
     reduce(fn, acc) {
@@ -1179,8 +1242,8 @@ Romo.define('Romo.DOM', function() {
       return Romo.dom(Romo.addClass(this, className))
     }
 
-    removeClass(className) {
-      return Romo.dom(Romo.removeClass(this, className))
+    rmClass(className) {
+      return Romo.dom(Romo.rmClass(this, className))
     }
 
     toggleClass(className) {
@@ -1207,8 +1270,8 @@ Romo.define('Romo.DOM', function() {
       return Romo.width(this)
     }
 
-    offset() {
-      return Romo.offset(this)
+    offset(relativeToElement) {
+      return Romo.offset(this, relativeToElement)
     }
 
     scrollTop() {
@@ -1232,6 +1295,14 @@ Romo.define('Romo.DOM', function() {
     }
 
     // DOM query API method proxies
+
+    get innerText() {
+      return Romo.innerText(this)
+    }
+
+    get innerHTML() {
+      return Romo.innerHTML(this)
+    }
 
     is(selector) {
       return Romo.is(this, selector)
@@ -1274,6 +1345,14 @@ Romo.define('Romo.DOM', function() {
     }
 
     // DOM mutate API method proxies
+
+    set innerText(value) {
+      return Romo.setInnerText(this, value)
+    }
+
+    set innerHTML(value) {
+      return Romo.setInnerHTML(this, value)
+    }
 
     remove() {
       return Romo.dom(Romo.remove(this))
@@ -1342,15 +1421,15 @@ Romo.define('Romo.DOM', function() {
     // DOM events API method proxies
 
     on(eventName, eventHandlerFn) {
-      return Romo.on(this, eventName, eventHandlerFn)
+      return Romo.dom(Romo.on(this, eventName, eventHandlerFn))
     }
 
     off(eventName, eventHandlerFn) {
-      return Romo.off(this, eventName, eventHandlerFn)
+      return Romo.dom(Romo.off(this, eventName, eventHandlerFn))
     }
 
     trigger(customEventName, args) {
-      return Romo.triger(this, customEventName, args)
+      return Romo.dom(Romo.trigger(this, customEventName, args))
     }
   }
 })
