@@ -15,7 +15,9 @@ require("./api/dom_mutate.js");
 
 require("./api/dom_query.js");
 
-},{"./api/array.js":2,"./api/bind.js":3,"./api/define.js":4,"./api/dom_attributes.js":5,"./api/dom_events.js":6,"./api/dom_mutate.js":7,"./api/dom_query.js":8}],2:[function(require,module,exports){
+require("./api/xhr.js");
+
+},{"./api/array.js":2,"./api/bind.js":3,"./api/define.js":4,"./api/dom_attributes.js":5,"./api/dom_events.js":6,"./api/dom_mutate.js":7,"./api/dom_query.js":8,"./api/xhr.js":9}],2:[function(require,module,exports){
 /* eslint-disable no-multi-spaces */
 Romo.array =
   function(value) {
@@ -957,6 +959,17 @@ Romo.next =
   }
 
 },{}],9:[function(require,module,exports){
+Romo.xhr =
+  function(...args) {
+    return new Romo.XMLHttpRequest(...args).doSend()
+  }
+
+Romo.urlSearch =
+  function(...args) {
+    return new Romo.URLSearchParams(...args).toString()
+  }
+
+},{}],10:[function(require,module,exports){
 if (window.Romo === undefined) {
   window.Romo = {}
 }
@@ -1061,7 +1074,7 @@ Romo.addAutoInitSelector =
 
 Romo.env = new RomoEnv()
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 "use strict";
 
 require("./env.js");
@@ -1072,7 +1085,7 @@ require("./utilities.js");
 
 Romo.setup();
 
-},{"./api.js":1,"./env.js":9,"./utilities.js":11}],11:[function(require,module,exports){
+},{"./api.js":1,"./env.js":10,"./utilities.js":12}],12:[function(require,module,exports){
 "use strict";
 
 require("./utilities/auto_init.js");
@@ -1081,7 +1094,11 @@ require("./utilities/dom.js");
 
 require("./utilities/event_listeners.js");
 
-},{"./utilities/auto_init.js":12,"./utilities/dom.js":13,"./utilities/event_listeners.js":14}],12:[function(require,module,exports){
+require("./utilities/url_search_params.js");
+
+require("./utilities/xml_http_request.js");
+
+},{"./utilities/auto_init.js":13,"./utilities/dom.js":14,"./utilities/event_listeners.js":15,"./utilities/url_search_params.js":16,"./utilities/xml_http_request.js":17}],13:[function(require,module,exports){
 Romo.define('Romo.AutoInit', function() {
   return class {
     constructor() {
@@ -1123,7 +1140,7 @@ Romo.define('Romo.AutoInit', function() {
   }
 })
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 Romo.define('Romo.DOM', function() {
   return class {
     constructor(elements) {
@@ -1434,7 +1451,7 @@ Romo.define('Romo.DOM', function() {
   }
 })
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 Romo.define('Romo.EventListeners', function() {
   return class {
     constructor() {
@@ -1476,4 +1493,280 @@ Romo.define('Romo.EventListeners', function() {
   }
 })
 
-},{}]},{},[10]);
+},{}],16:[function(require,module,exports){
+// new Romo.URLSearchParams({}).toString()
+//   #=> ""
+// new Romo.URLSearchParams({ a: 2, b: 'three', c: 4 }).toString()
+//   #=> "a=2&b=three&c=4"
+// new Romo.URLSearchParams({ a: [ 2, 3, 4 ] }).toString()
+//   #=> "a=2%2C3%2C4"
+// new Romo.URLSearchParams({ a: [ 2, 3, 4 ] }, { decode: true }).toString()
+//   #=> "a=2,3,4"
+// new Romo.URLSearchParams({ "a[]": [ 2, 3, 4 ] }, { decode: true }).toString()
+//   #=> "a[]=2&a[]=3&a[]=4"
+// new Romo.URLSearchParams({ a: 2, b: '', c: 4 }).toString()
+//   #=> "a=2&b=&c=4"
+// new Romo.URLSearchParams({ a: 2, b: ' ', c: 4 }, { removeBlanks: true }).toString()
+//   #=> "a=2&c=4"
+// new Romo.URLSearchParams({ "a[]": [''], { decode: true } }).toString()
+//   #=> "a[]="
+// new Romo.URLSearchParams({ "a[]": [''], { decode: true, removeBlanks: true } }).toString()
+//   #=> ""
+Romo.define('Romo.URLSearchParams', function() {
+  return class {
+    constructor(data, { removeBlanks, decode } = {}) {
+      this.data = data || {}
+      this.removeBlanks = removeBlanks
+      this.decode = decode
+    }
+
+    get urlSearchParams() {
+      return Romo.memoize(this, 'urlSearchParams', function() {
+        const urlSearchParams = new URLSearchParams()
+
+        for (var name in this.data) {
+          const value = this.data[name]
+          if (
+            name.match(/.+\[\]$/) &&
+            Array.isArray(value) &&
+            value.length > 0
+          ) {
+            value.forEach(Romo.bind(function(valueItem) {
+              this._appendValue(urlSearchParams, name, valueItem)
+            }, this))
+          } else {
+            this._appendValue(urlSearchParams, name, value)
+          }
+        }
+
+        return urlSearchParams
+      })
+    }
+
+    keys() {
+      return this.urlSearchParams.keys()
+    }
+
+    get(key) {
+      return this.urlSearchParams.get(key)
+    }
+
+    toString() {
+      if (this.decode) {
+        return window.decodeURIComponent(this.urlSearchParams.toString())
+      } else {
+        return this.urlSearchParams.toString()
+      }
+    }
+
+    // private
+
+    _appendValue(urlSearchParams, name, value) {
+      const valueString = value.toString().trim()
+
+      if (this.removeBlanks && valueString === '') {
+        return
+      }
+      urlSearchParams.append(name, value)
+    }
+  }
+})
+
+},{}],17:[function(require,module,exports){
+Romo.define('Romo.XMLHttpRequest', function() {
+  return class {
+    constructor({
+      url,
+      method,
+      data,
+      onSuccess,
+      onError,
+      headers,
+      contentType,
+      responseType,
+      username,
+      password,
+    } = {}) {
+      this.method = method
+      this.url = url
+      this.data = new Romo.XMLHttpRequest.Data(data)
+      this.onSuccess = onSuccess
+      this.onError = onError
+      this.headers = headers
+      this.contentType = contentType
+      this.responseType = responseType
+      this.username = username
+      this.password = password
+    }
+
+    static get GET() {
+      return 'GET'
+    }
+
+    static get defaultXHRMethod() {
+      return this.GET
+    }
+
+    static get defaultURL() {
+      return window.location.toString()
+    }
+
+    static get sendAsynchronously() {
+      return true
+    }
+
+    get isNonTextResponseType() {
+      return (
+        this.responseType === 'arraybuffer' ||
+        this.responseType === 'blob' ||
+        this.responseType === 'document' ||
+        this.responseType === 'json'
+      )
+    }
+
+    get xhrMethod() {
+      return Romo.memoize(this, 'xhrMethod', function() {
+        return (this.method || this.class.defaultXHRMethod).toUpperCase()
+      })
+    }
+
+    get xhrURL() {
+      return Romo.memoize(this, 'xhrURL', function() {
+        return (
+          this.data.toXHRURL(
+            this.url || this.class.defaultURL,
+            { method: this.xhrMethod },
+          )
+        )
+      })
+    }
+
+    get xhrData() {
+      return Romo.memoize(this, 'xhrData', function() {
+        return this.data.toXHRData({ method: this.xhrMethod })
+      })
+    }
+
+    get xhr() {
+      return Romo.memoize(this, 'xhr', function() {
+        const xhr = new XMLHttpRequest()
+
+        xhr.open(
+          this.xhrMethod,
+          this.xhrURL,
+          this.class.sendAsynchronously,
+          this.username,
+          this.password,
+        )
+
+        for (var name in this.headers) {
+          xhr.setRequestHeader(name, this.headers[name])
+        }
+
+        if (this.contentType) {
+          xhr.setRequestHeader('Content-Type', this.contentType)
+        }
+
+        if (this.isNonTextResponseType) {
+          xhr.responseType = this.responseType
+        }
+
+        xhr.onreadystatechange = Romo.bind(this._onReadyStateChange, this)
+
+        return xhr
+      })
+    }
+
+    doSend() {
+      this.xhr.send(this.xhrData)
+
+      return this
+    }
+
+    doAbort() {
+      this.xhr.abort()
+
+      return this
+    }
+
+    // private
+
+    _onReadyStateChange() {
+      if (this.xhr.readyState === XMLHttpRequest.DONE) {
+        if (
+          this.onSuccess &&
+          (
+            (this.xhr.status >= 200 && this.xhr.status < 300) ||
+            this.xhr.status === 304
+          )
+        ) {
+          if (this.isNonTextResponseType) {
+            this.onSuccess(this.xhr.response, this.xhr.status, this.xhr)
+          } else {
+            this.onSuccess(this.xhr.responseText, this.xhr.status, this.xhr)
+          }
+        } else if (this.onError) {
+          this.onError(this.xhr.statusText || null, this.xhr.status, this.xhr)
+        }
+      }
+    }
+  }
+})
+
+Romo.define('Romo.XMLHttpRequest.Data', function() {
+  return class {
+    constructor(data) {
+      this.data = data || {}
+    }
+
+    get length() {
+      return Object.keys(this.data).length
+    }
+
+    get formData() {
+      return Romo.memoize(this, 'formData', function() {
+        const formData = new FormData()
+        for (var name in this.data) {
+          Romo.array(this.data[name]).forEach(function(value) {
+            formData.append(name, value)
+          })
+        }
+      })
+    }
+
+    get urlSearchParams() {
+      return Romo.memoize(this, 'urlSearchParams', function() {
+        return new Romo.URLSearchParams(this.data)
+      })
+    }
+
+    toXHRURL(urlString, { method } = {}) {
+      const url = new URL(urlString)
+
+      if (method === Romo.XMLHttpRequest.GET) {
+        const combinedSearchParams =
+          [url.searchParams, this.urlSearchParams]
+            .reduce(function(acc, searchParams) {
+              for (var key of searchParams.keys()) {
+                acc.append(key, searchParams.get(key))
+              }
+              return acc
+            }, new URLSearchParams())
+
+        url.search = combinedSearchParams.toString()
+      }
+
+      return url.toString()
+    }
+
+    toXHRData({ method } = {}) {
+      if (method === Romo.XMLHttpRequest.GET || this.length === 0) {
+        return undefined
+      } else {
+        return this.formData
+      }
+    }
+  }
+})
+
+},{}]},{},[11]);
