@@ -1003,6 +1003,38 @@
         test.fail()
       })
     })
+
+    tests.group('Queue', function() {
+      tests.test('Given no NullItem', function(test) {
+        const queue = new Romo.Queue()
+        var item
+
+        test.assert(queue.size === 0)
+        test.assert(queue.isEmpty === true)
+        test.assert(queue.peek() === undefined)
+        test.assert(queue.dequeue() === undefined)
+
+        queue.enqueue('value')
+        test.assert(queue.size === 1)
+        test.assert(queue.isEmpty === false)
+        test.assert(queue.peek() === 'value')
+        test.assert(queue.dequeue() === 'value')
+        test.assert(queue.isEmpty === true)
+
+        queue.enqueue('value').clear()
+        test.assert(queue.isEmpty === true)
+      })
+
+      tests.test('Given a NullItem', function(test) {
+        const queue = new Romo.Queue('null value')
+        var item
+
+        test.assert(queue.size === 0)
+        test.assert(queue.isEmpty === true)
+        test.assert(queue.peek() === undefined)
+        test.assert(queue.dequeue() === 'null value')
+      })
+    })
   })
 </script>
 </html>

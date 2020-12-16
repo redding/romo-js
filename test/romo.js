@@ -1094,11 +1094,13 @@ require("./utilities/dom.js");
 
 require("./utilities/event_listeners.js");
 
+require("./utilities/queue.js");
+
 require("./utilities/url_search_params.js");
 
 require("./utilities/xml_http_request.js");
 
-},{"./utilities/auto_init.js":13,"./utilities/dom.js":14,"./utilities/event_listeners.js":15,"./utilities/url_search_params.js":16,"./utilities/xml_http_request.js":17}],13:[function(require,module,exports){
+},{"./utilities/auto_init.js":13,"./utilities/dom.js":14,"./utilities/event_listeners.js":15,"./utilities/queue.js":16,"./utilities/url_search_params.js":17,"./utilities/xml_http_request.js":18}],13:[function(require,module,exports){
 Romo.define('Romo.AutoInit', function() {
   return class {
     constructor() {
@@ -1494,6 +1496,52 @@ Romo.define('Romo.EventListeners', function() {
 })
 
 },{}],16:[function(require,module,exports){
+// Romo.Queue is a basic Queue implementation that optionally supports the
+// Null Object Pattern.
+//
+// This is just a thin wrapper around Array to implement the classic Queue API.
+Romo.define('Romo.Queue', function() {
+  return class {
+    constructor(nullItem) {
+      this.nullItem = nullItem
+      this._array = []
+    }
+
+    get size() {
+      return this._array.length
+    }
+
+    get isEmpty() {
+      return this._array.length === 0
+    }
+
+    enqueue(item) {
+      this._array.push(item)
+
+      return this
+    }
+
+    dequeue() {
+      if (this.isEmpty) return this.nullItem
+
+      return this._array.shift()
+    }
+
+    peek() {
+      if (this.isEmpty) return undefined
+
+      return this._array[0]
+    }
+
+    clear() {
+      this._array = []
+
+      return this
+    }
+  }
+})
+
+},{}],17:[function(require,module,exports){
 // new Romo.URLSearchParams({}).toString()
 //   #=> ""
 // new Romo.URLSearchParams({ a: 2, b: 'three', c: 4 }).toString()
@@ -1572,7 +1620,7 @@ Romo.define('Romo.URLSearchParams', function() {
   }
 })
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 Romo.define('Romo.XMLHttpRequest', function() {
   return class {
     constructor({
