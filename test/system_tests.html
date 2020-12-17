@@ -74,7 +74,11 @@
         this.dom.addClass('pass').rmClass('fail')
       }
 
-      fail() {
+      fail(message) {
+        if (message) {
+          this.unstubConsoleError()
+          console.error(message)
+        }
         this.dom.addClass('fail').rmClass('pass')
       }
 
@@ -478,7 +482,7 @@
       })
 
       tests.test('Unbind an event', function(test) {
-        const handlerFn = function(e) { test.fail() }
+        const handlerFn = function(e) { test.fail('event did not unbind') }
 
         test
           .dom
@@ -1059,6 +1063,10 @@
 
     tests.group('API: <code>Romo.xhr</code>', function() {
       tests.test('Given no method, no responseType', function(test) {
+        // expect an onSuccess handler to pass the test, fail if it isn't invoked
+        test.fail()
+
+        const lifecycleEvents = []
         const romoXHR =
           Romo.xhr({
             url: 'https://api.github.com/repos/redding/romo-js?some=value',
@@ -1067,45 +1075,107 @@
             },
             onSuccess:
               Romo.bind(function(data, status, xhr) {
-                test.run(function() {
-                  test.assert(typeof data === 'string')
-                  test.assert(status === 200)
-                  test.assert(xhr === romoXHR.xhr)
-                })
+                lifecycleEvents.push('onSuccess')
+                Romo.pushFn(Romo.bind(function() {
+                  test.run(function() {
+                    test.assert(typeof data === 'string')
+                    test.assert(status === 200)
+                    test.assert(xhr === romoXHR.xhr)
+
+                    test.assert(lifecycleEvents.length === 4)
+                    test.assert(lifecycleEvents[0] === 'onCallStart')
+                    test.assert(lifecycleEvents[1] === 'onProgress')
+                    test.assert(lifecycleEvents[2] === 'onSuccess')
+                    test.assert(lifecycleEvents[3] === 'onCallEnd')
+                  })
+                }, this))
               }, this),
             onError:
-              Romo.bind(function(errorMsg, status, xhr) {
-                test.fail()
+              Romo.bind(function(statusMsg, status, xhr) {
+                test.fail('xhr error')
+              }, this),
+            onAbort:
+              Romo.bind(function(statusMsg, status, xhr) {
+                test.fail('xhr abort')
+              }, this),
+            onTimeout:
+              Romo.bind(function(statusMsg, status, xhr) {
+                test.fail('xhr timeout')
+              }, this),
+            onCallStart:
+              Romo.bind(function(xhr) {
+                lifecycleEvents.push('onCallStart')
+              }, this),
+            onCallEnd:
+              Romo.bind(function(xhr) {
+                lifecycleEvents.push('onCallEnd')
+              }, this),
+            onProgress:
+              Romo.bind(function(xhr) {
+                lifecycleEvents.push('onProgress')
               }, this),
           })
-
-        // expect an onSuccess handler to pass the test, fail if it isn't invoked
-        test.fail()
       })
 
       tests.test('Given json responseType', function(test) {
-        const romoXHR =
-          Romo.xhr({
-            url: 'https://api.github.com/repos/redding/romo-js',
+        // expect an onSuccess handler to pass the test, fail if it isn't invoked
+        test.fail()
+
+        Romo.xhr({
+          url: 'https://api.github.com/repos/redding/romo-js?some=value',
+          data: {
+            other: 'value'
+          },
+          responseType: 'json',
+          onSuccess:
+            Romo.bind(function(data, status, xhr) {
+              test.run(function() {
+                test.assert(typeof data === 'object')
+              })
+            }, this),
+          onError:
+            Romo.bind(function(statusMsg, status, xhr) {
+              test.fail('xhr error')
+            }, this),
+          onAbort:
+            Romo.bind(function(statusMsg, status, xhr) {
+              test.fail('xhr abort')
+            }, this),
+          onTimeout:
+            Romo.bind(function(statusMsg, status, xhr) {
+              test.fail('xhr timeout')
+            }, this),
+        })
+      })
+
+      tests.test('Given an aborted call', function(test) {
+        // expect an onSuccess handler to pass the test, fail if it isn't invoked
+        test.fail()
+
+        Romo
+          .xhr({
+            url: 'https://api.github.com/repos/redding/romo-js?some=value',
             data: {
               other: 'value'
             },
-            responseType:
-              'json',
             onSuccess:
               Romo.bind(function(data, status, xhr) {
-                test.run(function() {
-                  test.assert(typeof data === 'object')
-                })
+                test.fail('xhr success')
               }, this),
             onError:
-              Romo.bind(function(errorMsg, status, xhr) {
-                test.fail()
+              Romo.bind(function(statusMsg, status, xhr) {
+                test.fail('xhr error')
+              }, this),
+            onAbort:
+              Romo.bind(function(statusMsg, status, xhr) {
+                test.pass()
+              }, this),
+            onTimeout:
+              Romo.bind(function(statusMsg, status, xhr) {
+                test.fail('xhr timeout')
               }, this),
           })
-
-        // expect an onSuccess handler to pass the test, fail if it isn't invoked
-        test.fail()
+          .doAbort()
       })
     })
 
