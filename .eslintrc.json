@@ -29,7 +29,7 @@
       "objects": "always-multiline",
       "imports": "always-multiline",
       "exports": "always-multiline",
-      "functions": "never"
+      "functions": "only-multiline"
     }],
 
     // This enforces using `===` and `!==` except for comparing two literal
