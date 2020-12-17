@@ -1,2 +1,4 @@
 #!/bin/bash
-./node_modules/.bin/browserify -p esmify ./lib/romo.js > ./test/romo.js && open ./test/system_tests.html
+./bin/cp-source-for-tests &&
+./bin/start-tests-webserver &&
+open "http://localhost:7666/system_tests.html"
