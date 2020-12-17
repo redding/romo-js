@@ -15,9 +15,11 @@ require("./api/dom_mutate.js");
 
 require("./api/dom_query.js");
 
+require("./api/page.js");
+
 require("./api/xhr.js");
 
-},{"./api/array.js":2,"./api/bind.js":3,"./api/define.js":4,"./api/dom_attributes.js":5,"./api/dom_events.js":6,"./api/dom_mutate.js":7,"./api/dom_query.js":8,"./api/xhr.js":9}],2:[function(require,module,exports){
+},{"./api/array.js":2,"./api/bind.js":3,"./api/define.js":4,"./api/dom_attributes.js":5,"./api/dom_events.js":6,"./api/dom_mutate.js":7,"./api/dom_query.js":8,"./api/page.js":9,"./api/xhr.js":10}],2:[function(require,module,exports){
 /* eslint-disable no-multi-spaces */
 Romo.array =
   function(value) {
@@ -959,6 +961,64 @@ Romo.next =
   }
 
 },{}],9:[function(require,module,exports){
+Romo.reloadPage =
+  function() {
+    window.location.reload()
+  }
+
+Romo.redirectPage =
+  function(redirectUrl) {
+    window.location = redirectUrl
+  }
+
+// Override as desired.
+Romo.alert =
+  function(alertMessage, { debugMessages, callbackFn } = {}) {
+    var message = alertMessage
+    var debugs = Romo.array(debugMessages)
+
+    if (debugMessages && debugs.length !== 0) {
+      message += `:\n${debugs.join('\n')}`
+    }
+
+    console.error(message)
+
+    if (callbackFn) {
+      callbackFn()
+    }
+  }
+
+Romo.alertAndReloadPage =
+  function(alertMessage, { debugMessages } = {}) {
+    Romo.alert(
+      alertMessage,
+      {
+        debugMessages: debugMessages,
+        callbackFn:    function() { Romo.reloadPage() },
+      },
+    )
+  }
+
+// Override as desired.
+Romo.showFlashAlerts =
+  function(flashAlertObjects) {
+    Romo.alert(
+      Romo
+        .array(flashAlertObjects)
+        .map(function(flashAlertObject) {
+          return new Romo.FlashAlert(flashAlertObject)
+        })
+        .filter(function(flashAlert) {
+          return flashAlert.isMessagePresent
+        })
+        .map(function(flashAlert) {
+          return flashAlert.toString()
+        })
+        .join('\n')
+    )
+  }
+
+},{}],10:[function(require,module,exports){
 Romo.xhr =
   function(...args) {
     return new Romo.XMLHttpRequest(...args).doSend()
@@ -969,7 +1029,7 @@ Romo.urlSearch =
     return new Romo.URLSearchParams(...args).toString()
   }
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 if (window.Romo === undefined) {
   window.Romo = {}
 }
@@ -1074,7 +1134,7 @@ Romo.addAutoInitSelector =
 
 Romo.env = new RomoEnv()
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 "use strict";
 
 require("./env.js");
@@ -1085,7 +1145,7 @@ require("./utilities.js");
 
 Romo.setup();
 
-},{"./api.js":1,"./env.js":10,"./utilities.js":12}],12:[function(require,module,exports){
+},{"./api.js":1,"./env.js":11,"./utilities.js":13}],13:[function(require,module,exports){
 "use strict";
 
 require("./utilities/auto_init.js");
@@ -1094,11 +1154,15 @@ require("./utilities/dom.js");
 
 require("./utilities/event_listeners.js");
 
+require("./utilities/flash_alert.js");
+
+require("./utilities/queue.js");
+
 require("./utilities/url_search_params.js");
 
 require("./utilities/xml_http_request.js");
 
-},{"./utilities/auto_init.js":13,"./utilities/dom.js":14,"./utilities/event_listeners.js":15,"./utilities/url_search_params.js":16,"./utilities/xml_http_request.js":17}],13:[function(require,module,exports){
+},{"./utilities/auto_init.js":14,"./utilities/dom.js":15,"./utilities/event_listeners.js":16,"./utilities/flash_alert.js":17,"./utilities/queue.js":18,"./utilities/url_search_params.js":19,"./utilities/xml_http_request.js":20}],14:[function(require,module,exports){
 Romo.define('Romo.AutoInit', function() {
   return class {
     constructor() {
@@ -1140,7 +1204,7 @@ Romo.define('Romo.AutoInit', function() {
   }
 })
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 Romo.define('Romo.DOM', function() {
   return class {
     constructor(elements) {
@@ -1451,7 +1515,7 @@ Romo.define('Romo.DOM', function() {
   }
 })
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 Romo.define('Romo.EventListeners', function() {
   return class {
     constructor() {
@@ -1493,7 +1557,78 @@ Romo.define('Romo.EventListeners', function() {
   }
 })
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
+Romo.define('Romo.FlashAlert', function() {
+  return class {
+    constructor(alertObject) {
+      this.alertType = alertObject.alertType
+      this.message = String(alertObject.message || '').trim()
+    }
+
+    static forXHR(xhr) {
+      return new this({
+        alertType: xhr.getResponseHeader('X-Message-Type'),
+        message:   xhr.getResponseHeader('X-Message'),
+      })
+    }
+
+    get isMessagePresent() {
+      return this.message.length !== 0
+    }
+
+    toString() {
+      return `[${this.alertType}] ${this.message}`.trim()
+    }
+  }
+})
+
+},{}],18:[function(require,module,exports){
+// Romo.Queue is a basic Queue implementation that optionally supports the
+// Null Object Pattern.
+//
+// This is just a thin wrapper around Array to implement the classic Queue API.
+Romo.define('Romo.Queue', function() {
+  return class {
+    constructor(nullItem) {
+      this.nullItem = nullItem
+      this._array = []
+    }
+
+    get size() {
+      return this._array.length
+    }
+
+    get isEmpty() {
+      return this._array.length === 0
+    }
+
+    enqueue(item) {
+      this._array.push(item)
+
+      return this
+    }
+
+    dequeue() {
+      if (this.isEmpty) return this.nullItem
+
+      return this._array.shift()
+    }
+
+    peek() {
+      if (this.isEmpty) return undefined
+
+      return this._array[0]
+    }
+
+    clear() {
+      this._array = []
+
+      return this
+    }
+  }
+})
+
+},{}],19:[function(require,module,exports){
 // new Romo.URLSearchParams({}).toString()
 //   #=> ""
 // new Romo.URLSearchParams({ a: 2, b: 'three', c: 4 }).toString()
@@ -1572,7 +1707,7 @@ Romo.define('Romo.URLSearchParams', function() {
   }
 })
 
-},{}],17:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 Romo.define('Romo.XMLHttpRequest', function() {
   return class {
     constructor({
@@ -1581,6 +1716,11 @@ Romo.define('Romo.XMLHttpRequest', function() {
       data,
       onSuccess,
       onError,
+      onAbort,
+      onTimeout,
+      onCallStart,
+      onCallEnd,
+      onProgress,
       headers,
       contentType,
       responseType,
@@ -1592,6 +1732,11 @@ Romo.define('Romo.XMLHttpRequest', function() {
       this.data = new Romo.XMLHttpRequest.Data(data)
       this.onSuccess = onSuccess
       this.onError = onError
+      this.onAbort = onAbort
+      this.onTimeout = onTimeout
+      this.onCallStart = onCallStart
+      this.onCallEnd = onCallEnd
+      this.onProgress = onProgress
       this.headers = headers
       this.contentType = contentType
       this.responseType = responseType
@@ -1671,7 +1816,13 @@ Romo.define('Romo.XMLHttpRequest', function() {
           xhr.responseType = this.responseType
         }
 
-        xhr.onreadystatechange = Romo.bind(this._onReadyStateChange, this)
+        xhr.onload = Romo.bind(this._onSuccess, this)
+        xhr.onerror = Romo.bind(this._onError, this)
+        xhr.onabort = Romo.bind(this._onAbort, this)
+        xhr.ontimeout = Romo.bind(this._onTimeout, this)
+        xhr.onloadstart = Romo.bind(this._onCallStart, this)
+        xhr.onloadend = Romo.bind(this._onCallEnd, this)
+        xhr.onprogress = Romo.bind(this._onProgress, this)
 
         return xhr
       })
@@ -1690,24 +1841,49 @@ Romo.define('Romo.XMLHttpRequest', function() {
     }
 
     // private
-
-    _onReadyStateChange() {
-      if (this.xhr.readyState === XMLHttpRequest.DONE) {
-        if (
-          this.onSuccess &&
-          (
-            (this.xhr.status >= 200 && this.xhr.status < 300) ||
-            this.xhr.status === 304
-          )
-        ) {
-          if (this.isNonTextResponseType) {
-            this.onSuccess(this.xhr.response, this.xhr.status, this.xhr)
-          } else {
-            this.onSuccess(this.xhr.responseText, this.xhr.status, this.xhr)
-          }
-        } else if (this.onError) {
-          this.onError(this.xhr.statusText || null, this.xhr.status, this.xhr)
+    _onSuccess() {
+      if (this.onSuccess) {
+        if (this.isNonTextResponseType) {
+          this.onSuccess(this.xhr.response, this.xhr.status, this.xhr)
+        } else {
+          this.onSuccess(this.xhr.responseText, this.xhr.status, this.xhr)
         }
+      }
+    }
+
+    _onError() {
+      if (this.onError) {
+        this.onError(this.xhr.statusText, this.xhr.status, this.xhr)
+      }
+    }
+
+    _onAbort() {
+      if (this.onAbort) {
+        this.onAbort(this.xhr.statusText, this.xhr.status, this.xhr)
+      }
+    }
+
+    _onTimeout() {
+      if (this.onTimeout) {
+        this.onTimeout(this.xhr.statusText, this.xhr.status, this.xhr)
+      }
+    }
+
+    _onCallStart() {
+      if (this.onCallStart) {
+        this.onCallStart(this.xhr)
+      }
+    }
+
+    _onCallEnd() {
+      if (this.onCallEnd) {
+        this.onCallEnd(this.xhr)
+      }
+    }
+
+    _onProgress() {
+      if (this.onProgress) {
+        this.onProgress(this.xhr)
       }
     }
   }
@@ -1769,4 +1945,4 @@ Romo.define('Romo.XMLHttpRequest.Data', function() {
   }
 })
 
-},{}]},{},[11]);
+},{}]},{},[12]);

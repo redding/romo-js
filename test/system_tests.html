@@ -55,6 +55,7 @@
         try {
           fn(this)
         } catch (error) {
+          this.unstubConsoleError()
           console.error(error)
           this.fail()
         }
@@ -73,8 +74,30 @@
         this.dom.addClass('pass').rmClass('fail')
       }
 
-      fail() {
+      fail(message) {
+        if (message) {
+          this.unstubConsoleError()
+          console.error(message)
+        }
         this.dom.addClass('fail').rmClass('pass')
+      }
+
+      stubConsoleError() {
+        console.originalErrorFn = console.error.bind(console)
+        console.errorMessages = []
+        console.error =
+          function() {
+            console.errorMessages.push(Array.from(arguments))
+            console.log.apply(console, arguments)
+          }
+      }
+
+      unstubConsoleError() {
+        if (console.originalErrorFn) {
+          console.error = console.originalErrorFn.bind(console)
+          console.errorMessages = undefined
+          console.originalErrorFn = undefined
+        }
       }
     }
   })
@@ -459,7 +482,7 @@
       })
 
       tests.test('Unbind an event', function(test) {
-        const handlerFn = function(e) { test.fail() }
+        const handlerFn = function(e) { test.fail('event did not unbind') }
 
         test
           .dom
@@ -925,6 +948,92 @@
       })
     })
 
+    tests.group('API: Page utilities', function() {
+      tests.test('<code>Romo.reloadPage</code>, <code>Romo.redirectPage</code>', function(test) {
+        test.assert(typeof Romo.reloadPage === 'function')
+        test.assert(typeof Romo.redirectPage === 'function')
+      })
+
+      tests.test('<code>Romo.alert</code>', function(test) {
+        test.stubConsoleError()
+
+        Romo.alert('test alert message')
+        test.assert(console.errorMessages.length === 1)
+        test.assert(console.errorMessages[0][0] === 'test alert message')
+
+        test.unstubConsoleError()
+      })
+
+      tests.test('<code>Romo.alert</code> given empty debugMessages', function(test) {
+        test.stubConsoleError()
+
+        Romo.alert('test alert message', { debugMessages: [] })
+        test.assert(console.errorMessages.length === 1)
+        test.assert(console.errorMessages[0][0] === 'test alert message')
+
+        test.unstubConsoleError()
+      })
+
+      tests.test('<code>Romo.alert</code> given non-empty debugMessages', function(test) {
+        test.stubConsoleError()
+
+        Romo.alert('test alert message', { debugMessages: ['debug 1', 'debug 2'] })
+        test.assert(console.errorMessages.length === 1)
+        test.assert(
+          console.errorMessages[0][0] === 'test alert message:\ndebug 1\ndebug 2'
+        )
+
+        test.unstubConsoleError()
+      })
+
+      tests.test('<code>Romo.alert</code> given callbackFn', function(test) {
+        test.stubConsoleError()
+
+        // Expect the callbackFn to do assertions to make the test pass.
+        test.fail()
+
+        Romo.alert(
+          'test alert message',
+          {
+            callbackFn:
+              function() {
+                test.assert(console.errorMessages.length === 1)
+                test.assert(console.errorMessages[0][0] === 'test alert message')
+              }
+          }
+        )
+
+        test.unstubConsoleError()
+      })
+
+      tests.test('<code>Romo.alertAndReloadPage</code>', function(test) {
+        test.assert(typeof Romo.alertAndReloadPage === 'function')
+      })
+
+      tests.test('<code>Romo.showFlashAlerts</code>', function(test) {
+        test.stubConsoleError()
+
+        const flashAlertObjects =
+          [
+            {
+              alertType: 'notice',
+              message: 'message 1',
+            },
+            {
+              alertType: 'error',
+              message: 'message 2',
+            },
+          ]
+        Romo.showFlashAlerts(flashAlertObjects)
+        test.assert(console.errorMessages.length === 1)
+        test.assert(
+          console.errorMessages[0][0] === '[notice] message 1\n[error] message 2'
+        )
+
+        test.unstubConsoleError()
+      })
+    })
+
     tests.group('API: <code>Romo.urlSearch</code>', function() {
       tests.test('Given a blank Object', function(test) {
         test.assert(Romo.urlSearch() === "")
@@ -954,6 +1063,10 @@
 
     tests.group('API: <code>Romo.xhr</code>', function() {
       tests.test('Given no method, no responseType', function(test) {
+        // expect an onSuccess handler to pass the test, fail if it isn't invoked
+        test.fail()
+
+        const lifecycleEvents = []
         const romoXHR =
           Romo.xhr({
             url: 'https://api.github.com/repos/redding/romo-js?some=value',
@@ -962,45 +1075,184 @@
             },
             onSuccess:
               Romo.bind(function(data, status, xhr) {
-                test.run(function() {
-                  test.assert(typeof data === 'string')
-                  test.assert(status === 200)
-                  test.assert(xhr === romoXHR.xhr)
-                })
+                lifecycleEvents.push('onSuccess')
+                Romo.pushFn(Romo.bind(function() {
+                  test.run(function() {
+                    test.assert(typeof data === 'string')
+                    test.assert(status === 200)
+                    test.assert(xhr === romoXHR.xhr)
+
+                    test.assert(lifecycleEvents.length === 4)
+                    test.assert(lifecycleEvents[0] === 'onCallStart')
+                    test.assert(lifecycleEvents[1] === 'onProgress')
+                    test.assert(lifecycleEvents[2] === 'onSuccess')
+                    test.assert(lifecycleEvents[3] === 'onCallEnd')
+                  })
+                }, this))
               }, this),
             onError:
-              Romo.bind(function(errorMsg, status, xhr) {
-                test.fail()
+              Romo.bind(function(statusMsg, status, xhr) {
+                test.fail('xhr error')
+              }, this),
+            onAbort:
+              Romo.bind(function(statusMsg, status, xhr) {
+                test.fail('xhr abort')
+              }, this),
+            onTimeout:
+              Romo.bind(function(statusMsg, status, xhr) {
+                test.fail('xhr timeout')
+              }, this),
+            onCallStart:
+              Romo.bind(function(xhr) {
+                lifecycleEvents.push('onCallStart')
+              }, this),
+            onCallEnd:
+              Romo.bind(function(xhr) {
+                lifecycleEvents.push('onCallEnd')
+              }, this),
+            onProgress:
+              Romo.bind(function(xhr) {
+                lifecycleEvents.push('onProgress')
               }, this),
           })
-
-        // expect an onSuccess handler to pass the test, fail if it isn't invoked
-        test.fail()
       })
 
       tests.test('Given json responseType', function(test) {
-        const romoXHR =
-          Romo.xhr({
-            url: 'https://api.github.com/repos/redding/romo-js',
+        // expect an onSuccess handler to pass the test, fail if it isn't invoked
+        test.fail()
+
+        Romo.xhr({
+          url: 'https://api.github.com/repos/redding/romo-js?some=value',
+          data: {
+            other: 'value'
+          },
+          responseType: 'json',
+          onSuccess:
+            Romo.bind(function(data, status, xhr) {
+              test.run(function() {
+                test.assert(typeof data === 'object')
+              })
+            }, this),
+          onError:
+            Romo.bind(function(statusMsg, status, xhr) {
+              test.fail('xhr error')
+            }, this),
+          onAbort:
+            Romo.bind(function(statusMsg, status, xhr) {
+              test.fail('xhr abort')
+            }, this),
+          onTimeout:
+            Romo.bind(function(statusMsg, status, xhr) {
+              test.fail('xhr timeout')
+            }, this),
+        })
+      })
+
+      tests.test('Given an aborted call', function(test) {
+        // expect an onSuccess handler to pass the test, fail if it isn't invoked
+        test.fail()
+
+        Romo
+          .xhr({
+            url: 'https://api.github.com/repos/redding/romo-js?some=value',
             data: {
               other: 'value'
             },
-            responseType:
-              'json',
             onSuccess:
               Romo.bind(function(data, status, xhr) {
-                test.run(function() {
-                  test.assert(typeof data === 'object')
-                })
+                test.fail('xhr success')
               }, this),
             onError:
-              Romo.bind(function(errorMsg, status, xhr) {
-                test.fail()
+              Romo.bind(function(statusMsg, status, xhr) {
+                test.fail('xhr error')
+              }, this),
+            onAbort:
+              Romo.bind(function(statusMsg, status, xhr) {
+                test.pass()
+              }, this),
+            onTimeout:
+              Romo.bind(function(statusMsg, status, xhr) {
+                test.fail('xhr timeout')
               }, this),
           })
+          .doAbort()
+      })
+    })
 
-        // expect an onSuccess handler to pass the test, fail if it isn't invoked
-        test.fail()
+    tests.group('Queue', function() {
+      tests.test('Given no NullItem', function(test) {
+        const queue = new Romo.Queue()
+        var item
+
+        test.assert(queue.size === 0)
+        test.assert(queue.isEmpty === true)
+        test.assert(queue.peek() === undefined)
+        test.assert(queue.dequeue() === undefined)
+
+        queue.enqueue('value')
+        test.assert(queue.size === 1)
+        test.assert(queue.isEmpty === false)
+        test.assert(queue.peek() === 'value')
+        test.assert(queue.dequeue() === 'value')
+        test.assert(queue.isEmpty === true)
+
+        queue.enqueue('value').clear()
+        test.assert(queue.isEmpty === true)
+      })
+
+      tests.test('Given a NullItem', function(test) {
+        const queue = new Romo.Queue('null value')
+        var item
+
+        test.assert(queue.size === 0)
+        test.assert(queue.isEmpty === true)
+        test.assert(queue.peek() === undefined)
+        test.assert(queue.dequeue() === 'null value')
+      })
+    })
+
+    tests.group('<code>Romo.FlashAlert</code>', function() {
+      tests.test('given a message', function(test) {
+        const flashAlertObject =
+          {
+            alertType: 'error',
+            message: 'message 1',
+          }
+        const flashAlert = new Romo.FlashAlert(flashAlertObject)
+
+        test.assert(flashAlert.alertType === 'error')
+        test.assert(flashAlert.message === 'message 1')
+        test.assert(flashAlert.isMessagePresent === true)
+        test.assert(flashAlert.toString() === '[error] message 1')
+      })
+
+      tests.test('given no message', function(test) {
+        const flashAlertObject = { alertType: 'error' }
+        const flashAlert = new Romo.FlashAlert(flashAlertObject)
+
+        test.assert(flashAlert.alertType === 'error')
+        test.assert(flashAlert.message === '')
+        test.assert(flashAlert.isMessagePresent === false)
+        test.assert(flashAlert.toString() === '[error]')
+      })
+
+      tests.test('<code>Romo.FlashAlert.forXHR</code>', function(test) {
+        const fakeXHR =
+          {
+            getResponseHeader:
+              function(header) {
+                if (header === 'X-Message-Type') {
+                  return 'error'
+                }
+                else if (header === 'X-Message') {
+                  return 'message 1'
+                }
+              }
+          }
+        const flashAlert = Romo.FlashAlert.forXHR(fakeXHR)
+
+        test.assert(flashAlert.alertType === 'error')
+        test.assert(flashAlert.message === 'message 1')
       })
     })
   })
