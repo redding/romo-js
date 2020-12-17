@@ -1,0 +1,3 @@
+#!/bin/bash
+mkdir -p test/support/romo-js
+cp -R lib/* test/support/romo-js/

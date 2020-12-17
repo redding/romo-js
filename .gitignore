@@ -2,4 +2,7 @@ node_modules/
 package.lock
 yarn.lock
 *.log
+test/support/romo-js
+test/support/lighttpd.conf
+test/support/lighttpd.pid
 test/smoke_tests.html
