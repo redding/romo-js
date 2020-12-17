@@ -15,9 +15,11 @@ require("./api/dom_mutate.js");
 
 require("./api/dom_query.js");
 
+require("./api/page.js");
+
 require("./api/xhr.js");
 
-},{"./api/array.js":2,"./api/bind.js":3,"./api/define.js":4,"./api/dom_attributes.js":5,"./api/dom_events.js":6,"./api/dom_mutate.js":7,"./api/dom_query.js":8,"./api/xhr.js":9}],2:[function(require,module,exports){
+},{"./api/array.js":2,"./api/bind.js":3,"./api/define.js":4,"./api/dom_attributes.js":5,"./api/dom_events.js":6,"./api/dom_mutate.js":7,"./api/dom_query.js":8,"./api/page.js":9,"./api/xhr.js":10}],2:[function(require,module,exports){
 /* eslint-disable no-multi-spaces */
 Romo.array =
   function(value) {
@@ -959,6 +961,64 @@ Romo.next =
   }
 
 },{}],9:[function(require,module,exports){
+Romo.reloadPage =
+  function() {
+    window.location.reload()
+  }
+
+Romo.redirectPage =
+  function(redirectUrl) {
+    window.location = redirectUrl
+  }
+
+// Override as desired.
+Romo.alert =
+  function(alertMessage, { debugMessages, callbackFn } = {}) {
+    var message = alertMessage
+    var debugs = Romo.array(debugMessages)
+
+    if (debugMessages && debugs.length !== 0) {
+      message += `:\n${debugs.join('\n')}`
+    }
+
+    console.error(message)
+
+    if (callbackFn) {
+      callbackFn()
+    }
+  }
+
+Romo.alertAndReloadPage =
+  function(alertMessage, { debugMessages } = {}) {
+    Romo.alert(
+      alertMessage,
+      {
+        debugMessages: debugMessages,
+        callbackFn:    function() { Romo.reloadPage() },
+      },
+    )
+  }
+
+// Override as desired.
+Romo.showFlashAlerts =
+  function(flashAlertObjects) {
+    Romo.alert(
+      Romo
+        .array(flashAlertObjects)
+        .map(function(flashAlertObject) {
+          return new Romo.FlashAlert(flashAlertObject)
+        })
+        .filter(function(flashAlert) {
+          return flashAlert.isMessagePresent
+        })
+        .map(function(flashAlert) {
+          return flashAlert.toString()
+        })
+        .join('\n')
+    )
+  }
+
+},{}],10:[function(require,module,exports){
 Romo.xhr =
   function(...args) {
     return new Romo.XMLHttpRequest(...args).doSend()
@@ -969,7 +1029,7 @@ Romo.urlSearch =
     return new Romo.URLSearchParams(...args).toString()
   }
 
-},{}],10:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 if (window.Romo === undefined) {
   window.Romo = {}
 }
@@ -1074,7 +1134,7 @@ Romo.addAutoInitSelector =
 
 Romo.env = new RomoEnv()
 
-},{}],11:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 "use strict";
 
 require("./env.js");
@@ -1085,7 +1145,7 @@ require("./utilities.js");
 
 Romo.setup();
 
-},{"./api.js":1,"./env.js":10,"./utilities.js":12}],12:[function(require,module,exports){
+},{"./api.js":1,"./env.js":11,"./utilities.js":13}],13:[function(require,module,exports){
 "use strict";
 
 require("./utilities/auto_init.js");
@@ -1094,13 +1154,15 @@ require("./utilities/dom.js");
 
 require("./utilities/event_listeners.js");
 
+require("./utilities/flash_alert.js");
+
 require("./utilities/queue.js");
 
 require("./utilities/url_search_params.js");
 
 require("./utilities/xml_http_request.js");
 
-},{"./utilities/auto_init.js":13,"./utilities/dom.js":14,"./utilities/event_listeners.js":15,"./utilities/queue.js":16,"./utilities/url_search_params.js":17,"./utilities/xml_http_request.js":18}],13:[function(require,module,exports){
+},{"./utilities/auto_init.js":14,"./utilities/dom.js":15,"./utilities/event_listeners.js":16,"./utilities/flash_alert.js":17,"./utilities/queue.js":18,"./utilities/url_search_params.js":19,"./utilities/xml_http_request.js":20}],14:[function(require,module,exports){
 Romo.define('Romo.AutoInit', function() {
   return class {
     constructor() {
@@ -1142,7 +1204,7 @@ Romo.define('Romo.AutoInit', function() {
   }
 })
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 Romo.define('Romo.DOM', function() {
   return class {
     constructor(elements) {
@@ -1453,7 +1515,7 @@ Romo.define('Romo.DOM', function() {
   }
 })
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 Romo.define('Romo.EventListeners', function() {
   return class {
     constructor() {
@@ -1495,7 +1557,32 @@ Romo.define('Romo.EventListeners', function() {
   }
 })
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
+Romo.define('Romo.FlashAlert', function() {
+  return class {
+    constructor(alertObject) {
+      this.alertType = alertObject.alertType
+      this.message = String(alertObject.message || '').trim()
+    }
+
+    static forXHR(xhr) {
+      return new this({
+        alertType: xhr.getResponseHeader('X-Message-Type'),
+        message:   xhr.getResponseHeader('X-Message'),
+      })
+    }
+
+    get isMessagePresent() {
+      return this.message.length !== 0
+    }
+
+    toString() {
+      return `[${this.alertType}] ${this.message}`.trim()
+    }
+  }
+})
+
+},{}],18:[function(require,module,exports){
 // Romo.Queue is a basic Queue implementation that optionally supports the
 // Null Object Pattern.
 //
@@ -1541,7 +1628,7 @@ Romo.define('Romo.Queue', function() {
   }
 })
 
-},{}],17:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 // new Romo.URLSearchParams({}).toString()
 //   #=> ""
 // new Romo.URLSearchParams({ a: 2, b: 'three', c: 4 }).toString()
@@ -1620,7 +1707,7 @@ Romo.define('Romo.URLSearchParams', function() {
   }
 })
 
-},{}],18:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 Romo.define('Romo.XMLHttpRequest', function() {
   return class {
     constructor({
@@ -1817,4 +1904,4 @@ Romo.define('Romo.XMLHttpRequest.Data', function() {
   }
 })
 
-},{}]},{},[11]);
+},{}]},{},[12]);
