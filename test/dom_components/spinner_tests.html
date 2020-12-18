@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" type="text/css" href="/support/romo-js/romo.css"/>
+  <style>
+  </style>
+</head>
+<body>
+  <h1>Romo.Spinner system tests</h1>
+  <div style="display: inline-block; border: 1px solid black; height: 10px"
+       data-toggle-spinner
+       data-romo-spinner>Toggle Spinner</div><br/><br/>
+  <div style="display: inline-block; border: 1px solid black; height: 20px"
+       data-toggle-spinner
+       data-romo-spinner>Toggle Spinner</div><br/><br/>
+  <div style="display: inline-block; border: 1px solid black; height: 30px"
+       data-toggle-spinner
+       data-romo-spinner>Toggle Spinner</div><br/><br/>
+  <div style="display: inline-block; border: 1px solid black; height: 40px"
+       data-toggle-spinner
+       data-romo-spinner>Toggle Spinner</div><br/><br/>
+  <div style="display: inline-block; border: 1px solid black; height: 50px"
+       data-toggle-spinner
+       data-romo-spinner>Toggle Spinner</div><br/><br/>
+  <button style="height: 10px"
+          data-toggle-spinner
+          data-romo-spinner>Toggle Spinner</button><br/><br/>
+  <button style="height: 20px"
+          data-toggle-spinner
+          data-romo-spinner>Toggle Spinner</button><br/><br/>
+  <button style="height: 30px"
+          data-toggle-spinner
+          data-romo-spinner>Toggle Spinner</button><br/><br/>
+  <button style="height: 40px"
+          data-toggle-spinner
+          data-romo-spinner>Toggle Spinner</button><br/><br/>
+  <button style="height: 50px"
+          data-toggle-spinner
+          data-romo-spinner>Toggle Spinner</button><br/><br/>
+</body>
+<script type="module" src="/support/romo-js/romo.js"></script>
+<script type="module" src="/support/tests.js"></script>
+<script type="module">
+  Romo.onReady(function() {
+    Romo
+      .f('[data-romo-spinner]')
+      .on('Romo.Spinner:started', function(e, romoSpinner) {
+        romoSpinner.dom.setData('spinning', true)
+      })
+      .on('Romo.Spinner:stopped', function(e, romoSpinner) {
+        romoSpinner.dom.setData('spinning', false)
+      })
+      .on('click', function(e) {
+        const targetDOM = Romo.dom(e.target)
+        if (targetDOM.data('spinning')) {
+          targetDOM.trigger('Romo.Spinner:triggerStop')
+        } else {
+          targetDOM.trigger('Romo.Spinner:triggerStart')
+        }
+      })
+  })
+</script>

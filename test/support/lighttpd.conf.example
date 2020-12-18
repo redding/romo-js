@@ -5,5 +5,6 @@ server.pid-file = "/path/to/local/romo-js/test/support/lighttpd.pid"
 
 mimetype.assign = (
   ".html" => "text/html",
-  ".js"   => "text/javascript"
+  ".js"   => "text/javascript",
+  ".css"  => "text/css"
 )
