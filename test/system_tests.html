@@ -544,6 +544,15 @@
     })
 
     tests.group('API: DOM Query', function() {
+      tests.test('<code>find</code>', function(test) {
+        const dom = Romo.f('[data-test-support]')
+        const domA = Romo.f('[data-support-div-a]')
+        const foundDOMA = dom.find('[data-support-div-a]')
+
+        test.assert(foundDOMA.length === 1)
+        test.assert(foundDOMA.firstElement === domA.firstElement)
+      })
+
       tests.test('<code>innerText</code>', function(test) {
         const supportDOM = Romo.f('[data-test-support]')
         const subjectDOM = supportDOM.appendHTML('<div class="subject"></div>')
