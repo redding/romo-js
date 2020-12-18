@@ -1282,6 +1282,18 @@
         test.assert(flashAlert.message === 'message 1')
       })
     })
+
+    tests.group('<code>Romo.DOMComponent</code>', function() {
+      tests.test('<code>Romo.DOMComponent</code>', function(test) {
+        var romoDOM
+
+        romoDOM = new Romo.DOMComponent(Romo.f('body'))
+        test.assert(romoDOM.dom.isRomoDOM === true)
+
+        romoDOM = new Romo.DOMComponent(Romo.f('body').firstElement)
+        test.assert(romoDOM.dom.isRomoDOM === true)
+      })
+    })
   })
 </script>
 </html>
