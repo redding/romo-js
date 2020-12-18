@@ -17,6 +17,7 @@
   },
   "scripts": {
     "lint": "./bin/lint",
+    "refresh": "./bin/cp-source-for-tests",
     "test": "./bin/test"
   },
   "repository": {
