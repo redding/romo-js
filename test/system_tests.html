@@ -1212,6 +1212,41 @@
       })
     })
 
+    tests.group('<code>Romo.FuzzySearch</code>', function() {
+      tests.test('<code>Romo.FuzzySearch</code>', function(test) {
+        var fuzzySearch
+
+        fuzzySearch = new Romo.FuzzySearch('romo is', 'romo is the best')
+        test.assert(fuzzySearch.isAMatch == true)
+
+        fuzzySearch = new Romo.FuzzySearch('romo is', 'romo not always is the best')
+        test.assert(fuzzySearch.isAMatch == true)
+
+        fuzzySearch = new Romo.FuzzySearch('romo is', 'romo can do it all')
+        test.assert(fuzzySearch.isAMatch == false)
+      })
+
+      tests.test('<code>Romo.FuzzySearch.filter</code>', function(test) {
+        var fuzzySearchFilter
+
+        fuzzySearchFilter =
+          Romo.FuzzySearch.filter(
+            'romo is',
+            [
+              'romo is the best',
+              'romo not always is the best',
+              'romo can do it all',
+            ]
+          )
+
+        test.assert(fuzzySearchFilter.matchingItems.length == 2)
+        test.assert(fuzzySearchFilter.matchingItems[0] == 'romo is the best')
+        test.assert(fuzzySearchFilter.matchingItems[1] == 'romo not always is the best')
+        test.assert(fuzzySearchFilter.notMatchingItems.length == 1)
+        test.assert(fuzzySearchFilter.notMatchingItems[0] == 'romo can do it all')
+      })
+    })
+
     tests.group('<code>Romo.FlashAlert</code>', function() {
       tests.test('given a message', function(test) {
         const flashAlertObject =
