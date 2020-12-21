@@ -921,23 +921,23 @@
         test.unstubConsoleError()
       })
 
-      tests.test('<code>Romo.alert</code> given empty debugMessages', function(test) {
+      tests.test('<code>Romo.alert</code> no debugMessage', function(test) {
         test.stubConsoleError()
 
-        Romo.alert('test alert message', { debugMessages: [] })
+        Romo.alert('test alert message')
         test.assert(console.errorMessages.length === 1)
         test.assert(console.errorMessages[0][0] === 'test alert message')
 
         test.unstubConsoleError()
       })
 
-      tests.test('<code>Romo.alert</code> given non-empty debugMessages', function(test) {
+      tests.test('<code>Romo.alert</code> given a debugMessage', function(test) {
         test.stubConsoleError()
 
-        Romo.alert('test alert message', { debugMessages: ['debug 1', 'debug 2'] })
+        Romo.alert('test alert message', { debugMessage: 'debug 1' })
         test.assert(console.errorMessages.length === 1)
         test.assert(
-          console.errorMessages[0][0] === 'test alert message:\ndebug 1\ndebug 2'
+          console.errorMessages[0][0] === 'test alert message:\ndebug 1'
         )
 
         test.unstubConsoleError()
