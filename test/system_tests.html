@@ -1136,7 +1136,7 @@
       })
     })
 
-    tests.group('Queue', function() {
+    tests.group('<code>Romo.Queue</code>', function() {
       tests.test('Given no NullItem', function(test) {
         const queue = new Romo.Queue()
         var item
@@ -1165,6 +1165,50 @@
         test.assert(queue.isEmpty === true)
         test.assert(queue.peek() === undefined)
         test.assert(queue.dequeue() === 'null value')
+      })
+    })
+
+    tests.group('<code>Romo.PageMQ</code>', function() {
+      tests.test('<code>Romo.PageMQ</code>', function(test) {
+        const pageMQ = new Romo.PageMQ(this)
+        const status = []
+
+        pageMQ.enqueue(function() { status.push('message 1') })
+        pageMQ.enqueue(function() { status.push('message 2') })
+        pageMQ.enqueue(function() { status.push('message 3') })
+
+        pageMQ.dequeue()
+        test.assert(status.length == 1)
+        test.assert(status[status.length - 1] === 'message 1')
+
+        pageMQ.dequeue()
+        test.assert(status.length == 2)
+        test.assert(status[status.length - 1] === 'message 2')
+
+        pageMQ.dequeue()
+        test.assert(status.length == 3)
+        test.assert(status[status.length - 1] === 'message 3')
+
+        pageMQ.dequeue()
+        test.assert(status.length == 3)
+        test.assert(status[status.length - 1] === 'message 3')
+      })
+    })
+
+    tests.group('<code>Romo.PageState</code>', function() {
+      tests.test('<code>Romo.PageState</code>', function(test) {
+        var pageState
+
+        pageState = new Romo.PageState()
+
+        test.assert(pageState.locationPathname === window.location.pathname)
+
+        pageState = new Romo.PageState('http://example.org/something?key=value')
+
+        test.assert(pageState.locationPathname === '/something')
+        test.assert(pageState.searchParams.toString() == 'key=value')
+
+        // TODO: add more tests
       })
     })
 
