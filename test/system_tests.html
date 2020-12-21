@@ -1292,6 +1292,50 @@
       })
     })
 
+    tests.group('<code>Romo.ChildElementSet</code>', function() {
+      tests.test('<code>Romo.childElementsSet</code>', function(test) {
+        const supportDOM = Romo.f('[data-test-support]')
+        supportDOM.appendHTML(`
+<div class="root"></div>
+<div class="root-level1-A"></div>
+<div class="root-level1A-level2-A"></div>
+<div class="root-level1-B"></div>
+<div class="root-level1B-level2-A"></div>
+`)
+
+        Romo.childElementSet.add(
+          Romo.f('.root'),
+          [Romo.f('.root-level1-A, .root-level1-B')]
+        )
+        Romo.childElementSet.add(
+          Romo.f('.root-level1-A'),
+          Romo.f('.root-level1A-level2-A')
+        )
+        Romo.childElementSet.add(
+          Romo.f('.root-level1-B'),
+          Romo.f('.root-level1B-level2-A')
+        )
+
+        Romo.pushFn(function() {
+          test.assert(Romo.f('.root-level1-A').length === 1)
+          test.assert(Romo.f('.root-level1A-level2-A').length === 1)
+          test.assert(Romo.f('.root-level1B-level2-A').length === 1)
+
+          Romo.f('.root-level1-B').remove()
+          Romo.pushFn(function() {
+            test.assert(Romo.f('.root-level1B-level2-A').length === 0)
+          })
+
+          Romo.f('.root').remove()
+          Romo.pushFn(function() {
+            test.assert(Romo.f('.root-level1-A').length === 0)
+            test.assert(Romo.f('.root-level1A-level2-A').length === 0)
+            test.assert(Romo.f('.root-level1B-level2-A').length === 0)
+          })
+        })
+      })
+    })
+
     tests.group('<code>Romo.DOMComponent</code>', function() {
       tests.test('<code>Romo.DOMComponent</code>', function(test) {
         var romoDOM
