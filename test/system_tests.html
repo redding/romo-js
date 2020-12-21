@@ -972,14 +972,14 @@
 
         const flashAlertObjects =
           [
-            {
+            new Romo.FlashAlert({
               alertType: 'notice',
               message: 'message 1',
-            },
-            {
+            }),
+            new Romo.FlashAlert({
               alertType: 'error',
               message: 'message 2',
-            },
+            }),
           ]
         Romo.showFlashAlerts(flashAlertObjects)
         test.assert(console.errorMessages.length === 1)
