@@ -6,7 +6,7 @@
   </style>
 </head>
 <body>
-  <h1>Romo.Spinner system tests</h1>
+  <h1>Romo.XHR system tests</h1>
   <button href="https://api.github.com/repos/redding/romo-js"
           data-romo-xhr>
     Example 1 (GET JSON via href)
@@ -126,15 +126,6 @@
       })
       .on('Romo.XHR:callEnd', function(e, romoXHR, xhr) {
         statusDOM.appendHTML('<div>-> end</div>')
-      })
-      .on('Romo.XHR:callQueueSuccess', function(e, romoXHR) {
-        statusDOM.appendHTML('<div>-> queue success</div>')
-      })
-      .on('Romo.XHR:callQueueError', function(e, romoXHR, errors) {
-        statusDOM.appendHTML('<div>-> queue error</div>')
-        statusDOM.appendHTML(`<code>${errors.toString()}</code>`)
-        console.log('-> queue error, errors:')
-        console.log(errors)
       })
       .on('Romo.XHR:callQueueEnd', function(e, romoXHR) {
         statusDOM.appendHTML('<div>-> queue end</div>')
