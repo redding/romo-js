@@ -14,10 +14,23 @@
         data-xhr-get-json-form
         data-romo-form
         data-romo-form-disable-focus-on-init="true">
-    <input type="text" name="value"
+    <input type="text" name="value" value="thing / something"
            placeholder="Enter a value.">
     <button type="submit"
-            data-romo-spinner>Submit</button>
+            data-romo-spinner>Submit (redirects page by default)</button>
+  </form>
+
+  <form action="https://api.github.com/repos/redding/romo-js"
+        method="get"
+        accept-charset="UTF-8"
+        data-xhr-get-json-form
+        data-romo-form
+        data-romo-form-redirect-page="false"
+        data-romo-form-disable-focus-on-init="true">
+    <input type="text" name="value" value="thing / something"
+           placeholder="Enter a value.">
+    <button type="submit"
+            data-romo-spinner>Submit (no redirect page)</button>
   </form>
 
   <div data-form-status>
