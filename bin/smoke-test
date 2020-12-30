@@ -1,2 +1,2 @@
 #!/bin/bash
-cat ./test/system_tests.html | sed "s/^.*\"romo\.js\".*$//" | sed "s|^\(.*\"module\".*\)$|<script type="module"> import 'https://cdn.skypack.dev/@reddingjs/romo-js@`./bin/version`'|" > ./test/smoke_tests.html && open ./test/smoke_tests.html
+cp ./test/system_tests.html ./test/smoke_tests.html && echo "Switch to Skypack resources in ./test/smoke_tests.html" && ./bin/start-tests-webserver && open "http://localhost:7666/smoke_tests.html"

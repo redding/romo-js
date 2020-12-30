@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
+  <!-- <link rel="stylesheet" type="text/css" href="https://cdn.skypack.dev/@reddingjs/romo-js@0.1.0-rc4/lib/romo.css"/> -->
   <link rel="stylesheet" type="text/css" href="/support/romo-js/romo.css"/>
   <style>
     .test:before {
@@ -30,9 +31,11 @@
     <div data-support-div-b style="display: none">Div B</div>
   </div>
 </body>
-<script type="module" src="/support/romo-js/romo.js"></script>
-<script type="module" src="/support/tests.js"></script>
 <script type="module">
+  // import 'https://cdn.skypack.dev/@reddingjs/romo-js@0.1.0-rc4'
+  import '/support/romo-js/romo.js'
+  import '/support/tests.js'
+
   Romo.onReady(function() {
     const tests = new Tests(Romo.f('[data-test-output]'))
 
