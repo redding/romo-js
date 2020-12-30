@@ -1,2 +1,2 @@
 #!/bin/bash
-./bin/lint && ./bin/tag && git push --tags && npm publish --access public && ./bin/smoke-test
+./bin/lint && ./bin/tag && git push --tags && npm publish --access public

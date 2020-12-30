@@ -1,7 +1,11 @@
 {
   "name": "@reddingjs/romo-js",
-  "version": "0.1.0-rc1",
+  "version": "0.1.0-rc2",
   "description": "A JS toolkit.",
+  "files": [
+    "./lib/romo.js",
+    "./lib/romo.css"
+  ],
   "main": "./lib/romo.js",
   "dependencies": {
   },
