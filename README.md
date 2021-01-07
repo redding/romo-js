@@ -12,6 +12,24 @@ TODO
 $ yarn install @reddingjs/romo-js
 ```
 
+## Linting
+
+Install [l.rb](https://github.com/redding/l.rb#lrb).
+
+Install dev packages: `yarn install`.
+
+```
+$ l
+
+OR
+
+$ yarn lint
+
+OR
+
+$ ./bin/lint
+```
+
 ## Testing
 
 ```
@@ -31,7 +49,7 @@ $ yarn test
 
 OR
 
-./bin/test
+$ ./bin/test
 ```
 
 The (re)starts Lighttpd and loads up the main system_tests.html test file. Look for red 'X' items, check the console for errors, test out the example UI on the DOM Component pages.

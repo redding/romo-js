@@ -1,0 +1,11 @@
+# https://github.com/redding/l.rb
+
+source_file_paths:
+  - lib
+  - test
+
+linters:
+  - name: "ES Lint"
+    cmd: "./node_modules/.bin/eslint"
+    extensions:
+      - ".js"
