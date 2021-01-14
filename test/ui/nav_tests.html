@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" type="text/css" href="/support/romo-js/romo.css"/>
+  <style>
+  </style>
+</head>
+<body>
+  <h1>Romo.UI.Nav system tests</h1>
+  <h3>Basic with defaults</h3>
+  <ul data-romo-ui-nav>
+    <li>
+      <a href="/ui/nav_tests.html"
+         data-romo-ui-nav-link>Nav Tests</a>
+    </li>
+    <li>
+      <a href="/some-other-page"
+         data-romo-ui-nav-link>Some Other Page</a>
+    </li>
+  </ul>
+  <h3>With customizations</h3>
+  <ul data-romo-ui-nav
+      data-romo-ui-nav-active-css-class="active-link-li">
+    <li data-romo-ui-nav-link
+        data-romo-ui-nav-link-url="/ui/nav_tests.html">
+      <a href="/ui/nav_tests.html">Nav Tests</a>
+    </li>
+    <li data-romo-ui-nav-link
+        data-romo-ui-nav-link-url="/some-other-page">
+      <a href="/some-other-page">Some Other Page</a>
+    </li>
+  </ul>
+</body>
+<script type="module" src="/support/romo-js/romo-ui.js"></script>
+<script type="module" src="/support/tests.js"></script>
+<script type="module">
+  Romo.onReady(function() {
+    const lastDOM = Romo.f('[data-romo-ui-nav]').last
+    lastDOM.setData('romo-ui-nav-active-css-class', 'active-link-li-alt')
+    lastDOM.trigger('Romo.UI.Nav:triggerRefresh')
+  })
+</script>
