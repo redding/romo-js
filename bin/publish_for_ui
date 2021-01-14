@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cp package_for_ui.json package.json
+./bin/publish
+git k package.json
