@@ -15,7 +15,8 @@
     "$": false,
     "Romo": false,
     "RomoConfig": false,
-    "RomoEnv": false
+    "RomoEnv": false,
+    "RomoUI": false
   },
 
   // These are overrides to StandardJS rules.
