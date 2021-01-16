@@ -951,26 +951,6 @@
         test.unstubConsoleError()
       })
 
-      tests.test('<code>Romo.alert</code> given callbackFn', function(test) {
-        test.stubConsoleError()
-
-        // Expect the callbackFn to do assertions to make the test pass.
-        test.fail()
-
-        Romo.alert(
-          'test alert message',
-          {
-            callbackFn:
-              function() {
-                test.assert(console.errorMessages.length === 1)
-                test.assert(console.errorMessages[0][0] === 'test alert message')
-              }
-          }
-        )
-
-        test.unstubConsoleError()
-      })
-
       tests.test('<code>Romo.alertAndReloadPage</code>', function(test) {
         test.assert(typeof Romo.alertAndReloadPage === 'function')
       })
