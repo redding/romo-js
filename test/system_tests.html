@@ -1335,6 +1335,20 @@
         test.assert(romoDOM.dom.isRomoDOM === true)
       })
     })
+
+    tests.group('Romo.UI components', function() {
+      tests.test('<code>Romo.UI.Nav</code>', function(test) {
+        test.assert(Romo.UI.Nav !== undefined)
+      })
+      tests.test('<code>Romo.UI.PopoverStack</code>', function(test) {
+        test.assert(Romo.UI.PopoverStack !== undefined)
+      })
+      tests.test('<code>Romo.UI.Popover</code>', function(test) {
+        test.assert(Romo.UI.Popover !== undefined)
+        test.assert(Romo.config.popovers.headerSpacingPxFn() === 10)
+        test.assert(Romo.config.popovers.footerSpacingPxFn() === 10)
+      })
+    })
   })
 </script>
 </html>
