@@ -1348,6 +1348,11 @@
         test.assert(Romo.config.popovers.headerSpacingPxFn() === 10)
         test.assert(Romo.config.popovers.footerSpacingPxFn() === 10)
       })
+      tests.test('<code>Romo.UI.PopoverForm</code>', function(test) {
+        test.assert(Romo.UI.PopoverForm !== undefined)
+        test.assert(Romo.config.popovers.popoverFormEditableContentCSSClassFn() === '')
+        test.assert(Romo.config.popovers.popoverFormEditableContentHoverCSSClassFn() === '')
+      })
     })
   })
 </script>
