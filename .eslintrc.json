@@ -13,7 +13,9 @@
   "globals": {
     // Please keep this list alphabetized.
     "$": false,
-    "Romo": false
+    "Romo": false,
+    "RomoConfig": false,
+    "RomoEnv": false
   },
 
   // These are overrides to StandardJS rules.
