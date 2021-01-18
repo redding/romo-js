@@ -8,36 +8,41 @@
 <body>
   <h1>Romo.XHR system tests</h1>
   <button href="https://api.github.com/repos/redding/romo-js"
-          data-romo-xhr>
+          data-romo-xhr
+          data-romo-xhr-call-response-type="json">
     Example 1 (GET JSON via href)
   </button>
   <br/><br/>
   <button data-romo-xhr
+          data-romo-xhr-call-response-type="json"
           data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js">
     Example 2 (GET JSON via data attr)
   </button>
   <br/><br/>
   <button data-romo-xhr
-          data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js"
-          data-romo-xhr-call-response-type="text">
+          data-romo-xhr-call-response-type="text"
+          data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js">
     Example 3 (text response type)
   </button>
   <br/><br/>
   <button data-romo-xhr
-          data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js"
-          data-romo-xhr-call-method="post">
+          data-romo-xhr-call-method="post"
+          data-romo-xhr-call-response-type="json"
+          data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js">
     Example 4 (POST, should fail)
   </button>
   <br/><br/>
   <button data-example-5-abort
           data-romo-xhr
+          data-romo-xhr-call-response-type="json"
           data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js">
     Example 5 (call, then abort)
   </button>
   <br/><br/>
   <button data-romo-xhr
-          data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js"
-          data-romo-xhr-call-on="underfined">
+          data-romo-xhr-call-on="underfined"
+          data-romo-xhr-call-response-type="json"
+          data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js">
     Example 6 (clicking this does nothing)
   </button>
   <button data-example-6-trigger-button>
@@ -45,20 +50,23 @@
   </button>
   <br/><br/>
   <button data-romo-xhr
-          data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js"
-          data-romo-xhr-call-only-once="true">
+          data-romo-xhr-call-only-once="true"
+          data-romo-xhr-call-response-type="json"
+          data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js">
     Example 7 (call only once)
   </button>
   <br/><br/>
   <button data-romo-xhr
-          data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js"
-          data-romo-xhr-confirm="Are you sure?">
+          data-romo-xhr-confirm="Are you sure?"
+          data-romo-xhr-call-response-type="json"
+          data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js">
     Example 8 (with confirmation)
   </button>
   <br/><br/>
   <button data-romo-xhr
-          data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js"
-          data-romo-xhr-disable-with-spinner="true">
+          data-romo-xhr-disable-with-spinner="true"
+          data-romo-xhr-call-response-type="json"
+          data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js">
     Example 9 (disable with spinner)
   </button>
   <button data-example-8-enable-button>
@@ -66,21 +74,24 @@
   </button>
   <br/><br/>
   <button data-romo-xhr
-          data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js"
-          data-romo-xhr-reload-page-on="success">
+          data-romo-xhr-reload-page-on="success"
+          data-romo-xhr-call-response-type="json"
+          data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js">
     Example 10 (reload on success)
   </button>
   <br/><br/>
   <button data-romo-xhr
-          data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js"
+          data-romo-xhr-reload-page-on="error"
           data-romo-xhr-call-method="post"
-          data-romo-xhr-reload-page-on="error">
+          data-romo-xhr-call-response-type="json"
+          data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js">
     Example 11 (reload on error)
   </button>
   <br/><br/>
   <button data-romo-xhr
-          data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js"
-          data-romo-xhr-disabled="true">
+          data-romo-xhr-disabled="true"
+          data-romo-xhr-call-response-type="json"
+          data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js">
     Example 12 (disabled)
   </button>
   <br/><br/>
