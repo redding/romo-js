@@ -15,7 +15,8 @@
     "$": false,
     "Romo": false,
     "RomoConfig": false,
-    "RomoEnv": false
+    "RomoEnv": false,
+    "RomoUI": false
   },
 
   // These are overrides to StandardJS rules.
@@ -67,6 +68,7 @@
     "new-cap": ["error", {
       "newIsCapExceptions": [
         // Please keep this list alphabetized.
+        "popoverOwnerClass",
         "this.class" // `this.class` is always a constructor for Romo-defined objects
       ]
     }],

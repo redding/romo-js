@@ -37,7 +37,7 @@
 </body>
 <script type="module">
   // import 'https://cdn.skypack.dev/@reddingjs/romo-js@0.1.0-rc4'
-  import '/support/romo-js/romo.js'
+  import '/support/romo-js/romo-ui.js'
   import '/support/tests.js'
 
   Romo.onReady(function() {
@@ -1333,6 +1333,61 @@
 
         romoDOM = new Romo.DOMComponent(Romo.f('body').firstElement)
         test.assert(romoDOM.dom.isRomoDOM === true)
+      })
+    })
+
+    tests.group('Romo.UI components', function() {
+      tests.test('<code>Romo.UI.Nav</code>', function(test) {
+        test.assert(Romo.UI.Nav !== undefined)
+      })
+      tests.test('<code>Romo.UI.PopoverStack</code>', function(test) {
+        test.assert(Romo.UI.PopoverStack !== undefined)
+      })
+      tests.test('<code>Romo.UI.Popover</code>', function(test) {
+        test.assert(Romo.UI.Popover !== undefined)
+        test.assert(Romo.config.popovers.headerSpacingPxFn() === 10)
+        test.assert(Romo.config.popovers.footerSpacingPxFn() === 10)
+      })
+      tests.test('<code>Romo.UI.PopoverForm</code>', function(test) {
+        test.assert(Romo.UI.PopoverForm !== undefined)
+        test.assert(Romo.config.popovers.popoverFormEditableContentCSSClassFn() === '')
+        test.assert(Romo.config.popovers.popoverFormEditableContentHoverCSSClassFn() === '')
+      })
+      tests.test('<code>Romo.UI.Dropdown</code>', function(test) {
+        test.assert(Romo.UI.Dropdown !== undefined)
+      })
+      tests.test('<code>Romo.UI.DropdownForm</code>', function(test) {
+        test.assert(Romo.UI.DropdownForm !== undefined)
+      })
+      tests.test('<code>Romo.UI.Dropdown.AvailableHeightPx</code>', function(test) {
+        test.assert(Romo.UI.Dropdown.AvailableHeightPx !== undefined)
+      })
+      tests.test('<code>Romo.UI.Dropdown.AvailableWidthPx</code>', function(test) {
+        test.assert(Romo.UI.Dropdown.AvailableWidthPx !== undefined)
+      })
+      tests.test('<code>Romo.UI.Dropdown.CSSPositionData</code>', function(test) {
+        test.assert(Romo.UI.Dropdown.CSSPositionData !== undefined)
+      })
+      tests.test('<code>Romo.UI.Dropdown.PlacementConfig</code>', function(test) {
+        test.assert(Romo.UI.Dropdown.PlacementConfig !== undefined)
+      })
+      tests.test('<code>Romo.UI.Dropdown.PlacementData</code>', function(test) {
+        test.assert(Romo.UI.Dropdown.PlacementData !== undefined)
+      })
+      tests.test('<code>Romo.UI.Modal</code>', function(test) {
+        test.assert(Romo.UI.Modal !== undefined)
+      })
+      tests.test('<code>Romo.UI.ModalForm</code>', function(test) {
+        test.assert(Romo.UI.ModalForm !== undefined)
+      })
+      tests.test('<code>Romo.UI.Modal.Drag</code>', function(test) {
+        test.assert(Romo.UI.Modal.Drag !== undefined)
+      })
+      tests.test('<code>Romo.UI.Modal.CSSPositionData</code>', function(test) {
+        test.assert(Romo.UI.Modal.CSSPositionData !== undefined)
+      })
+      tests.test('<code>Romo.UI.Modal.PlacementData</code>', function(test) {
+        test.assert(Romo.UI.Modal.PlacementData !== undefined)
       })
     })
   })
