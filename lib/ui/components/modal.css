@@ -1,0 +1,31 @@
+[data-romo-ui-modal-auto-init],
+[data-romo-ui-modal-close] {
+  cursor: pointer;
+}
+
+.romo-ui-modal-popover {
+  background: #FFFFFF;
+  border-color: #CCCCCC;
+  border-style: solid;
+  border-width: 1px;
+
+  float: left;
+  position: fixed;
+
+  box-shadow: 0 5px 10px #CCCCCC;
+}
+
+.romo-ui-modal-popover:not([class*="romo-ui-modal-popover-open"]) {
+  display: none;
+}
+
+.romo-ui-modal-popover-body,
+.romo-ui-modal-popover-content {
+  position: relative;
+}
+
+.romo-ui-modal-popover-spinner {
+  height: 45px;
+  margin: 0 auto;
+  width: 45px;
+}
