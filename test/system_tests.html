@@ -979,33 +979,6 @@
       })
     })
 
-    tests.group('API: <code>Romo.urlSearch</code>', function() {
-      tests.test('Given a blank Object', function(test) {
-        test.assert(Romo.urlSearch() === "")
-        test.assert(Romo.urlSearch({}) === "")
-      })
-
-      tests.test('Given a non-blank Object', function(test) {
-        test.assert(Romo.urlSearch({ a: 2, b: 'three', c: 4 }) === "a=2&b=three&c=4")
-        test.assert(Romo.urlSearch({ a: 2, b: '', c: 4 }).toString() === "a=2&b=&c=4")
-        test.assert(
-          Romo.urlSearch({ a: 2, b: '', c: 4 }, { removeBlanks: true }).toString() ===
-          "a=2&c=4"
-        )
-      })
-
-      tests.test('Given Array values', function(test) {
-        test.assert(Romo.urlSearch({ a: [2, 3, 4] }, { decode: false }) === "a=2%2C3%2C4")
-        test.assert(Romo.urlSearch({ a: [2, 3, 4] }, { decode: true }) === "a=2,3,4")
-        test.assert(Romo.urlSearch({ "a[]": [2, 3, 4] }, { decode: true }) === "a[]=2&a[]=3&a[]=4")
-        test.assert(Romo.urlSearch({ "a[]": [''] }, { decode: true }) === "a[]=")
-        test.assert(
-          Romo.urlSearch({ "a[]": [''] }, { decode: true, removeBlanks: true }) ===
-          ""
-        )
-      })
-    })
-
     tests.group('API: <code>Romo.xhr</code>', function() {
       tests.test('Given no method, no responseType', function(test) {
         // expect an onSuccess handler to pass the test, fail if it isn't invoked
@@ -1121,6 +1094,57 @@
               }, this),
           })
           .doAbort()
+      })
+    })
+
+    tests.group('API: <code>Romo.url</code>', function() {
+      tests.test('Given no URL', function(test) {
+        test.assert(Romo.url().toString() === window.location.toString())
+      })
+
+      tests.test('Given an absolute URL', function(test) {
+        test.assert(
+          Romo.url('http://example.org/a/thing.html').toString() ===
+          'http://example.org/a/thing.html'
+        )
+      })
+
+      tests.test('Given a relative URL', function(test) {
+        test.assert(
+          Romo.url('/a/thing.html').toString() ===
+          window.location.origin + '/a/thing.html'
+        )
+        test.assert(
+          Romo.url('../thing.html').toString() ===
+          window.location.origin + '/thing.html'
+        )
+      })
+    })
+
+    tests.group('API: <code>Romo.urlSearch</code>', function() {
+      tests.test('Given a blank Object', function(test) {
+        test.assert(Romo.urlSearch() === "")
+        test.assert(Romo.urlSearch({}) === "")
+      })
+
+      tests.test('Given a non-blank Object', function(test) {
+        test.assert(Romo.urlSearch({ a: 2, b: 'three', c: 4 }) === "a=2&b=three&c=4")
+        test.assert(Romo.urlSearch({ a: 2, b: '', c: 4 }).toString() === "a=2&b=&c=4")
+        test.assert(
+          Romo.urlSearch({ a: 2, b: '', c: 4 }, { removeBlanks: true }).toString() ===
+          "a=2&c=4"
+        )
+      })
+
+      tests.test('Given Array values', function(test) {
+        test.assert(Romo.urlSearch({ a: [2, 3, 4] }, { decode: false }) === "a=2%2C3%2C4")
+        test.assert(Romo.urlSearch({ a: [2, 3, 4] }, { decode: true }) === "a=2,3,4")
+        test.assert(Romo.urlSearch({ "a[]": [2, 3, 4] }, { decode: true }) === "a[]=2&a[]=3&a[]=4")
+        test.assert(Romo.urlSearch({ "a[]": [''] }, { decode: true }) === "a[]=")
+        test.assert(
+          Romo.urlSearch({ "a[]": [''] }, { decode: true, removeBlanks: true }) ===
+          ""
+        )
       })
     })
 
