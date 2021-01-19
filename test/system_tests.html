@@ -26,6 +26,7 @@
     </ul>
     <h3>UI Components</h3>
     <ul>
+      <li><a href="./ui/frame_tests.html">Romo.UI.Frame</a></li>
       <li><a href="./ui/nav_tests.html">Romo.UI.Nav</a></li>
       <li><a href="./ui/popover_tests.html">Romo.UI Popovers</a></li>
       <li><a href="./ui/popover_form_tests.html">Romo.UI Popover Forms</a></li>
@@ -1363,22 +1364,6 @@
     })
 
     tests.group('Romo.UI components', function() {
-      tests.test('<code>Romo.UI.Nav</code>', function(test) {
-        test.assert(Romo.UI.Nav !== undefined)
-      })
-      tests.test('<code>Romo.UI.PopoverStack</code>', function(test) {
-        test.assert(Romo.UI.PopoverStack !== undefined)
-      })
-      tests.test('<code>Romo.UI.Popover</code>', function(test) {
-        test.assert(Romo.UI.Popover !== undefined)
-        test.assert(Romo.config.popovers.headerSpacingPxFn() === 10)
-        test.assert(Romo.config.popovers.footerSpacingPxFn() === 10)
-      })
-      tests.test('<code>Romo.UI.PopoverForm</code>', function(test) {
-        test.assert(Romo.UI.PopoverForm !== undefined)
-        test.assert(Romo.config.popovers.popoverFormEditableContentCSSClassFn() === '')
-        test.assert(Romo.config.popovers.popoverFormEditableContentHoverCSSClassFn() === '')
-      })
       tests.test('<code>Romo.UI.Dropdown</code>', function(test) {
         test.assert(Romo.UI.Dropdown !== undefined)
       })
@@ -1400,6 +1385,9 @@
       tests.test('<code>Romo.UI.Dropdown.PlacementData</code>', function(test) {
         test.assert(Romo.UI.Dropdown.PlacementData !== undefined)
       })
+      tests.test('<code>Romo.UI.Frame</code>', function(test) {
+        test.assert(Romo.UI.Frame !== undefined)
+      })
       tests.test('<code>Romo.UI.Modal</code>', function(test) {
         test.assert(Romo.UI.Modal !== undefined)
       })
@@ -1414,6 +1402,22 @@
       })
       tests.test('<code>Romo.UI.Modal.PlacementData</code>', function(test) {
         test.assert(Romo.UI.Modal.PlacementData !== undefined)
+      })
+      tests.test('<code>Romo.UI.Nav</code>', function(test) {
+        test.assert(Romo.UI.Nav !== undefined)
+      })
+      tests.test('<code>Romo.UI.PopoverStack</code>', function(test) {
+        test.assert(Romo.UI.PopoverStack !== undefined)
+      })
+      tests.test('<code>Romo.UI.Popover</code>', function(test) {
+        test.assert(Romo.UI.Popover !== undefined)
+        test.assert(Romo.config.popovers.headerSpacingPxFn() === 10)
+        test.assert(Romo.config.popovers.footerSpacingPxFn() === 10)
+      })
+      tests.test('<code>Romo.UI.PopoverForm</code>', function(test) {
+        test.assert(Romo.UI.PopoverForm !== undefined)
+        test.assert(Romo.config.popovers.popoverFormEditableContentCSSClassFn() === '')
+        test.assert(Romo.config.popovers.popoverFormEditableContentHoverCSSClassFn() === '')
       })
     })
   })
