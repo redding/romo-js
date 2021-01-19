@@ -1,0 +1,23 @@
+<div style="padding-: 5px; border-bottom: 1px solid black"
+     data-romo-ui-modal-drag>
+  <h2 style="display: inline-block">A Modal Form</h2>
+  <button style="display: inline-block"
+          data-romo-ui-modal-popover-close>Close</button>
+</div>
+<div style="padding: 10px">
+  <form action="https://api.github.com/repos/redding/romo-js"
+        method="get"
+        accept-charset="UTF-8"
+        data-romo-popover-form
+        data-romo-form-redirect-page="false"
+        data-romo-form-disable-focus-on-init="true">
+    <input type="text" name="value" value="thing / something"
+           placeholder="Enter a value.">
+  </form>
+  <div>
+    <button data-romo-ui-modal-popover-close>Close</button>
+    <button type="submit"
+            data-romo-form-submit
+            data-romo-spinner>Submit</button>
+  </div>
+</div>

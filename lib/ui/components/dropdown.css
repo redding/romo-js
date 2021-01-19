@@ -1,0 +1,36 @@
+[data-romo-ui-dropdown],
+[data-romo-ui-dropdown-close] {
+  cursor: pointer;
+}
+
+.romo-ui-dropdown-popover {
+  background: #FFFFFF;
+  border-color: #CCCCCC;
+  border-style: solid;
+  border-width: 1px;
+
+  float: left;
+  position: absolute;
+}
+.romo-ui-dropdown-popover[data-romo-ui-dropdown-popover-placement-position="bottom"] {
+  box-shadow: 0 5px 10px #CCCCCC;
+}
+
+.romo-ui-dropdown-popover[data-romo-ui-dropdown-popover-placement-position="top"] {
+  box-shadow: 0 -3px 10px #CCCCCC;
+}
+
+.romo-ui-dropdown-popover:not([class*="romo-ui-dropdown-popover-open"]) {
+  display: none;
+}
+
+.romo-ui-dropdown-popover-body,
+.romo-ui-dropdown-popover-content {
+  position: relative;
+}
+
+.romo-ui-dropdown-popover-spinner {
+  width: 45px;
+  height: 45px;
+  margin: 0 auto;
+}

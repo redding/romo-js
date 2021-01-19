@@ -1,0 +1,18 @@
+.romo-cursor-default {
+  cursor: default !important;
+}
+.romo-cursor-grab {
+  cursor: grab !important;
+}
+.romo-cursor-grabbing {
+  cursor: grabbing !important;
+}
+.romo-cursor-no-select {
+  user-select: none !important;
+}
+.romo-cursor-not-allowed {
+  cursor: not-allowed !important;
+}
+.romo-cursor-pointer {
+  cursor: pointer !important;
+}

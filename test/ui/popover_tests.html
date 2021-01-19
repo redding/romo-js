@@ -1,0 +1,664 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" type="text/css" href="/support/romo-js/romo-ui.css"/>
+  <style>
+  </style>
+</head>
+<body style="padding-top: 25px">
+  <h1>Romo.UI Popover system tests</h1>
+
+  <h3>Popovers</h3>
+
+  <p>Popovers are UI elements layered in a stack on top of the main body of the page. They auto size and position themselves based on the available screen area and some configuration directives. They can be nested and are automatically closed when interacting with layers below them (e.g. clicking off of a Popover) or hitting the 'Esc' key.</p>
+
+  <button href="./modals/basic/show.html"
+          data-romo-ui-modal>
+    Open a Modal popover
+  </button>
+  <button href="./dropdowns/basic/show.html"
+          data-romo-ui-dropdown>
+    Toggle a Dropdown popover (click to open/close)
+  </button>
+
+  <h3>Romo.UI.Modal</h3>
+
+  <p>Modals are popovers that are opened and placed un-anchored in the viewport. Unlike Dropdowns, Modals can be dragged by users to reposition as needed (e.g. to see the content underneath them, etc). See the examples below for more details and other API settings.</p>
+
+  <table style="table-layout: fixed; border-collapse: collapse; margin-left: 10px">
+    <colgroup>
+      <col style="width: 600px">
+      <col style="width: 400px">
+      <col style="width: *">
+    </colgroup>
+
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Default<br />
+        (XHR loaded popover)<br />
+        (uses `href` attribute by default b/c it composes Romo.XHR)
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button href="./modals/basic/show.html"
+                data-romo-ui-modal>
+          Default
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          href="..."<br />
+          data-romo-ui-modal
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        XHR-loaded popover content (using alternate attribute)<br />
+        (with artificial delay to show spinner)
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button data-romo-xhr-call-url="./modals/basic/show.html"
+                data-romo-ui-modal>
+          XHR-loaded popover content<br />
+          (using alternate Romo.XHR attribute)
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-xhr-call-url="..."<br />
+          data-romo-ui-modal<br />
+        </code>
+      </td>
+    </tr>
+
+    <tr><td colspan="100%">&nbsp;</td></tr>
+
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        DOM-loaded popover content<br />
+        (using content elsewhere in the DOM)
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button data-romo-xhr-call-url="./modals/basic/show.html"
+                data-romo-ui-modal
+                data-romo-ui-modal-popover-content-selector="[data-modal-custom-content]">
+          DOM-loaded popover content
+        </button>
+        <div data-modal-custom-content style="display:none">
+          <p>Custom DOM-loaded Modal content</p>
+        </div>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-xhr-call-url="..."<br />
+          data-romo-ui-modal><br />
+          data-romo-ui-modal-popover-content-selector=".some-custom-content-selector"
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        With click-open disabled<br />
+        (default click behavior left as is)
+        (popover can only be opened with custom JS)
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button href="./modals/basic/show.html"
+                data-romo-ui-modal
+                data-romo-ui-modal-disable-click-open="true">
+          With click-open disabled
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-modal<br />
+          data-romo-ui-modal-disable-click-open="true"
+        </code>
+      </td>
+    </tr>
+
+    <tr><td colspan="100%">&nbsp;</td></tr>
+
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Auto Sizing<br />
+        (fills up the available screen size)<br />
+        (resize the window to demonstrate/test)
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button href="./modals/overflow/show.html"
+                data-romo-ui-modal>
+          Auto Sizing
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-modal
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Max-Height Sizing<br />
+        (forces a given CSS max-height instead of filling available screen height)
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button href="./modals/overflow/show.html"
+                data-romo-ui-modal
+                data-romo-ui-modal-popover-max-height="500px">
+          Max-Height Sizing
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-modal<br />
+          data-romo-ui-modal-popover-max-height="500px"
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Min-Height Sizing<br />
+        (forces a given CSS min-height even if content is shorter)<br />
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button href="./modals/basic/show.html"
+                data-romo-ui-modal
+                data-romo-ui-modal-popover-min-height="500px">
+          Min-Height Sizing
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-modal<br />
+          data-romo-ui-modal-popover-min-height="500px"
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Fixed Sizing<br />
+        (forces a given CSS height even if content is shorter)
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button href="./modals/basic/show.html"
+                data-romo-ui-modal
+                data-romo-ui-modal-popover-height="500px">
+          Fixed-Height Sizing
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-modal<br />
+          data-romo-ui-modal-popover-height="500px"
+        </code>
+      </td>
+    </tr>
+
+    <tr><td colspan="100%">&nbsp;</td></tr>
+
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Max-Width Sizing<br />
+        (forces a given CSS max-width instead of filling available screen width)
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button href="./modals/overflow/show.html"
+                data-romo-ui-modal
+                data-romo-ui-modal-popover-max-width="100px">
+          Max-Width Sizing
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-modal<br />
+          data-romo-ui-modal-popover-max-width="100px"
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Min-Width Sizing<br />
+        (forces a given CSS min-width even if content is shorter)<br />
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button data-romo-ui-modal
+                data-romo-ui-modal-popover-min-width="500px"
+                data-romo-ui-modal-popover-content-selector=".modal-min-width-custom-content">
+          Min-Width Sizing
+        </button>
+        <div class="modal-min-width-custom-content" style="display:none">
+          <p>Narrow</p>
+        </div>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-modal<br />
+          data-romo-ui-modal-popover-min-width="500px"
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Fixed Sizing<br />
+        (forces a given CSS width even if content is shorter)
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button data-romo-ui-modal
+                data-romo-ui-modal-popover-width="500px"
+                data-romo-ui-modal-popover-content-selector=".modal-fixed-width-custom-content">
+          Fixed-Width Sizing
+        </button>
+        <div class="modal-fixed-width-custom-content" style="display:none">
+          <p>Narrow</p>
+        </div>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-modal<br />
+          data-romo-ui-modal-popover-width="500px"
+        </code>
+      </td>
+    </tr>
+
+    <tr><td colspan="100%">&nbsp;</td></tr>
+
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Custom Overflow Handling<br />
+        (allows setting custom overflow x/y settings)
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button href="./modals/overflow/show.html"
+                data-romo-ui-modal
+                data-romo-ui-modal-popover-max-height="500px"
+                data-romo-ui-modal-popover-max-width="100px"
+                data-romo-ui-modal-popover-overflow-x="scroll"
+                data-romo-ui-modal-popover-overflow-y="scroll">
+          Custom Overflow Handling
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-modal<br />
+          data-romo-ui-modal-popover-max-height="500px"<br />
+          data-romo-ui-modal-popover-max-width="100px"<br />
+          data-romo-ui-modal-popover-overflow-x="scroll"<br />
+          data-romo-ui-modal-popover-overflow-y="scroll"<br />
+        </code>
+      </td>
+    </tr>
+  </table>
+
+  <h2>Romo.UI.Dropdown</h2>
+
+  <p>Dropdowns are popovers that can be toggled open/close and are anchored to the toggle element (by default). They can be anchored (i.e. placed relative to the toggle element) in 4 configurations: bottom-left, bottom-right, top-left, top-right. This setting directs which "corner" of the toggle element to anchor the popover to. See the examples below for more details and other API settings.</p>
+
+  <table style="table-layout: fixed">
+    <colgroup>
+      <col style="width: 600px">
+      <col style="width: 400px">
+      <col style="width: *">
+    </colgroup>
+
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Default<br />
+        (default placement: bottom, left; XHR loaded popover)<br />
+        (uses `href` attribute by default b/c it composes Romo.XHR)
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button href="./dropdowns/basic/show.html"
+                data-romo-ui-dropdown>
+          Default
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          href="..."<br />
+          data-romo-ui-dropdown
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        XHR-loaded popover content (using alternate attribute)<br />
+        (with artificial delay to show spinner)
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button data-romo-xhr-call-url="./dropdowns/basic/show.html"
+                data-romo-ui-dropdown>
+          XHR-loaded popover content<br />
+          (using alternate Romo.XHR attribute)
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-xhr-call-url="..."<br />
+          data-romo-ui-dropdown<br />
+        </code>
+      </td>
+    </tr>
+
+    <tr><td colspan="100%">&nbsp;</td></tr>
+
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Default Placement: bottom, left
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button href="./dropdowns/basic/show.html"
+                data-romo-ui-dropdown
+                data-romo-ui-dropdown-popover-default-placement="bottom,left">
+          Default Placement: bottom, left
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-dropdown<br />
+          data-romo-ui-dropdown-popover-default-placement="bottom,left"
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Default Placement: bottom, right
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button href="./dropdowns/basic/show.html"
+                data-romo-ui-dropdown
+                data-romo-ui-dropdown-popover-default-placement="bottom,right">
+          Default Placement: bottom, right
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-dropdown<br />
+          data-romo-ui-dropdown-popover-default-placement="bottom,right"
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Default Placement: top, left
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button href="./dropdowns/basic/show.html"
+                data-romo-ui-dropdown
+                data-romo-ui-dropdown-popover-default-placement="top,left">
+          Default Placement: top, left
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-dropdown<br />
+          data-romo-ui-dropdown-popover-default-placement="top,left"
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Default Placement: top, right
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button href="./dropdowns/basic/show.html"
+                data-romo-ui-dropdown
+                data-romo-ui-dropdown-popover-default-placement="top,right">
+          Default Placement: top, right
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-dropdown<br />
+          data-romo-ui-dropdown-popover-default-placement="top,right"
+        </code>
+      </td>
+    </tr>
+
+    <tr><td colspan="100%">&nbsp;</td></tr>
+
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        DOM-loaded popover content<br />
+        (using content elsewhere in the DOM)
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button data-romo-xhr-call-url="./dropdowns/basic/show.html"
+                data-romo-ui-dropdown
+                data-romo-ui-dropdown-popover-content-selector=".dropdown-custom-content">
+          DOM-loaded popover content
+        </button>
+        <div class="dropdown-custom-content" style="display:none">
+          <p>Custom DOM-loaded Dropdown content</p>
+        </div>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-xhr-call-url="..."<br />
+          data-romo-ui-dropdown><br />
+          data-romo-ui-dropdown-popover-content-selector=".some-custom-content-selector"
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        With click-open disabled<br />
+        (default click behavior left as is)
+        (popover can only be opened with custom JS)
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button href="./dropdowns/basic/show.html"
+                data-romo-ui-dropdown
+                data-romo-ui-dropdown-disable-click-toggle="true">
+          With click-open disabled
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-dropdown<br />
+          data-romo-ui-dropdown-disable-click-open="true"
+        </code>
+      </td>
+    </tr>
+
+    <tr><td colspan="100%">&nbsp;</td></tr>
+
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Auto Sizing<br />
+        (fills up the available screen size)<br />
+        (resize the window to demonstrate/test)
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button href="./dropdowns/overflow/show.html"
+                data-romo-ui-dropdown>
+          Auto Sizing
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-dropdown
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Max-Height Sizing<br />
+        (forces a given CSS max-height instead of filling available screen height)
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button href="./dropdowns/overflow/show.html"
+                data-romo-ui-dropdown
+                data-romo-ui-dropdown-popover-max-height="100px">
+          Max-Height Sizing
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-dropdown<br />
+          data-romo-ui-dropdown-popover-max-height="100px"
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Min-Height Sizing<br />
+        (forces a given CSS min-height even if content is shorter)<br />
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button href="./dropdowns/basic/show.html"
+                data-romo-ui-dropdown
+                data-romo-ui-dropdown-popover-min-height="300px">
+          Min-Height Sizing
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-dropdown<br />
+          data-romo-ui-dropdown-popover-min-height="300px"
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Fixed Sizing<br />
+        (forces a given CSS height even if content is shorter)
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button href="./dropdowns/basic/show.html"
+                data-romo-ui-dropdown
+                data-romo-ui-dropdown-popover-height="300px">
+          Fixed-Height Sizing
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-dropdown<br />
+          data-romo-ui-dropdown-popover-height="300px"
+        </code>
+      </td>
+    </tr>
+
+    <tr><td colspan="100%">&nbsp;</td></tr>
+
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Element-Width Sizing<br />
+        (popover sized to match the width of its element)
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button href="./dropdowns/basic/show.html"
+                data-romo-ui-dropdown
+                data-romo-ui-dropdown-popover-width="element">
+          Element-Width Sizing
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-dropdown<br />
+          data-romo-ui-dropdown-popover-width="element"
+        </code>
+      </td>
+    </tr>
+
+    <tr><td colspan="100%">&nbsp;</td></tr>
+
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Max-Width Sizing<br />
+        (forces a given CSS max-width instead of filling available screen width)
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button href="./dropdowns/overflow/show.html"
+                data-romo-ui-dropdown
+                data-romo-ui-dropdown-popover-max-width="100px">
+          Max-Width Sizing
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-dropdown<br />
+          data-romo-ui-dropdown-popover-max-width="100px"
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Min-Width Sizing<br />
+        (forces a given CSS min-width even if content is shorter)<br />
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button data-romo-ui-dropdown
+                data-romo-ui-dropdown-popover-min-width="500px"
+                data-romo-ui-dropdown-popover-content-selector=".dropdown-min-width-custom-content">
+          Min-Width Sizing
+        </button>
+        <div class="dropdown-min-width-custom-content" style="display:none">
+          <p>Narrow</p>
+        </div>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-dropdown<br />
+          data-romo-ui-dropdown-popover-min-width="500px"
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Fixed Sizing<br />
+        (forces a given CSS width even if content is shorter)
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button data-romo-ui-dropdown
+                data-romo-ui-dropdown-popover-width="300px"
+                data-romo-ui-dropdown-popover-content-selector=".dropdown-fixed-width-custom-content">
+          Fixed-Width Sizing
+        </button>
+        <div class="dropdown-fixed-width-custom-content" style="display:none">
+          <p>Narrow</p>
+        </div>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-dropdown<br />
+          data-romo-ui-dropdown-popover-width="300px"
+        </code>
+      </td>
+    </tr>
+
+    <tr><td colspan="100%">&nbsp;</td></tr>
+
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Custom Overflow Handling<br />
+        (allows setting custom overflow x/y settings)
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button href="./dropdowns/overflow/show.html"
+                data-romo-ui-dropdown
+                data-romo-ui-dropdown-popover-max-height="500px"
+                data-romo-ui-dropdown-popover-max-width="100px"
+                data-romo-ui-dropdown-popover-overflow-x="scroll"
+                data-romo-ui-dropdown-popover-overflow-y="scroll">
+          Custom Overflow Handling
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-dropdown<br />
+          data-romo-ui-dropdown-popover-max-height="500px"<br />
+          data-romo-ui-dropdown-popover-max-width="100px"<br />
+          data-romo-ui-dropdown-popover-overflow-x="scroll"<br />
+          data-romo-ui-dropdown-popover-overflow-y="scroll"<br />
+        </code>
+      </td>
+    </tr>
+  </table>
+</body>
+<script type="module" src="/support/romo-js/romo-ui.js"></script>
+<script type="module" src="/support/tests.js"></script>
+<script type="module">
+  Romo.onReady(function() {
+  })
+</script>
