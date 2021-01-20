@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" type="text/css" href="/support/romo-js/romo-ui.css"/>
+  <style>
+  </style>
+</head>
+<body style="padding-top: 25px">
+  <h1>Romo.UI.Tooltip system tests</h1>
+
+  <table style="table-layout: fixed; border-collapse: collapse; margin-left: 10px; width: 100%">
+    <colgroup>
+      <col style="width: 750px">
+      <col style="width: 200px">
+      <col style="width: *">
+    </colgroup>
+
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Default
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button data-romo-ui-tooltip
+                data-romo-ui-tooltip-content="Hellow<br />World">
+          Default
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-tooltip<br />
+          data-romo-ui-tooltip-content="Hellow<br />World"
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Delay 1 sec
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button data-romo-ui-tooltip
+                data-romo-ui-tooltip-content="Hellow<br />World"
+                data-romo-ui-tooltip-delay-ms="1000">
+          Delay 1 sec
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-tooltip<br />
+          data-romo-ui-tooltip-content="Hellow<br />World"<br />
+          data-romo-ui-tooltip-delay-ms="1000"
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Delay 1 sec on enter, Delay 2 secs on leave
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button data-romo-ui-tooltip
+                data-romo-ui-tooltip-content="Hellow<br />World"
+                data-romo-ui-tooltip-enter-delay-ms="1000"
+                data-romo-ui-tooltip-leave-delay-ms="2000">
+          1 sec enter, 2 sec leave
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-tooltip<br />
+          data-romo-ui-tooltip-content="Hellow<br />World"
+          data-romo-ui-tooltip-delay-ms="1000"<br />
+          data-romo-ui-tooltip-leave-delay-ms="2000"
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        XHR loaded Content (only loads once by default)
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button data-romo-ui-tooltip
+                data-romo-ui-tooltip-xhr
+                data-romo-ui-tooltip-xhr-call-url="./tooltips/show.html">
+          XHR content
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-tooltip<br />
+          data-romo-ui-tooltip-xhr<br />
+          data-romo-ui-tooltip-xhr-call-url="./tooltips/show.html"
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        XHR loaded Content (re-loaded each time bubble is shown)
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button data-romo-ui-tooltip
+                data-romo-ui-tooltip-xhr
+                data-romo-ui-tooltip-xhr-call-url="./tooltips/show.html"
+                data-romo-ui-tooltip-xhr-call-only-once="false">
+          XHR content
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-tooltip<br />
+          data-romo-ui-tooltip-xhr<br />
+          data-romo-ui-tooltip-xhr-call-url="./tooltips/show.html"<br />
+          data-romo-ui-tooltip-xhr-call-only-once="false"
+        </code>
+      </td>
+    </tr>
+
+
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Default Placement: top,left
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button data-romo-ui-tooltip
+                data-romo-ui-tooltip-content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas quis lectus eleifend, porttitor velit vitae, fringilla augue. Vestibulum a lorem sollicitudin, porta diam sit amet, porta dolor. Aenean lacinia, dui eget consequat laoreet, quam est faucibus turpis, eget euismod nisi odio eget risus. Cras sit amet tempor ipsum. Nam at nisl purus. Nam ac massa et nibh lacinia vestibulum. Aliquam tristique nisi a libero bibendum imperdiet. Ut auctor rhoncus arcu suscipit tincidunt. Vivamus pretium, lorem at viverra hendrerit, turpis ex blandit dui, at luctus velit nulla non purus. Suspendisse efficitur quam ut feugiat ultricies. Fusce consequat dolor mauris, non accumsan felis interdum rutrum."
+                data-romo-ui-tooltip-default-placement="top,left">
+          Top, Left
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-tooltip<br />
+          data-romo-ui-tooltip-content="Lorem ipsum ..."
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Default Placement: top,center
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button data-romo-ui-tooltip
+                data-romo-ui-tooltip-content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas quis lectus eleifend, porttitor velit vitae, fringilla augue. Vestibulum a lorem sollicitudin, porta diam sit amet, porta dolor. Aenean lacinia, dui eget consequat laoreet, quam est faucibus turpis, eget euismod nisi odio eget risus. Cras sit amet tempor ipsum. Nam at nisl purus. Nam ac massa et nibh lacinia vestibulum. Aliquam tristique nisi a libero bibendum imperdiet. Ut auctor rhoncus arcu suscipit tincidunt. Vivamus pretium, lorem at viverra hendrerit, turpis ex blandit dui, at luctus velit nulla non purus. Suspendisse efficitur quam ut feugiat ultricies. Fusce consequat dolor mauris, non accumsan felis interdum rutrum."
+                data-romo-ui-tooltip-default-placement="top,center">
+          Top, Center
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-tooltip<br />
+          data-romo-ui-tooltip-content="Lorem ipsum ..."<br />
+          data-romo-ui-tooltip-default-placement="top,center"
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Default Placement: top,right
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button data-romo-ui-tooltip
+                data-romo-ui-tooltip-content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas quis lectus eleifend, porttitor velit vitae, fringilla augue. Vestibulum a lorem sollicitudin, porta diam sit amet, porta dolor. Aenean lacinia, dui eget consequat laoreet, quam est faucibus turpis, eget euismod nisi odio eget risus. Cras sit amet tempor ipsum. Nam at nisl purus. Nam ac massa et nibh lacinia vestibulum. Aliquam tristique nisi a libero bibendum imperdiet. Ut auctor rhoncus arcu suscipit tincidunt. Vivamus pretium, lorem at viverra hendrerit, turpis ex blandit dui, at luctus velit nulla non purus. Suspendisse efficitur quam ut feugiat ultricies. Fusce consequat dolor mauris, non accumsan felis interdum rutrum."
+                data-romo-ui-tooltip-default-placement="top,right">
+          Top, Right
+        </button>
+      </td>
+
+
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-tooltip<br />
+          data-romo-ui-tooltip-content="Lorem ipsum ..."<br />
+          data-romo-ui-tooltip-default-placement="top,right"
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Default Placement: bottom,left
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button data-romo-ui-tooltip
+                data-romo-ui-tooltip-content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas quis lectus eleifend, porttitor velit vitae, fringilla augue. Vestibulum a lorem sollicitudin, porta diam sit amet, porta dolor. Aenean lacinia, dui eget consequat laoreet, quam est faucibus turpis, eget euismod nisi odio eget risus. Cras sit amet tempor ipsum. Nam at nisl purus. Nam ac massa et nibh lacinia vestibulum. Aliquam tristique nisi a libero bibendum imperdiet. Ut auctor rhoncus arcu suscipit tincidunt. Vivamus pretium, lorem at viverra hendrerit, turpis ex blandit dui, at luctus velit nulla non purus. Suspendisse efficitur quam ut feugiat ultricies. Fusce consequat dolor mauris, non accumsan felis interdum rutrum."
+                data-romo-ui-tooltip-default-placement="bottom,left">
+          Bottom, Left
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-tooltip<br />
+          data-romo-ui-tooltip-content="Lorem ipsum ..."<br />
+          data-romo-ui-tooltip-default-placement="bottom,left"
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Default Placement: bottom,center
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button data-romo-ui-tooltip
+                data-romo-ui-tooltip-content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas quis lectus eleifend, porttitor velit vitae, fringilla augue. Vestibulum a lorem sollicitudin, porta diam sit amet, porta dolor. Aenean lacinia, dui eget consequat laoreet, quam est faucibus turpis, eget euismod nisi odio eget risus. Cras sit amet tempor ipsum. Nam at nisl purus. Nam ac massa et nibh lacinia vestibulum. Aliquam tristique nisi a libero bibendum imperdiet. Ut auctor rhoncus arcu suscipit tincidunt. Vivamus pretium, lorem at viverra hendrerit, turpis ex blandit dui, at luctus velit nulla non purus. Suspendisse efficitur quam ut feugiat ultricies. Fusce consequat dolor mauris, non accumsan felis interdum rutrum."
+                data-romo-ui-tooltip-default-placement="bottom,center">
+          Bottom, Center
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-tooltip<br />
+          data-romo-ui-tooltip-content="Lorem ipsum ..."<br />
+          data-romo-ui-tooltip-default-placement="bottom,center"
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Default Placement: bottom,right
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button data-romo-ui-tooltip
+                data-romo-ui-tooltip-content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas quis lectus eleifend, porttitor velit vitae, fringilla augue. Vestibulum a lorem sollicitudin, porta diam sit amet, porta dolor. Aenean lacinia, dui eget consequat laoreet, quam est faucibus turpis, eget euismod nisi odio eget risus. Cras sit amet tempor ipsum. Nam at nisl purus. Nam ac massa et nibh lacinia vestibulum. Aliquam tristique nisi a libero bibendum imperdiet. Ut auctor rhoncus arcu suscipit tincidunt. Vivamus pretium, lorem at viverra hendrerit, turpis ex blandit dui, at luctus velit nulla non purus. Suspendisse efficitur quam ut feugiat ultricies. Fusce consequat dolor mauris, non accumsan felis interdum rutrum."
+                data-romo-ui-tooltip-default-placement="bottom,right">
+          Bottom, Right
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-tooltip<br />
+          data-romo-ui-tooltip-content="Lorem ipsum ..."<br />
+          data-romo-ui-tooltip-default-placement="bottom,right"
+        </code>
+      </td>
+    </tr>
+
+
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Default Placement: left,top
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button data-romo-ui-tooltip
+                data-romo-ui-tooltip-content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas quis lectus eleifend, porttitor velit vitae, fringilla augue. Vestibulum a lorem sollicitudin, porta diam sit amet, porta dolor. Aenean lacinia, dui eget consequat laoreet, quam est faucibus turpis, eget euismod nisi odio eget risus. Cras sit amet tempor ipsum. Nam at nisl purus. Nam ac massa et nibh lacinia vestibulum. Aliquam tristique nisi a libero bibendum imperdiet. Ut auctor rhoncus arcu suscipit tincidunt. Vivamus pretium, lorem at viverra hendrerit, turpis ex blandit dui, at luctus velit nulla non purus. Suspendisse efficitur quam ut feugiat ultricies. Fusce consequat dolor mauris, non accumsan felis interdum rutrum."
+                data-romo-ui-tooltip-default-placement="left,top">
+          Left, Top
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-tooltip<br />
+          data-romo-ui-tooltip-content="Lorem ipsum ..."<br />
+          data-romo-ui-tooltip-default-placement="left,top"
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Default Placement: left,middle
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button data-romo-ui-tooltip
+                data-romo-ui-tooltip-content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas quis lectus eleifend, porttitor velit vitae, fringilla augue. Vestibulum a lorem sollicitudin, porta diam sit amet, porta dolor. Aenean lacinia, dui eget consequat laoreet, quam est faucibus turpis, eget euismod nisi odio eget risus. Cras sit amet tempor ipsum. Nam at nisl purus. Nam ac massa et nibh lacinia vestibulum. Aliquam tristique nisi a libero bibendum imperdiet. Ut auctor rhoncus arcu suscipit tincidunt. Vivamus pretium, lorem at viverra hendrerit, turpis ex blandit dui, at luctus velit nulla non purus. Suspendisse efficitur quam ut feugiat ultricies. Fusce consequat dolor mauris, non accumsan felis interdum rutrum."
+                data-romo-ui-tooltip-default-placement="left,middle">
+          Left, Middle
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-tooltip<br />
+          data-romo-ui-tooltip-content="Lorem ipsum ..."<br />
+          data-romo-ui-tooltip-default-placement="left,middle"
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Default Placement: left,bottom
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button data-romo-ui-tooltip
+                data-romo-ui-tooltip-content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas quis lectus eleifend, porttitor velit vitae, fringilla augue. Vestibulum a lorem sollicitudin, porta diam sit amet, porta dolor. Aenean lacinia, dui eget consequat laoreet, quam est faucibus turpis, eget euismod nisi odio eget risus. Cras sit amet tempor ipsum. Nam at nisl purus. Nam ac massa et nibh lacinia vestibulum. Aliquam tristique nisi a libero bibendum imperdiet. Ut auctor rhoncus arcu suscipit tincidunt. Vivamus pretium, lorem at viverra hendrerit, turpis ex blandit dui, at luctus velit nulla non purus. Suspendisse efficitur quam ut feugiat ultricies. Fusce consequat dolor mauris, non accumsan felis interdum rutrum."
+                data-romo-ui-tooltip-default-placement="left,bottom">
+          Left, Bottom
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-tooltip<br />
+          data-romo-ui-tooltip-content="Lorem ipsum ..."<br />
+          data-romo-ui-tooltip-default-placement="left,bottom"
+        </code>
+      </td>
+    </tr>
+
+
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Default Placement: right,top
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button data-romo-ui-tooltip
+                data-romo-ui-tooltip-content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas quis lectus eleifend, porttitor velit vitae, fringilla augue. Vestibulum a lorem sollicitudin, porta diam sit amet, porta dolor. Aenean lacinia, dui eget consequat laoreet, quam est faucibus turpis, eget euismod nisi odio eget risus. Cras sit amet tempor ipsum. Nam at nisl purus. Nam ac massa et nibh lacinia vestibulum. Aliquam tristique nisi a libero bibendum imperdiet. Ut auctor rhoncus arcu suscipit tincidunt. Vivamus pretium, lorem at viverra hendrerit, turpis ex blandit dui, at luctus velit nulla non purus. Suspendisse efficitur quam ut feugiat ultricies. Fusce consequat dolor mauris, non accumsan felis interdum rutrum."
+                data-romo-ui-tooltip-default-placement="right,top">
+          Right, Top
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-tooltip<br />
+          data-romo-ui-tooltip-content="Lorem ipsum ..."<br />
+          data-romo-ui-tooltip-default-placement="right,top"
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Default Placement: right,middle
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button data-romo-ui-tooltip
+                data-romo-ui-tooltip-content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas quis lectus eleifend, porttitor velit vitae, fringilla augue. Vestibulum a lorem sollicitudin, porta diam sit amet, porta dolor. Aenean lacinia, dui eget consequat laoreet, quam est faucibus turpis, eget euismod nisi odio eget risus. Cras sit amet tempor ipsum. Nam at nisl purus. Nam ac massa et nibh lacinia vestibulum. Aliquam tristique nisi a libero bibendum imperdiet. Ut auctor rhoncus arcu suscipit tincidunt. Vivamus pretium, lorem at viverra hendrerit, turpis ex blandit dui, at luctus velit nulla non purus. Suspendisse efficitur quam ut feugiat ultricies. Fusce consequat dolor mauris, non accumsan felis interdum rutrum."
+                data-romo-ui-tooltip-default-placement="right,middle">
+          Right, Middle
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-tooltip<br />
+          data-romo-ui-tooltip-content="Lorem ipsum ..."<br />
+          data-romo-ui-tooltip-default-placement="right,middle"
+        </code>
+      </td>
+    </tr>
+    <tr>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        Default Placement: right,bottom
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <button data-romo-ui-tooltip
+                data-romo-ui-tooltip-content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas quis lectus eleifend, porttitor velit vitae, fringilla augue. Vestibulum a lorem sollicitudin, porta diam sit amet, porta dolor. Aenean lacinia, dui eget consequat laoreet, quam est faucibus turpis, eget euismod nisi odio eget risus. Cras sit amet tempor ipsum. Nam at nisl purus. Nam ac massa et nibh lacinia vestibulum. Aliquam tristique nisi a libero bibendum imperdiet. Ut auctor rhoncus arcu suscipit tincidunt. Vivamus pretium, lorem at viverra hendrerit, turpis ex blandit dui, at luctus velit nulla non purus. Suspendisse efficitur quam ut feugiat ultricies. Fusce consequat dolor mauris, non accumsan felis interdum rutrum."
+                data-romo-ui-tooltip-default-placement="right,bottom">
+          Right, Bottom
+        </button>
+      </td>
+      <td style="padding:10px; text-align: left; vertical-align: top; border: 1px solid #CCCCCC">
+        <code>
+          data-romo-ui-tooltip<br />
+          data-romo-ui-tooltip-content="Lorem ipsum ..."<br />
+          data-romo-ui-tooltip-default-placement="right,bottom"
+        </code>
+      </td>
+    </tr>
+  </table>
+</body>
+<script type="module" src="/support/romo-js/romo-ui.js"></script>
+<script type="module" src="/support/tests.js"></script>
+<script type="module">
+  Romo.onReady(function() {
+  })
+</script>

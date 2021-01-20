@@ -30,6 +30,7 @@
       <li><a href="./ui/nav_tests.html">Romo.UI.Nav</a></li>
       <li><a href="./ui/popover_tests.html">Romo.UI Popovers</a></li>
       <li><a href="./ui/popover_form_tests.html">Romo.UI Popover Forms</a></li>
+      <li><a href="./ui/tooltip_tests.html">Romo.UI.Tooltip</a></li>
     </ul>
   </div>
   <div data-test-output></div>
@@ -1425,6 +1426,27 @@
         test.assert(Romo.UI.PopoverForm !== undefined)
         test.assert(Romo.config.popovers.popoverFormEditableContentCSSClassFn() === '')
         test.assert(Romo.config.popovers.popoverFormEditableContentHoverCSSClassFn() === '')
+      })
+      tests.test('<code>Romo.UI.Tooltip</code>', function(test) {
+        test.assert(Romo.UI.Tooltip !== undefined)
+      })
+      tests.test('<code>Romo.UI.Tooltip.Bubble</code>', function(test) {
+        test.assert(Romo.UI.Tooltip.Bubble !== undefined)
+      })
+      tests.test('<code>Romo.UI.Tooltip.AvailableHeightPx</code>', function(test) {
+        test.assert(Romo.UI.Tooltip.AvailableHeightPx !== undefined)
+      })
+      tests.test('<code>Romo.UI.Tooltip.AvailableWidthPx</code>', function(test) {
+        test.assert(Romo.UI.Tooltip.AvailableWidthPx !== undefined)
+      })
+      tests.test('<code>Romo.UI.Tooltip.CSSPositionData</code>', function(test) {
+        test.assert(Romo.UI.Tooltip.CSSPositionData !== undefined)
+      })
+      tests.test('<code>Romo.UI.Tooltip.PlacementConfig</code>', function(test) {
+        test.assert(Romo.UI.Tooltip.PlacementConfig !== undefined)
+      })
+      tests.test('<code>Romo.UI.Tooltip.PlacementData</code>', function(test) {
+        test.assert(Romo.UI.Tooltip.PlacementData !== undefined)
       })
     })
   })
