@@ -243,23 +243,27 @@
     })
 
     tests.group('API: DOM Attributes', function() {
-      tests.test('<code>attr</code>, <code>setAttr</code>, <code>rmAttr</code>', function(test) {
+      tests.test('<code>attr</code>, <code>hasAttr</code>, <code>setAttr</code>, <code>rmAttr</code>', function(test) {
         const dom = Romo.f('[data-support-div-a]')
 
         const setAttrDOM = dom.setAttr('custom', 'value')
+        test.assert(dom.hasAttr('custom') === true)
         test.assert(dom.attr('custom') === 'value')
         test.assert(setAttrDOM === dom)
 
         const rmAttrDOM = dom.rmAttr('custom')
+        test.assert(dom.hasAttr('custom') === false)
         test.assert(dom.attr('custom') === null)
         test.assert(rmAttrDOM === dom)
       })
 
-      tests.test('<code>data</code>, <code>setData</code>, <code>rmData</code>', function(test) {
+      tests.test('<code>data</code>, <code>hasData</code>, <code>setData</code>, <code>rmData</code>', function(test) {
         const dom = Romo.f('[data-support-div-a]')
 
         const setDataDOM = dom.setData('custom', 'value')
+        test.assert(dom.hasData('custom') === true)
         test.assert(dom.data('custom') === 'value')
+        test.assert(dom.hasAttr('data-custom') === true)
         test.assert(dom.attr('data-custom') === 'value')
         test.assert(setDataDOM === dom)
 
@@ -283,7 +287,10 @@
         test.assert(dom.data('custom')['key'][0] === 'value')
 
         const rmDataDOM = dom.rmData('custom')
+        test.assert(dom.hasData('custom') === false)
         test.assert(dom.data('custom') === undefined)
+        test.assert(dom.hasAttr('data-custom') === false)
+        test.assert(dom.attr('data-custom') === null)
         test.assert(rmDataDOM === dom)
       })
 
