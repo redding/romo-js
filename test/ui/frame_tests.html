@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" type="text/css" href="/support/romo-js/romo-ui.css"/>
+  <style>
+  </style>
+</head>
+<body style="padding-top: 25px">
+  <h1>Romo.UI.Frame system tests</h1>
+
+  <p>Frames are components that manage stacks of content and pushing and popping content onto and off of that stack. You can manually push new content on or you can use an embedded Romo.XHR or an embedded XHR Romo.Form.</p>
+
+  <div style="min-height: 100px; border: 1px solid #CCCCCC; padding: 10px;"
+       data-romo-ui-frame
+       data-frame1
+       data-current-page-num="1">
+    <div>Frame: Page 1</div>
+  </div>
+  <div style="margin-top: 5px;">
+    <button data-frame1-start-spinner>Start Spinner</button>
+    <button data-frame1-stop-spinner>Stop Spinner</button>
+    <button data-frame1-push-content>Push Content</button>
+    <button data-frame1-pop-content>Pop Content</button>
+  </div>
+
+  <div style="min-height: 100px; border: 1px solid #CCCCCC; padding: 10px; margin-top:40px"
+       data-romo-ui-frame
+       data-xhr-wizard
+       data-current-page-num="1">
+    <div>XHR Wizard: Page 1</div>
+    <div>
+      <button disabled>Prev</button>
+      <button href="./frames/xhr_wizard/show2.html"
+              data-romo-ui-frame-xhr>Next</button>
+    </div>
+  </div>
+
+  <div style="min-height: 100px; border: 1px solid #CCCCCC; padding: 10px; margin-top:40px"
+       data-romo-ui-frame
+       data-editable-frame
+       data-current-page-num="1">
+    <div>Editable Frame</div>
+    <div>
+      <button href="./frames/editable/new.html"
+              data-romo-ui-frame-xhr>New</button>
+      <button href="./frames/editable/edit.html"
+              data-romo-ui-frame-xhr>Edit</button>
+    </div>
+  </div>
+</body>
+<script type="module" src="/support/romo-js/romo-ui.js"></script>
+<script type="module" src="/support/tests.js"></script>
+<script type="module">
+  Romo.onReady(function() {
+    const frameDOM = Romo.f('[data-frame1]')
+    frameDOM.on('Romo.UI.Frame:contentPopped', function(e, romoFrame) {
+      const currentPageNum = frameDOM.data('current-page-num')
+      if (currentPageNum > 1) {
+        frameDOM.setData('current-page-num', currentPageNum - 1)
+      }
+    })
+    Romo.f('[data-frame1-start-spinner]').on('click', function() {
+      frameDOM.trigger('Romo.UI.Frame:triggerSpinnerStart')
+    })
+    Romo.f('[data-frame1-stop-spinner]').on('click', function() {
+      frameDOM.trigger('Romo.UI.Frame:triggerSpinnerStop')
+    })
+    Romo.f('[data-frame1-push-content]').on('click', function() {
+      const currentPageNum = frameDOM.data('current-page-num')
+      const newContent =
+        `<div>Frame: Page ${currentPageNum + 1}</div>` +
+        '<button data-romo-ui-frame-pop>Back</button>'
+      frameDOM.trigger('Romo.UI.Frame:triggerPushContent', [newContent])
+      frameDOM.setData('current-page-num', currentPageNum + 1)
+    })
+    Romo.f('[data-frame1-pop-content]').on('click', function() {
+      const currentPageNum = frameDOM.data('current-page-num')
+      if (currentPageNum > 1) {
+        frameDOM.trigger('Romo.UI.Frame:triggerPopContent')
+      }
+    })
+  })
+</script>
