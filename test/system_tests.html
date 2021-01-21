@@ -306,7 +306,7 @@
         test.assert(rmStyleDOM === dom)
       })
 
-      tests.test('<code>batchSetStyle</code>', function(test) {
+      tests.test('<code>batchSetStyle</code>, <code>batchRmStyle</code>', function(test) {
         const dom = Romo.f('[data-support-div-a]')
 
         const batchSetStyleDOM =
@@ -318,10 +318,10 @@
         test.assert(dom.style('background') === 'green')
         test.assert(batchSetStyleDOM === dom)
 
-        dom.batchSetStyle({
-          'color':      '',
-          'background': ''
-        })
+        const batchRmStyleDOM = dom.batchRmStyle('color', 'background')
+        test.assert(dom.style('color') !== 'red')
+        test.assert(dom.style('background') !== 'green')
+        test.assert(batchRmStyleDOM === dom)
       })
 
       tests.test('<code>css</code>', function(test) {
