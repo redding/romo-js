@@ -6,6 +6,8 @@
   --romo-ui-tooltip-bubble-padding: 0.25rem;
   --romo-ui-tooltip-bubble-max-width: 640px;
   --romo-ui-tooltip-bubble-arrow-size: 0.375rem;
+  --romo-ui-tooltip-bubble-content-min-height: 1rem;
+  --romo-ui-tooltip-bubble-content-min-width: 1rem;
 }
 
 .romo-ui-tooltip-bubble {
@@ -24,10 +26,6 @@
 
 .romo-ui-tooltip-bubble:not([class*="romo-ui-tooltip-bubble-open"]) {
   display: none;
-}
-
-.romo-ui-tooltip-bubble-content {
-  position: relative;
 }
 
 .romo-ui-tooltip-bubble[data-position="top"][data-align="left"] {
@@ -94,7 +92,6 @@
   border-color: transparent;
   border-style: solid;
 }
-
 .romo-ui-tooltip-bubble[data-position="top"] [data-romo-ui-tooltip-bubble-arrow] {
   border-width: var(--romo-ui-tooltip-bubble-arrow-size) var(--romo-ui-tooltip-bubble-arrow-size) 0;
   bottom: calc(-1 * var(--romo-ui-tooltip-bubble-arrow-size));
@@ -135,4 +132,10 @@
 }
 .romo-ui-tooltip-bubble[data-align="right"] [data-romo-ui-tooltip-bubble-arrow] {
   right: 0;
+}
+
+[data-romo-ui-tooltip-bubble-content] {
+  min-height: var(--romo-ui-tooltip-bubble-content-min-height);
+  min-width: var(--romo-ui-tooltip-bubble-content-min-width);
+  position: relative;
 }
