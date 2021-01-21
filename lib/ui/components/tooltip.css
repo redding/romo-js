@@ -1,7 +1,6 @@
 :root {
   --romo-ui-tooltip-bubble-color: #FFFFFF;
   --romo-ui-tooltip-bubble-background-color: #000000;
-  --romo-ui-tooltip-bubble-border-width: #000000;
   --romo-ui-tooltip-bubble-border-radius: 0.25rem;
   --romo-ui-tooltip-bubble-max-border-radius: 0.25rem;
   --romo-ui-tooltip-bubble-padding: 0.25rem;

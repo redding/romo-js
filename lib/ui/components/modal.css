@@ -1,18 +1,23 @@
+:root {
+  --romo-ui-modal-popover-background-color: #FFFFFF;
+  --romo-ui-modal-popover-border: 1px solid #CCCCCC;
+  --romo-ui-modal-popover-box-shadow: 0 5px 10px #CCCCCC;
+  --romo-ui-modal-popover-spinner-size: 3rem;
+}
+
 [data-romo-ui-modal],
 [data-romo-ui-modal-close] {
   cursor: pointer;
 }
 
 .romo-ui-modal-popover {
-  background: #FFFFFF;
-  border-color: #CCCCCC;
-  border-style: solid;
-  border-width: 1px;
+  background: var(--romo-ui-modal-popover-background-color);
+  border: var(--romo-ui-modal-popover-border);
+  box-shadow: var(--romo-ui-modal-popover-box-shadow);
 
   float: left;
   position: fixed;
 
-  box-shadow: 0 5px 10px #CCCCCC;
 }
 
 .romo-ui-modal-popover:not([class*="romo-ui-modal-popover-open"]) {
@@ -25,7 +30,7 @@
 }
 
 .romo-ui-modal-popover-spinner {
-  height: 45px;
+  height: var(--romo-ui-modal-popover-spinner-size);
+  width: var(--romo-ui-modal-popover-spinner-size);
   margin: 0 auto;
-  width: 45px;
 }
