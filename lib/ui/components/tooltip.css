@@ -1,0 +1,139 @@
+:root {
+  --romo-ui-tooltip-bubble-color: #FFFFFF;
+  --romo-ui-tooltip-bubble-background-color: #000000;
+  --romo-ui-tooltip-bubble-border-width: #000000;
+  --romo-ui-tooltip-bubble-border-radius: 0.25rem;
+  --romo-ui-tooltip-bubble-max-border-radius: 0.25rem;
+  --romo-ui-tooltip-bubble-padding: 0.25rem;
+  --romo-ui-tooltip-bubble-max-width: 640px;
+  --romo-ui-tooltip-bubble-arrow-size: 0.375rem;
+}
+
+.romo-ui-tooltip-bubble {
+  color: var(--romo-ui-tooltip-bubble-color);
+  background: var(--romo-ui-tooltip-bubble-background-color);
+  border-color: var(--romo-ui-tooltip-bubble-background-color);
+  border-style: solid;
+  border-width: 1px;
+  border-radius: var(--romo-ui-tooltip-bubble-border-radius);
+  padding: var(--romo-ui-tooltip-bubble-padding);
+  max-width: var(--romo-ui-tooltip-bubble-max-width);
+
+  float: left;
+  position: absolute;
+}
+
+.romo-ui-tooltip-bubble:not([class*="romo-ui-tooltip-bubble-open"]) {
+  display: none;
+}
+
+.romo-ui-tooltip-bubble-content {
+  position: relative;
+}
+
+.romo-ui-tooltip-bubble[data-position="top"][data-align="left"] {
+  border-bottom-left-radius:
+    min(
+      var(--romo-ui-tooltip-bubble-border-radius),
+      var(--romo-ui-tooltip-bubble-max-border-radius)
+    );
+}
+.romo-ui-tooltip-bubble[data-position="top"][data-align="right"] {
+  border-bottom-right-radius:
+    min(
+      var(--romo-ui-tooltip-bubble-border-radius),
+      var(--romo-ui-tooltip-bubble-max-border-radius)
+    );
+}
+.romo-ui-tooltip-bubble[data-position="bottom"][data-align="left"] {
+  border-top-left-radius:
+    min(
+      var(--romo-ui-tooltip-bubble-border-radius),
+      var(--romo-ui-tooltip-bubble-max-border-radius)
+    );
+}
+.romo-ui-tooltip-bubble[data-position="bottom"][data-align="right"] {
+  border-top-right-radius:
+    min(
+      var(--romo-ui-tooltip-bubble-border-radius),
+      var(--romo-ui-tooltip-bubble-max-border-radius)
+    );
+}
+.romo-ui-tooltip-bubble[data-position="left"][data-align="top"] {
+  border-top-right-radius:
+    min(
+      var(--romo-ui-tooltip-bubble-border-radius),
+      var(--romo-ui-tooltip-bubble-max-border-radius)
+    );
+}
+.romo-ui-tooltip-bubble[data-position="left"][data-align="bottom"] {
+  border-bottom-right-radius:
+    min(
+      var(--romo-ui-tooltip-bubble-border-radius),
+      var(--romo-ui-tooltip-bubble-max-border-radius)
+    );
+}
+.romo-ui-tooltip-bubble[data-position="right"][data-align="top"] {
+  border-top-left-radius:
+    min(
+      var(--romo-ui-tooltip-bubble-border-radius),
+      var(--romo-ui-tooltip-bubble-max-border-radius)
+    );
+}
+.romo-ui-tooltip-bubble[data-position="right"][data-align="bottom"] {
+  border-bottom-left-radius:
+    min(
+      var(--romo-ui-tooltip-bubble-border-radius),
+      var(--romo-ui-tooltip-bubble-max-border-radius)
+    );
+}
+
+[data-romo-ui-tooltip-bubble-arrow] {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+}
+
+.romo-ui-tooltip-bubble[data-position="top"] [data-romo-ui-tooltip-bubble-arrow] {
+  border-width: var(--romo-ui-tooltip-bubble-arrow-size) var(--romo-ui-tooltip-bubble-arrow-size) 0;
+  bottom: calc(-1 * var(--romo-ui-tooltip-bubble-arrow-size));
+  border-top-color: inherit;
+}
+.romo-ui-tooltip-bubble[data-position="bottom"] [data-romo-ui-tooltip-bubble-arrow] {
+  border-width: 0 var(--romo-ui-tooltip-bubble-arrow-size) var(--romo-ui-tooltip-bubble-arrow-size);
+  top: calc(-1 * var(--romo-ui-tooltip-bubble-arrow-size));
+  border-bottom-color: inherit;
+}
+.romo-ui-tooltip-bubble[data-position="left"] [data-romo-ui-tooltip-bubble-arrow] {
+  border-width: var(--romo-ui-tooltip-bubble-arrow-size) 0 var(--romo-ui-tooltip-bubble-arrow-size) var(--romo-ui-tooltip-bubble-arrow-size);
+  right: calc(-1 * var(--romo-ui-tooltip-bubble-arrow-size));
+  border-left-color: inherit;
+}
+.romo-ui-tooltip-bubble[data-position="right"] [data-romo-ui-tooltip-bubble-arrow] {
+  border-width: var(--romo-ui-tooltip-bubble-arrow-size) var(--romo-ui-tooltip-bubble-arrow-size) var(--romo-ui-tooltip-bubble-arrow-size) 0;
+  left: calc(-1 * var(--romo-ui-tooltip-bubble-arrow-size));
+  border-right-color: inherit;
+}
+
+.romo-ui-tooltip-bubble[data-align="top"] [data-romo-ui-tooltip-bubble-arrow] {
+  top: 0;
+}
+.romo-ui-tooltip-bubble[data-align="middle"] [data-romo-ui-tooltip-bubble-arrow] {
+  top: 50%;
+  margin-top: calc(-1 * var(--romo-ui-tooltip-bubble-arrow-size));
+}
+.romo-ui-tooltip-bubble[data-align="bottom"] [data-romo-ui-tooltip-bubble-arrow] {
+  bottom: 0;
+}
+.romo-ui-tooltip-bubble[data-align="left"] [data-romo-ui-tooltip-bubble-arrow] {
+  left: 0;
+}
+.romo-ui-tooltip-bubble[data-align="center"] [data-romo-ui-tooltip-bubble-arrow] {
+  left: 50%;
+  margin-left: calc(-1 * var(--romo-ui-tooltip-bubble-arrow-size));
+}
+.romo-ui-tooltip-bubble[data-align="right"] [data-romo-ui-tooltip-bubble-arrow] {
+  right: 0;
+}
