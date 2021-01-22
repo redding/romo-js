@@ -1223,13 +1223,29 @@
         var pageState
 
         pageState = new Romo.PageState()
-
-        test.assert(pageState.locationPathname === window.location.pathname)
+        test.assert(pageState.pathname === window.location.pathname)
 
         pageState = new Romo.PageState('http://example.org/something?key=value')
+        test.assert(pageState.pathname === '/something')
+        test.assert(pageState.search == 'key=value')
 
-        test.assert(pageState.locationPathname === '/something')
-        test.assert(pageState.searchParams.toString() == 'key=value')
+        // TODO: add more tests
+      })
+    })
+
+    tests.group('<code>Romo.Location</code>', function() {
+      tests.test('<code>Romo.Location</code>', function(test) {
+        var location
+
+        location =
+          new Romo.Location({
+            pathname: window.location.pathname
+          })
+        test.assert(location.pathname === window.location.pathname)
+        test.assert(location.search === window.location.search)
+        test.assert(location.toString() === location.pathname)
+        test.assert(location.toObject().pathname === location.pathname)
+        test.assert(location.toObject().search === location.search)
 
         // TODO: add more tests
       })
