@@ -3,6 +3,12 @@
 <head>
   <link rel="stylesheet" type="text/css" href="/support/romo-js/romo.css"/>
   <style>
+    .active {
+      font-weight: bold;
+    }
+    .active-link-li {
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -19,7 +25,8 @@
     </li>
   </ul>
   <h3>With customizations</h3>
-  <ul data-romo-ui-nav
+  <ul data-nav-with-customizations
+      data-romo-ui-nav
       data-romo-ui-nav-active-css-class="active-link-li">
     <li data-romo-ui-nav-link
         data-romo-ui-nav-link-url="/ui/nav_tests.html">
@@ -30,13 +37,54 @@
       <a href="/some-other-page">Some Other Page</a>
     </li>
   </ul>
+  <h3>Nested URLs</h3>
+  <ul data-nested-nav
+      data-romo-ui-nav>
+    <li>
+      <a href="/ui/nav"
+         data-romo-ui-nav-link>Nav Root Dir</a>
+    </li>
+    <li>
+      <a href="/ui/nav"
+         data-romo-ui-nav-link
+         data-romo-ui-nav-link-activate-for-nested="false">
+        Nav Root Dir (not activated for nested links)
+      </a>
+    </li>
+    <li>
+      <a href="/ui/nav?thing=value">Nav Root Specific Page</a>
+    </li>
+    <li>
+      <a href="/ui/nav/page1"
+         data-romo-ui-nav-link>Nav Root Nested Page 1</a>
+    </li>
+    <li>
+      <a href="/ui/nav/page2"
+         data-romo-ui-nav-link>Nav Root Nested Page 2</a>
+    </li>
+  </ul>
 </body>
 <script type="module" src="/support/romo-js/romo-ui.js"></script>
 <script type="module" src="/support/tests.js"></script>
 <script type="module">
   Romo.onReady(function() {
-    const lastDOM = Romo.f('[data-romo-ui-nav]').last
+    const lastDOM = Romo.f('[data-nav-with-customizations]')
     lastDOM.setData('romo-ui-nav-active-css-class', 'active-link-li-alt')
     lastDOM.trigger('Romo.UI.Nav:triggerRefresh')
+
+    var nestedPageState = new Romo.PageState()
+    nestedPageState.doBindPop(Romo.bind(function(pageState) {
+      nestedPageState = pageState
+      nestedDOM.trigger('Romo.UI.Nav:triggerRefresh')
+    }, this))
+    nestedPageState.doReplace()
+
+    const nestedDOM = Romo.f('[data-nested-nav]')
+    nestedDOM.find('a').on('click', Romo.bind(function(e) {
+      e.preventDefault()
+      nestedPageState.location = Romo.dom(e.target).closest('a').attr('href')
+      nestedPageState.doPush()
+      nestedDOM.trigger('Romo.UI.Nav:triggerRefresh')
+    }, this))
   })
 </script>

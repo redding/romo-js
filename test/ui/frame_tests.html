@@ -17,8 +17,6 @@
     <div>Frame: Page 1</div>
   </div>
   <div style="margin-top: 5px;">
-    <button data-frame1-start-spinner>Start Spinner</button>
-    <button data-frame1-stop-spinner>Stop Spinner</button>
     <button data-frame1-push-content>Push Content</button>
     <button data-frame1-pop-content>Pop Content</button>
   </div>
@@ -31,7 +29,8 @@
     <div>
       <button disabled>Prev</button>
       <button href="./frames/xhr_wizard/show2.html"
-              data-romo-ui-frame-xhr>Next</button>
+              data-romo-ui-frame-xhr
+              data-romo-spinner>Next</button>
     </div>
   </div>
 
@@ -42,9 +41,11 @@
     <div>Editable Frame</div>
     <div>
       <button href="./frames/editable/new.html"
-              data-romo-ui-frame-xhr>New</button>
+              data-romo-ui-frame-xhr
+              data-romo-spinner>New</button>
       <button href="./frames/editable/edit.html"
-              data-romo-ui-frame-xhr>Edit</button>
+              data-romo-ui-frame-xhr
+              data-romo-spinner>Edit</button>
     </div>
   </div>
 </body>
@@ -58,12 +59,6 @@
       if (currentPageNum > 1) {
         frameDOM.setData('current-page-num', currentPageNum - 1)
       }
-    })
-    Romo.f('[data-frame1-start-spinner]').on('click', function() {
-      frameDOM.trigger('Romo.UI.Frame:triggerSpinnerStart')
-    })
-    Romo.f('[data-frame1-stop-spinner]').on('click', function() {
-      frameDOM.trigger('Romo.UI.Frame:triggerSpinnerStop')
     })
     Romo.f('[data-frame1-push-content]').on('click', function() {
       const currentPageNum = frameDOM.data('current-page-num')
