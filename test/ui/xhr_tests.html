@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" type="text/css" href="/support/romo-js/romo-ui.css"/>
+  <style>
+  </style>
+</head>
+<body style="padding-top: 25px">
+  <h1>Romo.XHR system tests</h1>
+  <button href="https://api.github.com/repos/redding/romo-js"
+          data-romo-xhr
+          data-romo-xhr-call-response-type="json">
+    Example 1 (GET JSON via href)
+  </button>
+  <br/><br/>
+  <button data-romo-xhr
+          data-romo-xhr-call-response-type="json"
+          data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js">
+    Example 2 (GET JSON via data attr)
+  </button>
+  <br/><br/>
+  <button data-romo-xhr
+          data-romo-xhr-call-response-type="text"
+          data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js">
+    Example 3 (text response type)
+  </button>
+  <br/><br/>
+  <button data-romo-xhr
+          data-romo-xhr-call-method="post"
+          data-romo-xhr-call-response-type="json"
+          data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js">
+    Example 4 (POST, should fail)
+  </button>
+  <br/><br/>
+  <button data-example-5-abort
+          data-romo-xhr
+          data-romo-xhr-call-response-type="json"
+          data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js">
+    Example 5 (call, then abort)
+  </button>
+  <br/><br/>
+  <button data-romo-xhr
+          data-romo-xhr-call-on="underfined"
+          data-romo-xhr-call-response-type="json"
+          data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js">
+    Example 6 (clicking this does nothing)
+  </button>
+  <button data-example-6-trigger-button>
+    Trigger Example 6
+  </button>
+  <br/><br/>
+  <button data-romo-xhr
+          data-romo-xhr-call-only-once="true"
+          data-romo-xhr-call-response-type="json"
+          data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js">
+    Example 7 (call only once)
+  </button>
+  <br/><br/>
+  <button data-romo-xhr
+          data-romo-xhr-confirm="Are you sure?"
+          data-romo-xhr-call-response-type="json"
+          data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js">
+    Example 8 (with confirmation)
+  </button>
+  <br/><br/>
+  <button data-romo-xhr
+          data-romo-xhr-disable-with-spinner="true"
+          data-romo-xhr-call-response-type="json"
+          data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js">
+    Example 9 (disable with spinner)
+  </button>
+  <button data-example-8-enable-button>
+    Enable Example 8
+  </button>
+  <br/><br/>
+  <button data-romo-xhr
+          data-romo-xhr-reload-page-on="success"
+          data-romo-xhr-call-response-type="json"
+          data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js">
+    Example 10 (reload on success)
+  </button>
+  <br/><br/>
+  <button data-romo-xhr
+          data-romo-xhr-reload-page-on="error"
+          data-romo-xhr-call-method="post"
+          data-romo-xhr-call-response-type="json"
+          data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js">
+    Example 11 (reload on error)
+  </button>
+  <br/><br/>
+  <button data-romo-xhr
+          data-romo-xhr-disabled="true"
+          data-romo-xhr-call-response-type="json"
+          data-romo-xhr-call-url="https://api.github.com/repos/redding/romo-js">
+    Example 12 (disabled)
+  </button>
+  <br/><br/>
+  <h3>XHR status</h3>
+  <div data-xhr-status>
+  </div>
+</body>
+<script type="module" src="/support/romo-js/romo-ui.js"></script>
+<script type="module" src="/support/tests.js"></script>
+<script type="module">
+  Romo.onReady(function() {
+    const statusDOM = Romo.f('[data-xhr-status]')
+
+    Romo
+      .f('[data-romo-xhr]')
+      .on('Romo.XHR:callQueueStart', function(e, romoXHR) {
+        statusDOM.clearHTML()
+        statusDOM.appendHTML('<div>-> queue start</div>')
+      })
+      .on('Romo.XHR:callStart', function(e, romoXHR, xhr) {
+        statusDOM.appendHTML('<div>-> start</div>')
+      })
+      .on('Romo.XHR:callProgress', function(e, romoXHR, xhr) {
+        statusDOM.appendHTML('<div>-> progress</div>')
+      })
+      .on('Romo.XHR:callSuccess', function(e, romoXHR, data, xhr) {
+        statusDOM.appendHTML('<div>-> success</div>')
+        statusDOM.appendHTML(`<code>${data.toString()}</code>`)
+        console.log('-> success, data:')
+        console.log(data)
+      })
+      .on('Romo.XHR:callError', function(e, romoXHR, data, xhr) {
+        statusDOM.appendHTML('<div>-> error</div>')
+        statusDOM.appendHTML(`<code>${data.toString()}</code>`)
+        console.log('-> error, data:')
+        console.log(data)
+      })
+      .on('Romo.XHR:callAbort', function(e, romoXHR, xhr) {
+        statusDOM.appendHTML('<div>-> abort</div>')
+      })
+      .on('Romo.XHR:callTimeout', function(e, romoXHR, xhr) {
+        statusDOM.appendHTML('<div>-> timeout</div>')
+      })
+      .on('Romo.XHR:callEnd', function(e, romoXHR, xhr) {
+        statusDOM.appendHTML('<div>-> end</div>')
+      })
+      .on('Romo.XHR:callQueueEnd', function(e, romoXHR) {
+        statusDOM.appendHTML('<div>-> queue end</div>')
+      })
+
+    Romo.f('[data-example-5-abort]').on('click', function(e) {
+      Romo.dom(e.target).trigger('Romo.XHR:triggerAbort')
+    })
+
+    Romo.f('[data-example-6-trigger-button]').on('click', function(e) {
+      Romo.dom(e.target).prev('[data-romo-xhr]').trigger('Romo.XHR:triggerCall')
+    })
+
+    Romo.f('[data-example-8-enable-button]').on('click', function(e) {
+      Romo.dom(e.target).prev('[data-romo-xhr]').trigger('Romo.XHR:triggerEnable')
+    })
+  })
+</script>

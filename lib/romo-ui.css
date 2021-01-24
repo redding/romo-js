@@ -1,7 +1,21 @@
-@import './romo.css';
-@import './ui/utilities/cursor.css';
-@import './ui/components/dropdown.css';
-@import './ui/components/local_time.css';
-@import './ui/components/modal.css';
-@import './ui/components/sortable.css';
-@import './ui/components/tooltip.css';
+@import './ui/cursor.css';
+@import './ui/dropdown.css';
+@import './ui/local_time.css';
+@import './ui/modal.css';
+@import './ui/sortable.css';
+@import './ui/spinner.css';
+@import './ui/tooltip.css';
+
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body, body * {
+  box-sizing: border-box;
+}
