@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" type="text/css" href="/support/romo-js/romo-ui.css"/>
+  <style>
+  </style>
+</head>
+<body style="padding-top: 25px">
+  <h1>Romo.UI.LocalTime system tests</h1>
+
+  <h3>date tag with no options</h3>
+  <div>
+    2021-01-23T01:23:21Z -->
+    <date data-romo-ui-local-time
+          data-romo-ui-local-time-utc-value="2021-01-23T01:23:21Z">
+    </date>
+  </div>
+
+  <h3>time tag with no options</h3>
+  <div>
+    2021-01-23T01:23:21Z -->
+    <time data-romo-ui-local-time
+          data-romo-ui-local-time-utc-value="2021-01-23T01:23:21Z">
+    </time>
+  </div>
+
+  <h3>datetime tag with no options</h3>
+  <div>
+    2021-01-23T01:23:21Z -->
+    <datetime data-romo-ui-local-time
+              data-romo-ui-local-time-utc-value="2021-01-23T01:23:21Z">
+    </datetime>
+  </div>
+
+  <h3>time tag with 'America/Los_Angeles' timezone</h3>
+  <div>
+    2021-01-23T01:23:21Z -->
+    <time data-romo-ui-local-time
+          data-romo-ui-local-time-utc-value="2021-01-23T01:23:21Z"
+          data-romo-ui-local-time-time-zone="America/Los_Angeles">
+    </time>
+  </div>
+
+  <h3>time tag with 'America/Chicago' timezone</h3>
+  <div>
+    2021-01-23T01:23:21Z -->
+    <time data-romo-ui-local-time
+          data-romo-ui-local-time-utc-value="2021-01-23T01:23:21Z"
+          data-romo-ui-local-time-time-zone="America/Chicago">
+    </time>
+  </div>
+
+  <h3>datetime tag with 'en-GB' locale</h3>
+  <div>
+    2021-01-23T01:23:21Z -->
+    <datetime data-romo-ui-local-time
+              data-romo-ui-local-time-utc-value="2021-01-23T01:23:21Z"
+              data-romo-ui-local-time-locale="en-GB">
+    </datetime>
+  </div>
+
+
+
+
+
+
+  <h3>date tag shown as the title</h3>
+  <div>
+    2021-01-23T01:23:21Z -->
+    <date data-romo-ui-local-time
+          data-romo-ui-local-time-utc-value="2021-01-23T01:23:21Z"
+          data-romo-ui-local-time-show-as-title="true">
+      About X units of time ago.
+    </date>
+  </div>
+
+  <h3>date tag shown as a Romo Tooltip</h3>
+  <div>
+    2021-01-23T01:23:21Z -->
+    <date data-romo-ui-local-time
+          data-romo-ui-local-time-utc-value="2021-01-23T01:23:21Z"
+          data-romo-ui-tooltip>
+      About X units of time ago.
+    </date>
+  </div>
+  <h3>date tag with:</h3>
+  <ul>
+    <li>data-romo-ui-local-time-weekday-format="short"</li>
+    <li>data-romo-ui-local-time-year-format="2-digit"</li>
+    <li>data-romo-ui-local-time-month-format="2-digit"</li>
+    <li>data-romo-ui-local-time-day-format="2-digit"</li>
+  </ul>
+  <div>
+    2021-01-23T01:23:21Z -->
+    <date data-romo-ui-local-time
+          data-romo-ui-local-time-weekday-format="short"
+          data-romo-ui-local-time-year-format="2-digit"
+          data-romo-ui-local-time-month-format="2-digit"
+          data-romo-ui-local-time-day-format="2-digit"
+          data-romo-ui-local-time-utc-value="2021-01-23T01:23:21Z">
+    </date>
+  </div>
+
+  <h3>date tag with:</h3>
+  <ul>
+    <li>data-romo-ui-local-time-era-format="narrow"</li>
+    <li>data-romo-ui-local-time-weekday-format="narrow"</li>
+    <li>data-romo-ui-local-time-year-format="2-digit"</li>
+    <li>data-romo-ui-local-time-month-format="2-digit"</li>
+    <li>data-romo-ui-local-time-day-format="2-digit"</li>
+  </ul>
+  <div>
+    2021-01-23T01:23:21Z -->
+    <date data-romo-ui-local-time
+          data-romo-ui-local-time-era-format="narrow"
+          data-romo-ui-local-time-weekday-format="narrow"
+          data-romo-ui-local-time-year-format="2-digit"
+          data-romo-ui-local-time-month-format="2-digit"
+          data-romo-ui-local-time-day-format="2-digit"
+          data-romo-ui-local-time-utc-value="2021-01-23T01:23:21Z">
+    </date>
+  </div>
+
+  <h3>date tag with:</h3>
+  <ul>
+    <li>data-romo-ui-local-time-era-format="short"</li>
+    <li>data-romo-ui-local-time-weekday-format="short"</li>
+    <li>data-romo-ui-local-time-year-format="numeric"</li>
+    <li>data-romo-ui-local-time-month-format="numeric"</li>
+    <li>data-romo-ui-local-time-day-format="numeric"</li>
+  </ul>
+  <div>
+    2021-01-23T01:23:21Z -->
+    <date data-romo-ui-local-time
+          data-romo-ui-local-time-era-format="short"
+          data-romo-ui-local-time-weekday-format="short"
+          data-romo-ui-local-time-year-format="numeric"
+          data-romo-ui-local-time-month-format="numeric"
+          data-romo-ui-local-time-day-format="numeric"
+          data-romo-ui-local-time-utc-value="2021-01-23T01:23:21Z">
+    </date>
+  </div>
+
+  <h3>date tag with:</h3>
+  <ul>
+    <li>data-romo-ui-local-time-era-format="long"</li>
+    <li>data-romo-ui-local-time-weekday-format="long"</li>
+    <li>data-romo-ui-local-time-year-format="numeric"</li>
+    <li>data-romo-ui-local-time-month-format="long"</li>
+    <li>data-romo-ui-local-time-day-format="numeric"</li>
+  </ul>
+  <div>
+    2021-01-23T01:23:21Z -->
+    <date data-romo-ui-local-time
+          data-romo-ui-local-time-era-format="long"
+          data-romo-ui-local-time-weekday-format="long"
+          data-romo-ui-local-time-year-format="numeric"
+          data-romo-ui-local-time-month-format="long"
+          data-romo-ui-local-time-day-format="numeric"
+          data-romo-ui-local-time-utc-value="2021-01-23T01:23:21Z">
+    </date>
+  </div>
+
+
+
+
+
+
+  <h3>time tag with no options</h3>
+  <div>
+    2021-01-23T01:23:21Z -->
+    <time data-romo-ui-local-time
+          data-romo-ui-local-time-utc-value="2021-01-23T01:23:21Z">
+    </time>
+  </div>
+
+  <h3>time tag shown as the title</h3>
+  <div>
+    2021-01-23T01:23:21Z -->
+    <time data-romo-ui-local-time
+          data-romo-ui-local-time-utc-value="2021-01-23T01:23:21Z"
+          data-romo-ui-local-time-show-as-title="true">
+      About X units of time ago.
+    </time>
+  </div>
+
+  <h3>time tag shown as a Romo Tooltip</h3>
+  <div>
+    2021-01-23T01:23:21Z -->
+    <time data-romo-ui-local-time
+          data-romo-ui-local-time-utc-value="2021-01-23T01:23:21Z"
+          data-romo-ui-tooltip>
+      About X units of time ago.
+    </time>
+  </div>
+
+  <h3>time tag with:</h3>
+  <ul>
+    <li>data-romo-ui-local-time-day-period-format="narrow"</li>
+    <li>data-romo-ui-local-time-hour-format="2-digit"</li>
+    <li>data-romo-ui-local-time-minute-format="2-digit"</li>
+    <li>data-romo-ui-local-time-second-format="2-digit"</li>
+    <li>data-romo-ui-local-time-time-zone-name-format="short"</li>
+  </ul>
+  <div>
+    2021-01-23T01:23:21Z -->
+    <time data-romo-ui-local-time
+          data-romo-ui-local-time-day-period-format="narrow"
+          data-romo-ui-local-time-hour-format="2-digit"
+          data-romo-ui-local-time-minute-format="2-digit"
+          data-romo-ui-local-time-second-format="2-digit"
+          data-romo-ui-local-time-time-zone-name-format="short"
+          data-romo-ui-local-time-utc-value="2021-01-23T01:23:21Z">
+    </time>
+  </div>
+
+  <h3>time tag with:</h3>
+  <ul>
+    <li>data-romo-ui-local-time-day-period-format="short"</li>
+    <li>data-romo-ui-local-time-hour-format="2-digit"</li>
+    <li>data-romo-ui-local-time-minute-format="2-digit"</li>
+    <li>data-romo-ui-local-time-second-format="2-digit"</li>
+    <li>data-romo-ui-local-time-time-zone-name-format="short"</li>
+  </ul>
+  <div>
+    2021-01-23T01:23:21Z -->
+    <time data-romo-ui-local-time
+          data-romo-ui-local-time-day-period-format="short"
+          data-romo-ui-local-time-hour-format="2-digit"
+          data-romo-ui-local-time-minute-format="2-digit"
+          data-romo-ui-local-time-second-format="2-digit"
+          data-romo-ui-local-time-time-zone-name-format="short"
+          data-romo-ui-local-time-utc-value="2021-01-23T01:23:21Z">
+    </time>
+  </div>
+
+  <h3>time tag with:</h3>
+  <ul>
+    <li>data-romo-ui-local-time-day-period-format="long"</li>
+    <li>data-romo-ui-local-time-hour-format="numeric"</li>
+    <li>data-romo-ui-local-time-minute-format="numeric"</li>
+    <li>data-romo-ui-local-time-second-format="numeric"</li>
+    <li>data-romo-ui-local-time-time-zone-name-format="long"</li>
+  </ul>
+  <div>
+    2021-01-23T01:23:21Z -->
+    <time data-romo-ui-local-time
+          data-romo-ui-local-time-day-period-format="long"
+          data-romo-ui-local-time-hour-format="numeric"
+          data-romo-ui-local-time-minute-format="numeric"
+          data-romo-ui-local-time-second-format="numeric"
+          data-romo-ui-local-time-time-zone-name-format="long"
+          data-romo-ui-local-time-utc-value="2021-01-23T01:23:21Z">
+    </time>
+  </div>
+</body>
+<script type="module" src="/support/romo-js/romo-ui.js"></script>
+<script type="module" src="/support/tests.js"></script>
+<script type="module">
+  Romo.onReady(function() {
+  })
+</script>
