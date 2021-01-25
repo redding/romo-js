@@ -15,24 +15,21 @@
     }
   </style>
 </head>
-<body>
+<body style="padding-top: 25px">
   <h1>Romo JS system tests</h1>
   <div data-test-component-pages>
-    <h3>DOM Components</h3>
-    <ul>
-      <li><a href="./dom_components/form_tests.html">Romo.Form</a></li>
-      <li><a href="./dom_components/spinner_tests.html">Romo.Spinner</a></li>
-      <li><a href="./dom_components/xhr_tests.html">Romo.XHR</a></li>
-    </ul>
     <h3>UI Components</h3>
     <ul>
+      <li><a href="./ui/form_tests.html">Romo.UI.Form</a></li>
       <li><a href="./ui/frame_tests.html">Romo.UI.Frame</a></li>
       <li><a href="./ui/local_time_tests.html">Romo.UI.LocalTime</a></li>
       <li><a href="./ui/nav_tests.html">Romo.UI.Nav</a></li>
       <li><a href="./ui/popover_tests.html">Romo.UI Popovers</a></li>
       <li><a href="./ui/popover_form_tests.html">Romo.UI Popover Forms</a></li>
       <li><a href="./ui/sortable_tests.html">Romo.UI.Sortable</a></li>
+      <li><a href="./ui/spinner_tests.html">Romo.UI.Spinner</a></li>
       <li><a href="./ui/tooltip_tests.html">Romo.UI.Tooltip</a></li>
+      <li><a href="./ui/xhr_tests.html">Romo.UI.XHR</a></li>
     </ul>
   </div>
   <div data-test-output></div>
@@ -1386,11 +1383,17 @@
       tests.test('<code>Romo.DOMComponent</code>', function(test) {
         var romoDOM
 
-        romoDOM = new Romo.DOMComponent(Romo.f('body'))
+        romoDOM = new Romo.DOMComponent({ dom: Romo.f('body') })
         test.assert(romoDOM.dom.isRomoDOM === true)
 
-        romoDOM = new Romo.DOMComponent(Romo.f('body').firstElement)
+        romoDOM = new Romo.DOMComponent({ dom: Romo.f('body').firstElement })
         test.assert(romoDOM.dom.isRomoDOM === true)
+      })
+    })
+
+    tests.group('<code>Romo.PopoverStack</code>', function() {
+      tests.test('<code>Romo.PopoverStack</code>', function(test) {
+        test.assert(Romo.PopoverStack !== undefined)
       })
     })
 
@@ -1439,9 +1442,6 @@
       })
       tests.test('<code>Romo.UI.Nav</code>', function(test) {
         test.assert(Romo.UI.Nav !== undefined)
-      })
-      tests.test('<code>Romo.UI.PopoverStack</code>', function(test) {
-        test.assert(Romo.UI.PopoverStack !== undefined)
       })
       tests.test('<code>Romo.UI.Popover</code>', function(test) {
         test.assert(Romo.UI.Popover !== undefined)
