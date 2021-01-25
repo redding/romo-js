@@ -27,6 +27,7 @@
     <h3>UI Components</h3>
     <ul>
       <li><a href="./ui/frame_tests.html">Romo.UI.Frame</a></li>
+      <li><a href="./ui/local_time_tests.html">Romo.UI.LocalTime</a></li>
       <li><a href="./ui/nav_tests.html">Romo.UI.Nav</a></li>
       <li><a href="./ui/popover_tests.html">Romo.UI Popovers</a></li>
       <li><a href="./ui/popover_form_tests.html">Romo.UI Popover Forms</a></li>
@@ -245,6 +246,11 @@
     })
 
     tests.group('API: DOM Attributes', function() {
+      tests.test('<code>tagName</code>', function(test) {
+        const dom = Romo.f('[data-support-div-a]')
+        test.assert(dom.tagName() === 'div')
+      })
+
       tests.test('<code>attr</code>, <code>hasAttr</code>, <code>setAttr</code>, <code>rmAttr</code>', function(test) {
         const dom = Romo.f('[data-support-div-a]')
 
@@ -1412,6 +1418,9 @@
       })
       tests.test('<code>Romo.UI.Frame</code>', function(test) {
         test.assert(Romo.UI.Frame !== undefined)
+      })
+      tests.test('<code>Romo.UI.LocalTime</code>', function(test) {
+        test.assert(Romo.UI.LocalTime !== undefined)
       })
       tests.test('<code>Romo.UI.Modal</code>', function(test) {
         test.assert(Romo.UI.Modal !== undefined)
