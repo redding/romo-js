@@ -1,0 +1,4 @@
+{
+  "bannerAlert":
+    "<div class=\"banner\" data-romo-ui-banner><strong>XHR Banner in Form submit JSON response</strong> <a href=\"#\" data-romo-ui-banner-close>Close</a><br/><p>This was in the JSON response to the Form submission.</p></div>"
+}
