@@ -6,15 +6,15 @@
   </style>
 </head>
 <body style="padding-top: 25px">
-  <h1>Romo.Form system tests</h1>
+  <h1>Romo.UI.Form system tests</h1>
 
   <form action="https://api.github.com/repos/redding/romo-js"
         method="get"
         accept-charset="UTF-8"
         data-xhr-get-json-form
-        data-romo-form
-        data-romo-form-redirect-page="true"
-        data-romo-form-disable-focus-on-init="true">
+        data-romo-ui-form
+        data-romo-ui-form-redirect-page="true"
+        data-romo-ui-form-disable-focus-on-init="true">
     <input type="text" name="value" value="thing / something"
            placeholder="Enter a value.">
     <button type="submit"
@@ -25,9 +25,9 @@
         method="get"
         accept-charset="UTF-8"
         data-xhr-get-json-form
-        data-romo-form
-        data-romo-form-xhr-response-type="json"
-        data-romo-form-disable-focus-on-init="true">
+        data-romo-ui-form
+        data-romo-ui-form-xhr-response-type="json"
+        data-romo-ui-form-disable-focus-on-init="true">
     <input type="text" name="value" value="thing / something"
            placeholder="Enter a value.">
     <button type="submit"
@@ -44,48 +44,48 @@
     const statusDOM = Romo.f('[data-form-status]')
 
     Romo
-      .f('[data-romo-form]')
-      .on('Romo.Form:submitError', function(e, romoForm, responseData, xhr) {
+      .f('[data-romo-ui-form]')
+      .on('Romo.UI.Form:submitError', function(e, romoForm, responseData, xhr) {
         console.log(responseData)
       })
-      .on('Romo.Form:beforeSubmit', function(e, romoForm) {
+      .on('Romo.UI.Form:beforeSubmit', function(e, romoForm) {
         statusDOM.clearHTML()
         statusDOM.appendHTML('<div>-> before submit</div>')
       })
-      .on('Romo.Form:afterSubmit', function(e, romoForm) {
+      .on('Romo.UI.Form:afterSubmit', function(e, romoForm) {
         statusDOM.appendHTML('<div>-> after submit</div>')
       })
-      .on('Romo.Form:confirmSubmit', function(e, romoForm) {
+      .on('Romo.UI.Form:confirmSubmit', function(e, romoForm) {
         statusDOM.appendHTML('<div>-> confirm submit</div>')
       })
-      .on('Romo.Form:browserSubmit', function(e, romoForm) {
+      .on('Romo.UI.Form:browserSubmit', function(e, romoForm) {
         statusDOM.appendHTML('<div>-> browser submit</div>')
       })
-      .on('Romo.Form:xhrSubmit', function(e, romoForm, xhrOptions) {
+      .on('Romo.UI.Form:xhrSubmit', function(e, romoForm, xhrOptions) {
         statusDOM.appendHTML('<div>-> XHR submit</div>')
         statusDOM.appendHTML(`<code>${JSON.stringify(xhrOptions)}</code>`)
         console.log('-> XHR submit, xhrOptions:')
         console.log(xhrOptions)
       })
-      .on('Romo.Form:eventSubmit', function(e, romoForm, formValues) {
+      .on('Romo.UI.Form:eventSubmit', function(e, romoForm, formValues) {
         statusDOM.appendHTML('<div>-> event submit, formValues:</div>')
         statusDOM.appendHTML(`<code>${JSON.stringify(formValues)}</code>`)
         console.log('-> event submit, formValues:')
         console.log(formValues)
       })
-      .on('Romo.Form:submitSuccess', function(e, romoForm, data, xhr) {
+      .on('Romo.UI.Form:submitSuccess', function(e, romoForm, data, xhr) {
         statusDOM.appendHTML('<div>-> success</div>')
         statusDOM.appendHTML(`<code>${JSON.stringify(data)}</code>`)
         console.log('-> success, data:')
         console.log(data)
       })
-      .on('Romo.Form:submitError', function(e, romoForm, data, xhr) {
+      .on('Romo.UI.Form:submitError', function(e, romoForm, data, xhr) {
         statusDOM.appendHTML('<div>-> error</div>')
         statusDOM.appendHTML(`<code>${JSON.stringify(data)}</code>`)
         console.log('-> error, data:')
         console.log(data)
       })
-      .on('Romo.Form:submitComplete', function(e, romoForm) {
+      .on('Romo.UI.Form:submitComplete', function(e, romoForm) {
         statusDOM.appendHTML('<div>-> complete</div>')
         romoForm.doStopSubmitSpinners()
       })
