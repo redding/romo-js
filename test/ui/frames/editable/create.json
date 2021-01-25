@@ -1,4 +1,4 @@
 {
   "frameContentHTML":
-    "<div>CREATED via JSON: Editable Frame</div>\n<div>\n  <button href=\"./frames/editable/new.html\"          data-romo-ui-frame-xhr\n          data-romo-spinner>New</button>\n  <button href=\"./frames/editable/edit.html\"          data-romo-ui-frame-xhr          data-romo-spinner>Edit</button></div>"
+    "<div>CREATED via JSON: Editable Frame</div>\n<div>\n  <button href=\"./frames/editable/new.html\"          data-romo-ui-frame-xhr\n          data-romo-ui-spinner>New</button>\n  <button href=\"./frames/editable/edit.html\"          data-romo-ui-frame-xhr          data-romo-ui-spinner>Edit</button></div>"
 }
