@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" type="text/css" href="/support/romo-js/romo-ui.css"/>
+  <style>
+    .active {
+      font-weight: bold;
+    }
+    .active-link-li {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body style="padding-top: 25px">
+  <h1>Romo.UI.InfiniteScroller system tests</h1>
+  <h3>Embedded scroll</h3>
+  <button data-romo-ui-xhr-call-url="./infinite_scroller/embedded/show.html"
+          data-romo-ui-dropdown
+          data-romo-ui-dropdown-popover-width="element">
+    Show embedded scroll
+  </button>
+
+  <h3>Inline scroll</h3>
+  <table style="width: 680px">
+    <tr>
+      <th style="text-align: left">Page</th>
+      <th style="text-align: left">Item</th>
+    </tr>
+    <tr data-romo-ui-infinite-scroller
+        data-romo-ui-infinite-scroller-next-page-url="./infinite_scroller/inline/page1.html">
+    </tr>
+    <tr data-romo-ui-spinner
+        data-romo-ui-spinner-container-selector=":scope > td"
+        data-romo-ui-spinner-stop-on-pageshow="false"
+        data-romo-ui-spinner-size-px="40">
+      <td colspan="100%" style="height: 60px"></td>
+    </tr>
+  </table>
+</body>
+<script type="module" src="/support/romo-js/romo-ui.js"></script>
+<script type="module" src="/support/tests.js"></script>
+<script type="module">
+  Romo.onReady(function() {
+  })
+</script>
