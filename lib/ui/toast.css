@@ -1,0 +1,24 @@
+:root {
+  --romo-ui-toast-list-z-index: 9999;
+}
+
+[data-romo-ui-toast] {
+  display: none;
+}
+
+.romo-ui-toast-list {
+  position: fixed;
+  z-index: var(--romo-ui-toast-list-z-index);
+  right: 10px;
+}
+
+[data-romo-ui-listed-toast] {
+  display: block;
+}
+
+[data-romo-ui-listed-toast].romo-ui-toast-shown {
+}
+
+[data-romo-ui-listed-toast].romo-ui-toast-dismissed {
+  display: none;
+}

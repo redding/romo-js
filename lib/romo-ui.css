@@ -5,6 +5,7 @@
 @import './ui/modal.css';
 @import './ui/sortable.css';
 @import './ui/spinner.css';
+@import './ui/toast.css';
 @import './ui/tooltip.css';
 
 html {

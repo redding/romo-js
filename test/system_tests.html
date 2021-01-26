@@ -29,6 +29,7 @@
       <li><a href="./ui/popover_form_tests.html">Romo.UI Popover Forms</a></li>
       <li><a href="./ui/sortable_tests.html">Romo.UI.Sortable</a></li>
       <li><a href="./ui/spinner_tests.html">Romo.UI.Spinner</a></li>
+      <li><a href="./ui/toast_tests.html">Romo.UI.Toast</a></li>
       <li><a href="./ui/tooltip_tests.html">Romo.UI.Tooltip</a></li>
       <li><a href="./ui/xhr_tests.html">Romo.UI.XHR</a></li>
     </ul>
@@ -1372,6 +1373,9 @@
         test.assert(Romo.UI.PopoverForm !== undefined)
         test.assert(Romo.config.popovers.popoverFormEditableContentCSSClassFn() === '')
         test.assert(Romo.config.popovers.popoverFormEditableContentHoverCSSClassFn() === '')
+      })
+      tests.test('<code>Romo.UI.Toast</code>', function(test) {
+        test.assert(Romo.UI.Toast !== undefined)
       })
       tests.test('<code>Romo.UI.Tooltip</code>', function(test) {
         test.assert(Romo.UI.Tooltip !== undefined)

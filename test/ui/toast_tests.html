@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" type="text/css" href="/support/romo-js/romo-ui.css"/>
+  <style>
+    .toast {
+      opacity: 0;
+      background-color: #FFFFFF;
+      border: 1px solid #CCCCCC;
+      box-shadow: 0 5px 10px #CCCCCC;
+      width: 320px;
+      margin-bottom: 10px;
+    }
+
+    @keyframes toast-highlight-add {
+      0% {
+        opacity: 0;
+        background-color: yellow;
+      }
+      30% {
+        opacity: 1;
+        background-color: yellow;
+      }
+      100% {
+        opacity: 1;
+        background-color: #FFFFFF;
+      }
+    }
+
+    @keyframes toast-highlight-dismiss {
+      0% {
+        margin-bottom: 10px;
+        opacity: 1;
+        background-color: pink;
+      }
+      30% {
+        margin-bottom: 10px;
+        opacity: 1;
+        background-color: pink;
+      }
+      90% {
+        margin-bottom: 10px;
+        opacity: 0;
+        background-color: pink;
+      }
+      100% {
+        margin-bottom: 0;
+        opacity: 0;
+        background-color: pink;
+        position: fixed;
+        left: 100%;
+      }
+    }
+
+    .toast:not(.animated).romo-ui-toast-shown {
+      opacity: 1;
+    }
+    .toast.animated.romo-ui-toast-shown {
+      animation: toast-highlight-add 1.5s linear forwards;
+    }
+
+    .toast:not(.animated).romo-ui-toast-dismissed {
+      margin-bottom: 0;
+      display: none;
+    }
+    .toast.animated.romo-ui-toast-dismissed {
+      display: block;
+      animation: toast-highlight-dismiss 1.5s linear forwards !important;
+    }
+  </style>
+</head>
+<body style="padding-top: 25px">
+  <h1>Romo.UI.Toast system tests</h1>
+  <h3>In page markup</h3>
+  <div class="toast"
+       data-romo-ui-toast>
+    <strong>Test Toast #1</strong>
+    <a href="#" data-romo-ui-toast-dismiss>Dismiss</a>
+    <br/>
+    <p>This was in the page markup so it is immediately shown.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed congue risus ut dui faucibus volutpat. Curabitur pretium aliquam dapibus. Aenean in viverra arcu, lobortis rhoncus est. Nullam tempus turpis quis aliquet pulvinar. Nulla sit amet ullamcorper ante. In laoreet leo eu metus molestie rutrum. Fusce sed efficitur turpis, et fringilla dui. Suspendisse gravida ex diam, tincidunt placerat turpis fringilla sed. Quisque id convallis magna. Fusce at nulla dapibus, consequat diam eu, molestie ligula. Maecenas vulputate ante ipsum, nec venenatis eros hendrerit lacinia. Pellentesque imperdiet, sapien in posuere pellentesque, ligula mi dictum tortor, ut fermentum nisi dui eget odio. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+  </div>
+
+  <h3>GET XHR HTML with embedded toast markup</h3>
+  <button href="./toast/xhr.html"
+          data-xhr-html-example
+          data-romo-ui-xhr>
+    XHR HTML
+  </button>
+  <p data-xhr-html-example-content></p>
+
+  <h3>GET XHR JSON with embedded toast markup</h3>
+  <button href="./toast/xhr.json"
+          data-xhr-json-example
+          data-romo-ui-xhr
+          data-romo-ui-xhr-call-response-type="json">
+    XHR JSON
+  </button>
+  <p data-xhr-json-example-content></p>
+
+  <h3>GET Form JSON with embedded toast markup</h3>
+  <form action="./toast/update.json"
+        method="get"
+        accept-charset="UTF-8"
+        data-romo-ui-form
+        data-romo-ui-form-xhr-response-type="json">
+    <button type="submit">Update</button>
+  </form>
+</body>
+<script type="module" src="/support/romo-js/romo-ui.js"></script>
+<script type="module" src="/support/tests.js"></script>
+<script type="module">
+  Romo.onReady(function() {
+    Romo.config.alert.showToastAlertFn =
+      function(toastAlert) {
+        if (toastAlert) {
+          Romo.f('body').appendHTML(toastAlert)
+        }
+      }
+
+    Romo
+      .f('[data-xhr-html-example]')
+      .on('Romo.UI.XHR:callSuccess', function(e, romoXHR, data, xhr) {
+        Romo.f('[data-xhr-html-example-content]').updateHTML(data)
+      })
+
+    Romo
+      .f('[data-xhr-json-example]')
+      .on('Romo.UI.XHR:callSuccess', function(e, romoXHR, data, xhr) {
+        Romo.f('[data-xhr-json-example-content]').updateHTML(data.contentHTML)
+      })
+  })
+</script>
