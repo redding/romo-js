@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" type="text/css" href="/support/romo-js/romo-ui.css"/>
+  <style>
+    .banner {
+      background-color: #FFFFFF;
+      border: 1px solid #CCCCCC;
+      box-shadow: 0 5px 10px #CCCCCC;
+    }
+  </style>
+</head>
+<body style="padding-top: 25px">
+  <h1>Romo.UI.Banner system tests</h1>
+  <h3>In page markup</h3>
+  <div class="banner"
+       data-romo-ui-banner>
+    <strong>Test Banner</strong>
+    <a href="#" data-romo-ui-banner-close>Close</a>
+    <br/>
+    <p>This was in the page markup so it is immediately shown.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed congue risus ut dui faucibus volutpat. Curabitur pretium aliquam dapibus. Aenean in viverra arcu, lobortis rhoncus est. Nullam tempus turpis quis aliquet pulvinar. Nulla sit amet ullamcorper ante. In laoreet leo eu metus molestie rutrum. Fusce sed efficitur turpis, et fringilla dui. Suspendisse gravida ex diam, tincidunt placerat turpis fringilla sed. Quisque id convallis magna. Fusce at nulla dapibus, consequat diam eu, molestie ligula. Maecenas vulputate ante ipsum, nec venenatis eros hendrerit lacinia. Pellentesque imperdiet, sapien in posuere pellentesque, ligula mi dictum tortor, ut fermentum nisi dui eget odio. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.</p>
+
+    <p>Nulla rutrum ornare mi in iaculis. Vestibulum laoreet turpis at neque venenatis malesuada. Ut tincidunt porttitor nisi, vitae sodales turpis lacinia eget. Vivamus magna lectus, dictum non sapien quis, condimentum porta libero. Nunc molestie nisi non risus mattis feugiat. Donec eu felis at augue ornare vulputate. Maecenas ornare, nisl ut faucibus interdum, metus neque euismod mi, sit amet finibus neque sapien eu sapien. Proin non nisl volutpat, placerat mi at, molestie velit. Donec mollis neque sit amet viverra condimentum. Vestibulum eu risus ultrices, elementum lorem nec, euismod sem. Nulla dignissim mollis dolor at hendrerit. Ut ut lectus fringilla, tempus justo non, congue magna. Donec scelerisque lectus eu odio fermentum tincidunt. Aliquam tincidunt nisl sed ex sollicitudin, et dictum augue iaculis.</p>
+
+    <p>Vestibulum ut convallis lacus, sed dapibus nibh. Suspendisse eleifend sollicitudin pharetra. Integer vel sagittis tortor. Sed nec tempus nunc. Mauris imperdiet nulla dignissim blandit bibendum. Etiam quis purus quis enim facilisis mollis. Sed cursus nulla quis lorem aliquet ullamcorper. Nulla in lacus a augue porta efficitur ac sed felis. Integer est velit, consequat sed mi vitae, ornare volutpat dui.</p>
+
+    <p>Nunc consectetur volutpat lorem sit amet posuere. Donec nunc enim, consequat in ipsum sed, eleifend interdum massa. Donec quam lorem, suscipit nec posuere ut, sagittis in metus. Curabitur maximus ipsum orci, sed rutrum augue blandit sit amet. Ut id scelerisque velit, nec vulputate mauris. Proin volutpat turpis sed tellus malesuada porttitor. Cras vel velit magna. Nunc bibendum nisi risus. Donec dictum non quam in maximus. Morbi id justo in felis maximus scelerisque. Etiam in dui urna. Suspendisse sed rhoncus lorem.</p>
+
+    <p>Sed mollis risus arcu, in sollicitudin quam cursus ut. Cras ut mi ut est scelerisque hendrerit in ut diam. Praesent vel tellus sed ante luctus dictum. Sed euismod elit nec nisi volutpat, sit amet porttitor nibh interdum. Curabitur volutpat egestas vestibulum. Integer in ipsum ut ligula bibendum bibendum. Quisque a dictum massa. Donec quis lacus facilisis, pulvinar nisl quis, tristique magna.</p>
+  </div>
+
+  <h3>GET XHR HTML with embedded banner markup</h3>
+  <button href="./banner/xhr.html"
+          data-xhr-html-example
+          data-romo-ui-xhr>
+    XHR HTML
+  </button>
+  <p data-xhr-html-example-content></p>
+
+  <h3>GET XHR JSON with embedded banner markup</h3>
+  <button href="./banner/xhr.json"
+          data-xhr-json-example
+          data-romo-ui-xhr
+          data-romo-ui-xhr-call-response-type="json">
+    XHR JSON
+  </button>
+  <p data-xhr-json-example-content></p>
+
+  <h3>GET Form JSON with embedded banner markup</h3>
+  <form action="./banner/update.json"
+        method="get"
+        accept-charset="UTF-8"
+        data-romo-ui-form
+        data-romo-ui-form-xhr-response-type="json">
+    <button type="submit">Update</button>
+  </form>
+</body>
+<script type="module" src="/support/romo-js/romo-ui.js"></script>
+<script type="module" src="/support/tests.js"></script>
+<script type="module">
+  Romo.onReady(function() {
+    Romo.config.alert.showBannerAlertFn =
+      function(bannerAlert) {
+        if (bannerAlert) {
+          Romo.f('body').appendHTML(bannerAlert)
+        }
+      }
+
+    Romo
+      .f('[data-xhr-html-example]')
+      .on('Romo.UI.XHR:callSuccess', function(e, romoXHR, data, xhr) {
+        Romo.f('[data-xhr-html-example-content]').updateHTML(data)
+      })
+
+    Romo
+      .f('[data-xhr-json-example]')
+      .on('Romo.UI.XHR:callSuccess', function(e, romoXHR, data, xhr) {
+        Romo.f('[data-xhr-json-example-content]').updateHTML(data.contentHTML)
+      })
+  })
+</script>

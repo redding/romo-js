@@ -1,0 +1,21 @@
+:root {
+  --romo-ui-banner-container-z-index: 9999;
+  --romo-ui-banner-content-width: 640px;
+}
+
+[data-romo-ui-banner] {
+  display: none;
+}
+
+.romo-ui-banner-container {
+  position: absolute;
+  width: 100%;
+  z-index: var(--romo-ui-banner-container-z-index);
+}
+
+.romo-ui-banner-container [data-romo-ui-banner-content] {
+  height: 100%;
+  width: var(--romo-ui-banner-content-width);
+  margin: 0 auto;
+  overflow-y: scroll;
+}
