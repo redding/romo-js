@@ -1,5 +1,5 @@
 :root {
-  --romo-ui-banner-container-z-index: 9999;
+  --romo-ui-banner-container-z-index: 9998;
   --romo-ui-banner-content-width: 640px;
 }
 
@@ -8,7 +8,7 @@
 }
 
 .romo-ui-banner-container {
-  position: absolute;
+  position: fixed;
   width: 100%;
   z-index: var(--romo-ui-banner-container-z-index);
 }
