@@ -1387,10 +1387,10 @@
       tests.test('<code>Romo.DOMComponent</code>', function(test) {
         var romoDOM
 
-        romoDOM = new Romo.DOMComponent({ dom: Romo.f('body') })
+        romoDOM = new Romo.DOMComponent(Romo.f('body'))
         test.assert(romoDOM.dom.isRomoDOM === true)
 
-        romoDOM = new Romo.DOMComponent({ dom: Romo.f('body').firstElement })
+        romoDOM = new Romo.DOMComponent(Romo.f('body').firstElement)
         test.assert(romoDOM.dom.isRomoDOM === true)
       })
     })
