@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" type="text/css" href="/support/romo-js/romo-ui.css"/>
+  <style>
+    .active {
+      font-weight: bold;
+    }
+    .active-link-li {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body style="padding-top: 25px">
+  <h1>Romo.UI.Nav system tests</h1>
+  <h3>Default with no delay</h3>
+  <input data-romo-ui-on-key>
+
+  <h3>With 500ms delay</h3>
+  <input data-romo-ui-on-key
+         data-romo-ui-on-key-delay-ms="600">
+
+  <h3>On keyup</h3>
+  <input data-romo-ui-on-key
+         data-romo-ui-on-key-event="keyup">
+
+  <div data-on-key-status>
+  </div>
+</body>
+<script type="module" src="/support/romo-js/romo-ui.js"></script>
+<script type="module" src="/support/tests.js"></script>
+<script type="module">
+  Romo.onReady(function() {
+    const statusDOM = Romo.f('[data-on-key-status]')
+
+    Romo.f('[data-romo-ui-on-key]')
+      .on('focus', function(e) {
+        statusDOM.clearHTML()
+      })
+      .on('Romo.UI.OnKey:keyEvent', function(e, romoOnKey, keyEvent) {
+        statusDOM.appendHTML(
+          `<div>-> OnKey! ${keyEvent.type}: ${keyEvent.key} | ${romoOnKey.dom.firstElement.value}</div>`
+        )
+      })
+  })
+</script>
