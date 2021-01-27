@@ -272,7 +272,7 @@
         test.assert(dom.tagName() === 'div')
       })
 
-      tests.test('<code>attr</code>, <code>hasAttr</code>, <code>setAttr</code>, <code>rmAttr</code>', function(test) {
+      tests.test('<code>attr</code>, <code>hasAttr</code>, <code>setAttr</code>, <code>rmAttr</code>, <code>removeAttr</code>', function(test) {
         const dom = Romo.f('[data-support-div-a]')
 
         const setAttrDOM = dom.setAttr('custom', 'value')
@@ -280,10 +280,42 @@
         test.assert(dom.attr('custom') === 'value')
         test.assert(setAttrDOM === dom)
 
+        const setAttrDefaultDOM = dom.setAttrDefault('custom', 1)
+        test.assert(dom.attr('custom') !== '1')
+        test.assert(setAttrDefaultDOM === dom)
+
         const rmAttrDOM = dom.rmAttr('custom')
         test.assert(dom.hasAttr('custom') === false)
         test.assert(dom.attr('custom') === null)
         test.assert(rmAttrDOM === dom)
+
+        dom.setAttrDefault('custom', 1)
+        test.assert(dom.attr('custom') === '1')
+
+        const removeAttrDOM = dom.removeAttr('custom')
+        test.assert(dom.hasAttr('custom') === false)
+        test.assert(dom.attr('custom') === null)
+        test.assert(removeAttrDOM === dom)
+      })
+
+      tests.test('<code>prop</code>, <code>hasProp</code>, <code>setProp</code>, <code>rmProp</code>, <code>removeProp</code>', function(test) {
+        const dom = Romo.f('[data-support-div-a]')
+
+        const setPropDOM = dom.setProp('custom')
+        test.assert(dom.hasProp('custom') === true)
+        test.assert(dom.prop('custom') === true)
+        test.assert(setPropDOM === dom)
+
+        const rmPropDOM = dom.rmProp('custom')
+        test.assert(dom.hasProp('custom') === false)
+        test.assert(dom.prop('custom') === false)
+        test.assert(rmPropDOM === dom)
+
+        dom.setProp('custom')
+        const removePropDOM = dom.removeProp('custom')
+        test.assert(dom.hasProp('custom') === false)
+        test.assert(dom.prop('custom') === false)
+        test.assert(removePropDOM === dom)
       })
 
       tests.test('<code>data</code>, <code>hasData</code>, <code>setData</code>, <code>rmData</code>', function(test) {
@@ -295,6 +327,10 @@
         test.assert(dom.hasAttr('data-custom') === true)
         test.assert(dom.attr('data-custom') === 'value')
         test.assert(setDataDOM === dom)
+
+        const setDataDefaultDOM = dom.setDataDefault('custom', 1)
+        test.assert(dom.data('custom') !== 1)
+        test.assert(setDataDefaultDOM === dom)
 
         dom.setData('custom', 1)
         test.assert(dom.data('custom') === 1)
@@ -321,6 +357,14 @@
         test.assert(dom.hasAttr('data-custom') === false)
         test.assert(dom.attr('data-custom') === null)
         test.assert(rmDataDOM === dom)
+
+        dom.setDataDefault('custom', 1)
+        test.assert(dom.data('custom') === 1)
+
+        const removemDataDOM = dom.removeData('custom')
+        test.assert(dom.hasData('custom') === false)
+        test.assert(dom.data('custom') === undefined)
+        test.assert(removemDataDOM === dom)
       })
 
       tests.test('<code>style</code>, <code>setStyle</code>, <code>rmStyle</code>', function(test) {
@@ -333,6 +377,11 @@
         const rmStyleDOM = dom.rmStyle('color')
         test.assert(dom.style('color') === '')
         test.assert(rmStyleDOM === dom)
+
+        dom.setStyle('color', 'red')
+        const removeStyleDOM = dom.removeStyle('color')
+        test.assert(dom.style('color') === '')
+        test.assert(removeStyleDOM === dom)
       })
 
       tests.test('<code>batchSetStyle</code>, <code>batchRmStyle</code>', function(test) {
@@ -351,6 +400,15 @@
         test.assert(dom.style('color') !== 'red')
         test.assert(dom.style('background') !== 'green')
         test.assert(batchRmStyleDOM === dom)
+
+        dom.batchSetStyle({
+          'color':      'red',
+          'background': 'green'
+        })
+        const batchRemoveStyleDOM = dom.batchRemoveStyle('color', 'background')
+        test.assert(dom.style('color') !== 'red')
+        test.assert(dom.style('background') !== 'green')
+        test.assert(batchRemoveStyleDOM === dom)
       })
 
       tests.test('<code>css</code>', function(test) {
@@ -381,7 +439,9 @@
         test.assert(dom.hasClass('custom') === true)
         test.assert(toggleClassDOM === dom)
 
-        dom.rmClass('custom')
+        const removeClassDOM = dom.removeClass('custom')
+        test.assert(dom.hasClass('custom') === false)
+        test.assert(removeClassDOM === dom)
       })
 
       tests.test('<code>show</code>, <code>hide</code>', function(test) {
