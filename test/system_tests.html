@@ -1141,9 +1141,11 @@
         queue.enqueue('value')
         test.assert(queue.size === 1)
         test.assert(queue.isEmpty === false)
+        test.assert(queue.includes('value') === true)
         test.assert(queue.peek() === 'value')
         test.assert(queue.dequeue() === 'value')
         test.assert(queue.isEmpty === true)
+        test.assert(queue.includes('value') === false)
 
         queue.enqueue('value').clear()
         test.assert(queue.isEmpty === true)
