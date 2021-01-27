@@ -187,14 +187,14 @@
 
     tests.group('API: Class definition', function() {
       tests.test('Class definition', function(test) {
-        Romo.define('Factory.Class', function() {
+        Romo.define('Factory.DefinedClass', function() {
           return class {}
         })
 
-        const classInstance = new Factory.Class()
+        const classInstance = new Factory.DefinedClass()
 
-        test.assert(classInstance.class === Factory.Class)
-        test.assert(classInstance.className === 'Factory.Class')
+        test.assert(classInstance.class === Factory.DefinedClass)
+        test.assert(classInstance.className === 'Factory.DefinedClass')
       })
 
       tests.test('Wrap method', function(test) {
@@ -242,6 +242,27 @@
 
         test.assert(memoizeClassInstance.memoizedValue === 1)
         test.assert(memoizeClassInstance.rawCallCount === 1)
+      })
+
+      tests.test('Introspection', function(test) {
+        Romo.define('Factory.IntrospectClass', function() {
+          return class {
+            doSomething() {
+              return this
+            }
+          }
+        })
+
+        const classInstance = new Factory.IntrospectClass()
+
+        test.assert(classInstance.respondTo('doSomething') === true)
+        test.assert(classInstance.respondTo('doAnything') === false)
+
+        test.assert(Romo.respondTo([], 'length') === true)
+
+        test.assert(Romo.isDOM(classInstance) === false)
+        test.assert(Romo.isDOM([]) === false)
+        test.assert(Romo.isDOM(Romo.dom()) === true)
       })
     })
 
