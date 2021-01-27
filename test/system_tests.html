@@ -505,6 +505,7 @@
         const foundDOMA = dom.find('[data-support-div-a]')
 
         test.assert(foundDOMA.length === 1)
+        test.assert(foundDOMA.hasElements === true)
         test.assert(foundDOMA.firstElement === domA.firstElement)
       })
 
@@ -513,6 +514,7 @@
         const subjectDOM = supportDOM.appendHTML('<div class="subject"></div>')
 
         test.assert(subjectDOM.children().length === 0)
+        test.assert(subjectDOM.children().hasElements === false)
 
         subjectDOM.firstElement.innerText = 'test'
         test.assert(subjectDOM.innerText === 'test')
