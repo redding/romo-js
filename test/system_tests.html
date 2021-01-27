@@ -23,6 +23,7 @@
       <li><a href="./ui/banner_tests.html">Romo.UI.Banner</a></li>
       <li><a href="./ui/form_tests.html">Romo.UI.Form</a></li>
       <li><a href="./ui/frame_tests.html">Romo.UI.Frame</a></li>
+      <li><a href="./ui/infinite_scroller_tests.html">Romo.UI.InfiniteScroller</a></li>
       <li><a href="./ui/local_time_tests.html">Romo.UI.LocalTime</a></li>
       <li><a href="./ui/nav_tests.html">Romo.UI.Nav</a></li>
       <li><a href="./ui/popover_tests.html">Romo.UI Popovers</a></li>
@@ -505,6 +506,7 @@
         const foundDOMA = dom.find('[data-support-div-a]')
 
         test.assert(foundDOMA.length === 1)
+        test.assert(foundDOMA.hasElements === true)
         test.assert(foundDOMA.firstElement === domA.firstElement)
       })
 
@@ -513,6 +515,7 @@
         const subjectDOM = supportDOM.appendHTML('<div class="subject"></div>')
 
         test.assert(subjectDOM.children().length === 0)
+        test.assert(subjectDOM.children().hasElements === false)
 
         subjectDOM.firstElement.innerText = 'test'
         test.assert(subjectDOM.innerText === 'test')
@@ -1139,9 +1142,11 @@
         queue.enqueue('value')
         test.assert(queue.size === 1)
         test.assert(queue.isEmpty === false)
+        test.assert(queue.includes('value') === true)
         test.assert(queue.peek() === 'value')
         test.assert(queue.dequeue() === 'value')
         test.assert(queue.isEmpty === true)
+        test.assert(queue.includes('value') === false)
 
         queue.enqueue('value').clear()
         test.assert(queue.isEmpty === true)
@@ -1342,6 +1347,9 @@
       })
       tests.test('<code>Romo.UI.Frame</code>', function(test) {
         test.assert(Romo.UI.Frame !== undefined)
+      })
+      tests.test('<code>Romo.UI.InfiniteScroller</code>', function(test) {
+        test.assert(Romo.UI.InfiniteScroller !== undefined)
       })
       tests.test('<code>Romo.UI.LocalTime</code>', function(test) {
         test.assert(Romo.UI.LocalTime !== undefined)
