@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" type="text/css" href="/support/romo-js/romo-ui.css"/>
+  <style>
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+    avatar {
+      display: inline-block;
+      width: 3rem;
+      height: 3rem;
+      line-height: 3rem;
+      text-align: center;
+      vertical-align: middle;
+      white-space: nowrap;
+      overflow: hidden;
+      border: 2px solid #CCCCCC;
+      text-transform: uppercase;
+    }
+  </style>
+</head>
+<body style="padding-top: 25px">
+  <h1>Romo.UI.Avatar system tests</h1>
+
+  <h3>No image, no name, no custom abbrev</h3>
+  <avatar data-romo-ui-avatar></avatar>
+
+  <h3>No image, no name, just custom abbrev</h3>
+  <avatar data-romo-ui-avatar
+          data-romo-ui-avatar-abbrev="J.D."></avatar>
+
+  <h3>No image, with name, with custom abbrev</h3>
+  <avatar data-romo-ui-avatar
+          data-romo-ui-avatar-name="John Doe"
+          data-romo-ui-avatar-abbrev="J.D."></avatar>
+
+  <h3>With image, with name, with custom abbrev</h3>
+  <avatar data-romo-ui-avatar
+          data-romo-ui-avatar-name="John Doe"
+          data-romo-ui-avatar-abbrev="J.D."
+          data-romo-ui-avatar-url="./avatars/john-doe.jpg"></avatar>
+
+  <h3>With bad image, with fallback image</h3>
+  <avatar data-romo-ui-avatar
+          data-romo-ui-avatar-name="John Doe"
+          data-romo-ui-avatar-abbrev="J.D."
+          data-romo-ui-avatar-url="./avatars/unknown.jpg"
+          data-romo-ui-avatar-fallback-url="./avatars/john-doe.jpg"></avatar>
+
+  <h3>Standard name -> abbrev</h3>
+  <avatar data-romo-ui-avatar
+          data-romo-ui-avatar-name="John Doe"
+          data-romo-ui-tooltip
+          data-romo-ui-tooltip-content="John Doe -> JD"></avatar>
+
+  <h3>lowercase name -> abbrev</h3>
+  <avatar data-romo-ui-avatar
+          data-romo-ui-avatar-name="john doe"
+          data-romo-ui-tooltip
+          data-romo-ui-tooltip-content="john doe -> JD"></avatar>
+
+  <h3>Long name -> abbrev</h3>
+  <avatar data-romo-ui-avatar
+          data-romo-ui-avatar-name="James Alexander Malcolm MacKenzie Fraser"
+          data-romo-ui-tooltip
+          data-romo-ui-tooltip-content="James Alexander Malcolm MacKenzie Fraser -> JAMMF">
+  </avatar>
+
+  <h3>Long name hyphenated -> abbrev</h3>
+  <avatar data-romo-ui-avatar
+          data-romo-ui-avatar-name="Jason Pierre-Paul"
+          data-romo-ui-tooltip
+          data-romo-ui-tooltip-content="Jason Pierre-Paul -> JPP"></avatar>
+
+  <h3>Long name hyphenated -> abbrev</h3>
+  <avatar data-romo-ui-avatar
+          data-romo-ui-avatar-name="Jose-Luis Torres"
+          data-romo-ui-tooltip
+          data-romo-ui-tooltip-content="Jose-Luis Torres -> JLT"></avatar>
+
+</body>
+<script type="module" src="/support/romo-js/romo-ui.js"></script>
+<script type="module" src="/support/tests.js"></script>
+<script type="module">
+  Romo.onReady(function() {
+  })
+</script>
