@@ -1406,6 +1406,19 @@
     tests.group('<code>Romo.XHRCache</code>', function() {
       tests.test('<code>Romo.XHRCache</code>', function(test) {
         test.assert(Romo.XHRCache !== undefined)
+
+        // expect an onSuccess handler to pass the test, fail if it isn't invoked
+        test.fail()
+
+        const xhrCache =
+          new Romo.XHRCache({
+            cacheName: 'Romo.XHRCache system tests',
+            contextType: 'text/html'
+          })
+        xhrCache.doRead('./utilities/xhr_cache/content.html', function(responseText) {
+          debugger
+          test.assert(responseText.length > 0)
+        })
       })
     })
 
