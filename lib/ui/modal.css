@@ -6,7 +6,7 @@
 }
 
 [data-romo-ui-modal],
-[data-romo-ui-modal-close] {
+[data-romo-ui-modal-popover-close] {
   cursor: pointer;
 }
 
