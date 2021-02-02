@@ -1,5 +1,9 @@
 #!/bin/bash
 
 cp package_for_ui.json package.json
+yarn postcss lib/romo-ui.css -o lib/romo-ui.css
+
 ./bin/publish
+
 git k package.json
+git k lib/romo-ui.css
