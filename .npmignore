@@ -1,4 +1,5 @@
 bin/
 test/
 .*
+postcss.config.js
 yarn*
