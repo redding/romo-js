@@ -1,6 +1,6 @@
 {
   "name": "@reddingjs/romo-ui",
-  "version": "0.1.0-rc8",
+  "version": "0.1.0-rc9",
   "description": "A JS UI toolkit built on @reddingjs/romo-js.",
   "main": "lib/romo-ui.js",
   "dependencies": {
