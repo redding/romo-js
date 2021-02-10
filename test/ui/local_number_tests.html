@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" type="text/css" href="/support/romo-js/romo-ui.css"/>
+  <style>
+  </style>
+</head>
+<body style="padding-top: 25px">
+  <h1>Romo.UI.LocalNumber system tests</h1>
+
+  <h3>number tag with no options</h3>
+  <div>
+    12345.6789 -->
+    <number data-romo-ui-local-number
+            data-romo-ui-local-number-value="12345.6789">
+    </number>
+  </div>
+
+  <h3>decimal tag with no options</h3>
+  <div>
+    12345.6789 -->
+    <decimal data-romo-ui-local-number
+             data-romo-ui-local-number-value="12345.6789">
+    </decimal>
+  </div>
+
+  <h3>currency tag with USD currency code option</h3>
+  <div>
+    12345.6789 -->
+    <currency data-romo-ui-local-number
+              data-romo-ui-local-number-value="12345.6789"
+              data-romo-ui-local-number-currency="USD">
+    </currency>
+  </div>
+
+  <h3>percent tag with no options</h3>
+  <div>
+    12345.6789 -->
+    <percent data-romo-ui-local-number
+             data-romo-ui-local-number-value="12345.6789">
+    </percent>
+  </div>
+
+  <h3>unit tag with no options</h3>
+  <div>
+    12345.6789 -->
+    <unit data-romo-ui-local-number
+          data-romo-ui-local-number-value="12345.6789"
+          data-romo-ui-local-number-unit="liter">
+    </currency>
+  </div>
+</body>
+<script type="module" src="/support/romo-js/romo-ui.js"></script>
+<script type="module" src="/support/tests.js"></script>
+<script type="module">
+  Romo.onReady(function() {
+  })
+</script>
