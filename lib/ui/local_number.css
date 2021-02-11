@@ -1,0 +1,7 @@
+[data-romo-ui-local-number]:not([data-romo-ui-local-number-formatted="true"]) {
+  visibility: hidden;
+}
+
+[data-romo-ui-local-number][data-romo-ui-local-number-formatted="true"] {
+  visibility: visible;
+}

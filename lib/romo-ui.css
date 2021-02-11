@@ -1,6 +1,7 @@
 @import './ui/banner.css';
 @import './ui/cursor.css';
 @import './ui/dropdown.css';
+@import './ui/local_number.css';
 @import './ui/local_time.css';
 @import './ui/modal.css';
 @import './ui/sortable.css';
