@@ -1,0 +1,23 @@
+:root {
+  --romo-ui-indicator-text-input-disabled-indicator-color: #CCCCCC;
+  --romo-ui-indicator-text-input-disabled-indicator-cursor: not-allowed;
+}
+
+[data-romo-ui-indicator-text-input-wrapper] {
+  position: relative;
+  display: inline-block;
+}
+
+[data-romo-ui-indicator-text-input-indicator] {
+  cursor: pointer;
+  display: inline-block;
+  position: absolute;
+  top: 0;
+  vertical-align: middle;
+}
+
+[data-romo-ui-indicator-text-input-indicator].disabled {
+    color: var(--romo-ui-indicator-text-input-disabled-indicator-color);
+    cursor: var(--romo-ui-indicator-text-input-disabled-indicator-cursor);
+  }
+}
