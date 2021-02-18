@@ -1214,6 +1214,145 @@
       })
     })
 
+    tests.group('<code>Romo.Date</code>', function() {
+      const fmt = function(d){ return Romo.Date.format(d, 'mm/dd/yyyy') }
+
+      const today = Romo.Date.today()
+      tests.test(`Romo.Date.today: ${fmt(today)}`, function(test) {
+        var manualToday = new Date()
+        manualToday.setHours(0, 0, 0, 0)
+
+        test.assert(Romo.Date.isEqual(today, manualToday))
+      })
+
+      tests.test(`Romo.Date.currentYear: ${Romo.Date.currentYear()}`, function(test) {
+        test.assert(1 === 1)
+      })
+
+      const vector = Romo.Date.vector(today, 10)
+      tests.test(`Romo.Date.vector: ${fmt(vector)}`, function(test) {
+        test.assert(1 === 1)
+      })
+
+      const prev = Romo.Date.prev(today, 2)
+      tests.test(`Romo.Date.prev: ${fmt(prev)}`, function(test) {
+        test.assert(1 === 1)
+      })
+
+      const next = Romo.Date.next(today, 2)
+      tests.test(`Romo.Date.next: ${fmt(next)}`, function(test) {
+        test.assert(1 === 1)
+      })
+
+      const fom = Romo.Date.firstDateOfMonth(today, 2)
+      tests.test(`Romo.Date.firstDateOfMonth: ${fmt(fom)}`, function(test) {
+        test.assert(1 === 1)
+      })
+
+      const lom = Romo.Date.lastDateOfMonth(today, 2)
+      tests.test(`Romo.Date.lastDateOfMonth: ${fmt(lom)}`, function(test) {
+        test.assert(1 === 1)
+      })
+
+      const fopm = Romo.Date.firstDateOfPrevMonth(today)
+      tests.test(`Romo.Date.firstDateOfPrevMonth: ${fmt(fopm)}`, function(test) {
+        test.assert(1 === 1)
+      })
+
+      const lopm = Romo.Date.lastDateOfPrevMonth(today)
+      tests.test(`Romo.Date.lastDateOfPrevtMonth: ${fmt(lopm)}`, function(test) {
+        test.assert(1 === 1)
+      })
+
+      const fonm = Romo.Date.firstDateOfNextMonth(today)
+      tests.test(`Romo.Date.firstDateOfNextMonth: ${fmt(fonm)}`, function(test) {
+        test.assert(1 === 1)
+      })
+
+      const lonm = Romo.Date.lastDateOfNextMonth(today)
+      tests.test(`Romo.Date.lastDateOfNexttMonth: ${fmt(lonm)}`, function(test) {
+        test.assert(1 === 1)
+      })
+
+      const dim = Romo.Date.daysInMonth(today)
+      tests.test(`Romo.Date.daysInMonth: ${dim}`, function(test) {
+        test.assert(1 === 1)
+      })
+
+      const drim = Romo.Date.daysRemainingInMonth(today)
+      tests.test(`Romo.Date.daysRemainingInMonth: ${drim}`, function(test) {
+        test.assert(1 === 1)
+      })
+
+      const dd = Romo.Date.daysDiff(today, lonm)
+      tests.test(`Romo.Date.daysDiff: ${dd}`, function(test) {
+        test.assert(1 === 1)
+      })
+
+      const isown = Romo.Date.isoWeekNum(today)
+      tests.test(`Romo.Date.isoWeekNum: ${isown}`, function(test) {
+        test.assert(1 === 1)
+      })
+
+      tests.test(`Romo.Date.isSameDate: ${Romo.Date.isSameDate(today, lonm)}`, function(test) {
+        test.assert(1 === 1)
+      })
+      tests.test(`Romo.Date.isSameMonth: ${Romo.Date.isSameMonth(today, lonm)}`, function(test) {
+        test.assert(1 === 1)
+      })
+      tests.test(`Romo.Date.isSameYear: ${Romo.Date.isSameYear(today, lonm)}`, function(test) {
+        test.assert(1 === 1)
+      })
+      tests.test(`Romo.Date.isDay (Tue): ${Romo.Date.isDay(today, 'Tue')}`, function(test) {
+        test.assert(1 === 1)
+      })
+      tests.test(`Romo.Date.isWeekend: ${Romo.Date.isWeekend(today)}`, function(test) {
+        test.assert(1 === 1)
+      })
+
+      const fmtOut =
+        function(d, s){ return `format ('${s}'): ${Romo.Date.format(d, s)}` }
+      tests.test(fmtOut(today, 'yyyy'), function(test) {
+        test.assert(1 === 1)
+      })
+      tests.test(fmtOut(today, 'yyy'), function(test) {
+        test.assert(1 === 1)
+      })
+      tests.test(fmtOut(today, 'yy'), function(test) {
+        test.assert(1 === 1)
+      })
+      tests.test(fmtOut(today, 'y'), function(test) {
+        test.assert(1 === 1)
+      })
+      tests.test(fmtOut(today, 'mm'), function(test) {
+        test.assert(1 === 1)
+      })
+      tests.test(fmtOut(today, 'm'), function(test) {
+        test.assert(1 === 1)
+      })
+      tests.test(fmtOut(today, 'MM'), function(test) {
+        test.assert(1 === 1)
+      })
+      tests.test(fmtOut(today, 'M'), function(test) {
+        test.assert(1 === 1)
+      })
+      tests.test(fmtOut(today, 'ddd'), function(test) {
+        test.assert(1 === 1)
+      })
+      tests.test(fmtOut(today, 'dd'), function(test) {
+        test.assert(1 === 1)
+      })
+      tests.test(fmtOut(today, 'd'), function(test) {
+        test.assert(1 === 1)
+      })
+      tests.test(fmtOut(today, 'DD'), function(test) {
+        test.assert(1 === 1)
+      })
+      tests.test(fmtOut(today, 'D'), function(test) {
+        test.assert(1 === 1)
+      })
+    })
+
     tests.group('<code>Romo.Queue</code>', function() {
       tests.test('Given no NullItem', function(test) {
         const queue = new Romo.Queue()
