@@ -1,0 +1,62 @@
+:root {
+  --romo-ui-date-picker-calendar-color: #000000;
+  --romo-ui-date-picker-calendar-background-color: #FFFFFF;
+  --romo-ui-date-picker-calendar-weekend-background-color: #ECECEC;
+  --romo-ui-date-picker-calendar-highlight-background-color: #357EDD;
+  --romo-ui-date-picker-calendar-highlight-day-color: var(--romo-ui-date-picker-calendar-background-color);
+  --romo-ui-date-picker-calendar-disabled-day-color: #999999;
+  --romo-ui-date-picker-calendar-other-month-day-color: #999999;
+  --romo-ui-date-picker-calendar-today-day-color: var(--romo-ui-date-picker-calendar-color);
+  --romo-ui-date-picker-calendar-today-border-color: var(--romo-ui-date-picker-calendar-color);
+}
+
+table.romo-ui-date-picker-calendar {
+  background-color: var(--romo-ui-date-picker-calendar-background-color);
+  color: var(--romo-ui-date-picker-calendar-color);
+  user-select: none;
+
+  border-collapse: none;
+  border-spacing: 0;
+  width: 100%;
+}
+
+.romo-ui-date-picker-calendar th,
+.romo-ui-date-picker-calendar td {
+  width: 14.285714286%; /* 100% / 7 */
+  text-align: center;
+}
+
+.romo-ui-date-picker-calendar [data-romo-ui-date-picker-calendar-prev],
+.romo-ui-date-picker-calendar [data-romo-ui-date-picker-calendar-next],
+.romo-ui-date-picker-calendar td:not(.disabled) {
+  cursor: pointer;
+}
+
+.romo-ui-date-picker-calendar [data-romo-ui-date-picker-calendar-prev]:hover,
+.romo-ui-date-picker-calendar [data-romo-ui-date-picker-calendar-next]:hover {
+  background-color: var(--romo-ui-date-picker-calendar-highlight-background-color) !important;
+  color: var(--romo-ui-date-picker-calendar-highlight-day-color) !important;
+}
+
+.romo-ui-date-picker-calendar td.weekend {
+  background-color: var(--romo-ui-date-picker-calendar-weekend-background-color);
+}
+
+.romo-ui-date-picker-calendar td.highlight {
+  background-color: var(--romo-ui-date-picker-calendar-highlight-background-color) !important;
+  color: var(--romo-ui-date-picker-calendar-highlight-day-color) !important;
+}
+
+.romo-ui-date-picker-calendar td.disabled {
+  color: var(--romo-ui-date-picker-calendar-disabled-day-color);
+  cursor: not-allowed;
+}
+
+.romo-ui-date-picker-calendar td.other-month {
+  color: var(--romo-ui-date-picker-calendar-other-month-day-color);
+}
+
+.romo-ui-date-picker-calendar td.today {
+  border: 1px solid var(--romo-ui-date-picker-calendar-today-border-color);
+  color: var(--romo-ui-date-picker-calendar-today-day-color);
+}

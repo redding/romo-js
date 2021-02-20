@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" type="text/css" href="/support/romo-js/romo-ui.css"/>
+  <style>
+    i {
+      font-style: normal;
+    }
+    i.i.check:before {
+      content: '\2705';
+    }
+  </style>
+</head>
+<body style="padding-top: 25px">
+  <h1>Romo.UI.DatePicker system tests</h1>
+  <h3>Examples</h3>
+
+  <p>Without specifying `data-romo-indicator-text-input-indicator-icon-name`, the date picker is placed in a wrapper but otherwise is unchanged:</p>
+  <div style="width: 350px">
+    <input type="text"
+           data-romo-ui-date-picker>
+  </div>
+
+  <p>Specify a `data-sc-indicator-text-input-indicator-icon-name` to add an indicator icon:</p>
+  <div style="width: 350px">
+    <input type="text"
+           data-romo-ui-date-picker
+           data-romo-ui-indicator-text-input-indicator-icon-css-class="i"
+           data-romo-ui-indicator-text-input-indicator-icon-name="check">
+  </div>
+</body>
+<script type="module" src="/support/romo-js/romo-ui.js"></script>
+<script type="module" src="/support/tests.js"></script>
+<script type="module">
+  Romo.onReady(function() {
+  })
+</script>
