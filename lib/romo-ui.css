@@ -6,6 +6,7 @@
 @import './ui/local_number.css';
 @import './ui/local_time.css';
 @import './ui/modal.css';
+@import './ui/select_dropdown.css';
 @import './ui/sortable.css';
 @import './ui/spinner.css';
 @import './ui/toast.css';

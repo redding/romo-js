@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <link rel="stylesheet" type="text/css" href="/support/romo-js/romo-ui.css"/>
+  <style>
+    i {
+      font-style: normal;
+    }
+    i.i.check:before {
+      content: '\2705';
+    }
+  </style>
+</head>
+<body style="padding-top: 25px">
+  <h1>Romo.UI.SelectDropdown system tests</h1>
+  <h3>Examples</h3>
+
+  <p>non-grouped</p>
+  <div style="width: 350px">
+    <div></div>
+    <button data-romo-ui-select-dropdown
+            data-romo-ui-select-dropdown-options-json='[{"value": "Red"}, {"value": "Green"}, {"value": "Blue"}]'
+            data-romo-ui-dropdown-popover-width="element"
+            data-romo-ui-dropdown-popover-min-width="150px">
+      Choose a Color
+    </button>
+  </div>
+
+  <p>non-grouped with disabled options</p>
+  <div style="width: 350px">
+    <div>Blue</div>
+    <button data-romo-ui-select-dropdown
+            data-romo-ui-select-dropdown-value="Blue"
+            data-romo-ui-select-dropdown-options-json='[{"value": "Red"}, {"value": "Green", "disabled": true}, {"value": "Blue"}]'
+            data-romo-ui-dropdown-popover-width="element"
+            data-romo-ui-dropdown-popover-min-width="150px">
+      Choose a Color
+    </button>
+  </div>
+
+  <p>non-grouped with distinct option labels</p>
+  <div style="width: 350px">
+    <div>green</div>
+    <button data-romo-ui-select-dropdown
+            data-romo-ui-select-dropdown-value="green"
+            data-romo-ui-select-dropdown-options-json='[{"value": "red", "label": "Red"}, {"value": "green", "label": "Green"}, {"value": "blue", "label": "Blue"}]'
+            data-romo-ui-dropdown-popover-width="element"
+            data-romo-ui-dropdown-popover-min-width="150px">
+      Choose a Color
+    </button>
+  </div>
+
+  <p>grouped, with open on focus</p>
+  <div style="width: 350px">
+    <div>triangle</div>
+    <button data-romo-ui-select-dropdown
+            data-romo-ui-select-dropdown-open-on-focus="true"
+            data-romo-ui-select-dropdown-value="triangle"
+            data-romo-ui-select-dropdown-options-json='[{"value": "red", "label": "Red", "groupLabel": "Colors"}, {"value": "orange", "label": "Orange", "groupLabel": "Colors"}, {"value": "yellow", "label": "Yellow", "groupLabel": "Colors"}, {"value": "green", "label": "Green", "groupLabel": "Colors"}, {"value": "blue", "label": "Blue", "groupLabel": "Colors"}, {"value": "indigo", "label": "Indigo", "groupLabel": "Colors"}, {"value": "violet", "label": "Violet", "groupLabel": "Colors"}, {"value": "circle", "label": "Circle", "groupLabel": "Shapes"}, {"value": "square", "label": "Square", "groupLabel": "Shapes"}, {"value": "triangle", "label": "Triangle", "groupLabel": "Shapes"}]'
+            data-romo-ui-dropdown-popover-width="element"
+            data-romo-ui-dropdown-popover-min-width="150px">
+      Choose a Color or Shape
+    </button>
+  </div>
+</body>
+<script type="module" src="/support/romo-js/romo-ui.js"></script>
+<script type="module" src="/support/tests.js"></script>
+<script type="module">
+  Romo.onReady(function() {
+    Romo.config.selectDropdown.filterIndicatorIconNameFn =
+      function() {
+        return 'check'
+      }
+
+    Romo.config.selectDropdown.filterIndicatorIconCSSClassFn =
+      function() {
+        return 'i'
+      }
+
+    Romo
+      .f('button[data-romo-ui-select-dropdown]')
+      .on(
+        'Romo.UI.SelectDropdown:newOptionSelected',
+        function(e, romoSelectDropdown, value) {
+          romoSelectDropdown.dom.prev('div').updateText(value)
+        }
+      )
+      .firstElement
+      .focus()
+  })
+</script>
