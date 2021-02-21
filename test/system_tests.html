@@ -33,6 +33,7 @@
       <li><a href="./ui/on_key_tests.html">Romo.UI.OnKey</a></li>
       <li><a href="./ui/popover_tests.html">Romo.UI Popovers</a></li>
       <li><a href="./ui/popover_form_tests.html">Romo.UI Popover Forms</a></li>
+      <li><a href="./ui/select_dropdown_tests.html">Romo.UI.SelectDropdown</a></li>
       <li><a href="./ui/sortable_tests.html">Romo.UI.Sortable</a></li>
       <li><a href="./ui/spinner_tests.html">Romo.UI.Spinner</a></li>
       <li><a href="./ui/toast_tests.html">Romo.UI.Toast</a></li>
@@ -1639,6 +1640,15 @@
         test.assert(Romo.UI.PopoverForm !== undefined)
         test.assert(Romo.config.popovers.popoverFormEditableContentCSSClassFn() === '')
         test.assert(Romo.config.popovers.popoverFormEditableContentHoverCSSClassFn() === '')
+      })
+      tests.test('<code>Romo.UI.SelectDropdown</code>', function(test) {
+        test.assert(Romo.UI.SelectDropdown !== undefined)
+      })
+      tests.test('<code>Romo.UI.Sortable</code>', function(test) {
+        test.assert(Romo.UI.Sortable !== undefined)
+      })
+      tests.test('<code>Romo.UI.Spinner</code>', function(test) {
+        test.assert(Romo.UI.Spinner !== undefined)
       })
       tests.test('<code>Romo.UI.Toast</code>', function(test) {
         test.assert(Romo.UI.Toast !== undefined)

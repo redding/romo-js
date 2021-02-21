@@ -1,0 +1,52 @@
+:root {
+  --romo-ui-select-dropdown-color: #000000;
+  --romo-ui-select-dropdown-background-color: #FFFFFF;
+  --romo-ui-select-dropdown-filter-container-border-color: #CCCCCC;
+  --romo-ui-select-dropdown-highlight-option-background-color: #357EDD;
+  --romo-ui-select-dropdown-highlight-option-color: var(--romo-ui-select-dropdown-background-color);
+  --romo-ui-select-dropdown-disabled-option-color: #999999;
+  --romo-ui-select-dropdown-in-optgroup-option-left-padding: 1rem;
+}
+
+[data-romo-ui-select-dropdown-filter-container] {
+  padding: 4px;
+  border: 1px solid var(--romo-ui-select-dropdown-filter-container-border-color);
+}
+
+[data-romo-ui-select-dropdown-filter] {
+  display: block;
+  width: 100%;
+}
+
+[data-romo-ui-select-dropdown-options-list] {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+[data-romo-ui-select-dropdown-options-list] li.option,
+[data-romo-ui-select-dropdown-options-list] li.optgroup {
+  padding: 4px;
+}
+
+[data-romo-ui-select-dropdown-options-list] li.option:not(.disabled) {
+  cursor: pointer;
+}
+
+[data-romo-ui-select-dropdown-options-list] li.option.highlight {
+  background-color: var(--romo-ui-date-picker-calendar-highlight-background-color) !important;
+  color: var(--romo-ui-date-picker-calendar-highlight-day-color) !important;
+}
+
+[data-romo-ui-select-dropdown-options-list] li.option.disabled {
+  color: var(--romo-ui-date-picker-calendar-disabled-day-color);
+  cursor: not-allowed;
+}
+
+[data-romo-ui-select-dropdown-options-list] li.option.in-optgroup {
+  padding-left: var(--romo-ui-select-dropdown-in-optgroup-option-left-padding);
+}
+
+[data-romo-ui-select-dropdown-options-list] li.option.hidden {
+  display: none;
+}
