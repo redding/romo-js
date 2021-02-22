@@ -8,6 +8,11 @@
   --romo-ui-select-dropdown-in-optgroup-option-left-padding: 1rem;
 }
 
+[data-romo-ui-select-dropdown-container] {
+  background-color: var(--romo-ui-select-dropdown-background-color);
+  color: var(--romo-ui-select-dropdown-color);
+}
+
 [data-romo-ui-select-dropdown-filter-container] {
   padding: 4px;
   border: 1px solid var(--romo-ui-select-dropdown-filter-container-border-color);
@@ -22,6 +27,7 @@
   list-style: none;
   margin: 0;
   padding: 0;
+  user-select: none;
 }
 
 [data-romo-ui-select-dropdown-options-list] li.option,
@@ -34,12 +40,12 @@
 }
 
 [data-romo-ui-select-dropdown-options-list] li.option.highlight {
-  background-color: var(--romo-ui-date-picker-calendar-highlight-background-color) !important;
-  color: var(--romo-ui-date-picker-calendar-highlight-day-color) !important;
+  background-color: var(--romo-ui-select-dropdown-highlight-option-background-color) !important;
+  color: var(--romo-ui-select-dropdown-highlight-option-color) !important;
 }
 
 [data-romo-ui-select-dropdown-options-list] li.option.disabled {
-  color: var(--romo-ui-date-picker-calendar-disabled-day-color);
+  color: var(--romo-ui-select-dropdown-disabled-option-color);
   cursor: not-allowed;
 }
 
