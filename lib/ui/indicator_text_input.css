@@ -13,6 +13,10 @@
   display: inline-block;
   position: absolute;
   top: 0;
+}
+
+[data-romo-ui-indicator-text-input-indicator] > * {
+  display: inline-block;
   vertical-align: middle;
 }
 
