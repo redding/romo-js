@@ -21,8 +21,13 @@
     <button data-romo-ui-select-dropdown
             data-romo-ui-select-dropdown-options-json='[{"value": "Red"}, {"value": "Green"}, {"value": "Blue"}]'
             data-romo-ui-dropdown-popover-width="element"
-            data-romo-ui-dropdown-popover-min-width="150px">
+            data-romo-ui-dropdown-popover-min-width="150px"
+            data-update-options-receiver>
       Choose a Color
+    </button>
+    <button data-update-options-button
+            data-update-options-button-options-json='[{"value": "Orange"}, {"value": "Yellow"}, {"value": "Violet"}]'>
+      Update Options
     </button>
   </div>
 
@@ -99,5 +104,17 @@
       )
       .firstElement
       .focus()
+
+    Romo
+      .f('button[data-update-options-button]')
+      .on('click', function(e) {
+        var dom = Romo.dom(e.target)
+        var receiverDOM = dom.prev('button')
+
+        receiverDOM.trigger(
+          'Romo.UI.SelectDropdown:triggerUpdateOptions',
+          [dom.data('update-options-button-options-json')]
+        )
+      })
   })
 </script>
