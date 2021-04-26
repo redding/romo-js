@@ -15,6 +15,19 @@
   <h1>Romo.UI.SelectDropdown system tests</h1>
   <h3>Examples</h3>
 
+
+  <p>no options</p>
+  <div style="width: 350px">
+    <div></div>
+    <button data-romo-ui-select-dropdown
+            data-romo-ui-select-dropdown-options-json='[]'
+            data-romo-ui-dropdown-popover-width="element"
+            data-romo-ui-dropdown-popover-min-width="150px"
+            data-update-options-receiver>
+      Choose a Color
+    </button>
+  </div>
+
   <p>non-grouped</p>
   <div style="width: 350px">
     <div></div>
@@ -79,6 +92,19 @@
       Choose a Color or Shape
     </button>
   </div>
+
+  <p>input picker</p>
+  <div style="width: 350px">
+    <input type="text"
+           placeholder="type to filter options"
+           data-input-picker
+           data-romo-ui-select-dropdown
+           data-romo-ui-select-dropdown-show-filter="false"
+           data-romo-ui-select-dropdown-options-json='[{"value": "red", "label": "Red", "groupLabel": "Colors"}, {"value": "orange", "label": "Orange", "groupLabel": "Colors"}, {"value": "yellow", "label": "Yellow", "groupLabel": "Colors"}, {"value": "green", "label": "Green", "groupLabel": "Colors"}, {"value": "blue", "label": "Blue", "groupLabel": "Colors"}, {"value": "indigo", "label": "Indigo", "groupLabel": "Colors"}, {"value": "violet", "label": "Violet", "groupLabel": "Colors"}, {"value": "circle", "label": "Circle", "groupLabel": "Shapes"}, {"value": "square", "label": "Square", "groupLabel": "Shapes"}, {"value": "triangle", "label": "Triangle", "groupLabel": "Shapes"}]'
+           data-romo-ui-dropdown-popover-width="element"
+           data-romo-ui-dropdown-popover-min-width="150px"
+           data-romo-ui-on-key>
+  </div>
 </body>
 <script type="module" src="/support/romo-js/romo-ui.js"></script>
 <script type="module" src="/support/tests.js"></script>
@@ -115,6 +141,23 @@
           'Romo.UI.SelectDropdown:triggerUpdateOptions',
           [dom.data('update-options-button-options-json')]
         )
+      })
+
+    const inputPickerDOM = Romo.f('input[data-input-picker]')
+    var allInputPickerOptions = inputPickerDOM.data('romo-ui-select-dropdown-options-json')
+    inputPickerDOM
+      .on('Romo.UI.OnKey:keyEvent', function(e, romoOnKey, keyEvent) {
+        if (
+          Romo.env.isInputKey(keyEvent.keyCode) &&
+          keyEvent.keyCode !== 13 /* Enter */ &&
+          keyEvent.metaKey === false
+        ) {
+          const matchingOptions =
+            allInputPickerOptions.filter(function(option) {
+              return option.label.includes(inputPickerDOM.firstElement.value)
+            })
+          inputPickerDOM.trigger('Romo.UI.SelectDropdown:triggerUpdateOptions', [matchingOptions])
+        }
       })
   })
 </script>
