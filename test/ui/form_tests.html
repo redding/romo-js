@@ -34,6 +34,17 @@
             data-romo-ui-spinner>Submit (won't redirect page by default)</button>
   </form>
 
+  <form method="get"
+        accept-charset="UTF-8"
+        data-romo-ui-form
+        data-romo-ui-form-event-submit="true"
+        data-romo-ui-form-disable-focus-on-init="true">
+    <input type="text" name="value" value="thing / something"
+           placeholder="Enter a value.">
+    <button type="submit"
+            data-romo-ui-spinner>Event Submit</button>
+  </form>
+
   <div data-form-status>
   </div>
 </body>
