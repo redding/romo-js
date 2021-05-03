@@ -1193,14 +1193,28 @@
       tests.test('Given a blank Object', function(test) {
         test.assert(Romo.urlSearch() === "")
         test.assert(Romo.urlSearch({}) === "")
+
+        test.assert(Romo.urlSearchURL().toString() === window.location.toString())
+        test.assert(Romo.urlSearchURL({}).toString() === window.location.toString())
       })
 
       tests.test('Given a non-blank Object', function(test) {
         test.assert(Romo.urlSearch({ a: 2, b: 'three', c: 4 }) === "a=2&b=three&c=4")
-        test.assert(Romo.urlSearch({ a: 2, b: '', c: 4 }).toString() === "a=2&b=&c=4")
+        test.assert(Romo.urlSearch({ a: 2, b: '', c: 4 }) === "a=2&b=&c=4")
         test.assert(
-          Romo.urlSearch({ a: 2, b: '', c: 4 }, { removeBlanks: true }).toString() ===
+          Romo.urlSearch({ a: 2, b: '', c: 4 }, { removeBlanks: true }) ===
           "a=2&c=4"
+        )
+
+        test.assert(
+          Romo.urlSearchURL({ a: 2, b: 'three', c: 4 }).toString() === `${window.location.toString()}?a=2&b=three&c=4`
+        )
+        test.assert(
+          Romo.urlSearchURL({ a: 2, b: '', c: 4 }).toString() === `${window.location.toString()}?a=2&b=&c=4`
+        )
+        test.assert(
+          Romo.urlSearchURL({ a: 2, b: '', c: 4 }, { removeBlanks: true }).toString() ===
+          `${window.location.toString()}?a=2&c=4`
         )
       })
 
@@ -1212,6 +1226,23 @@
         test.assert(
           Romo.urlSearch({ "a[]": [''] }, { decode: true, removeBlanks: true }) ===
           ""
+        )
+
+        test.assert(
+          Romo.urlSearchURL({ a: [2, 3, 4] }, { decode: false }).toString() === `${window.location.toString()}?a=2%2C3%2C4`
+        )
+        test.assert(
+          Romo.urlSearchURL({ a: [2, 3, 4] }, { decode: true }).toString() === `${window.location.toString()}?a=2,3,4`
+        )
+        test.assert(
+          Romo.urlSearchURL({ "a[]": [2, 3, 4] }, { decode: true }).toString() === `${window.location.toString()}?a[]=2&a[]=3&a[]=4`
+        )
+        test.assert(
+          Romo.urlSearchURL({ "a[]": [''] }, { decode: true }).toString() === `${window.location.toString()}?a[]=`
+        )
+        test.assert(
+          Romo.urlSearchURL({ "a[]": [''] }, { decode: true, removeBlanks: true }).toString() ===
+          window.location.toString()
         )
       })
     })
