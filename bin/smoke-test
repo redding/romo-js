@@ -1,2 +1,5 @@
 #!/bin/bash
-cp ./test/system_tests.html ./test/smoke_tests.html && echo "Switch to Skypack resources in ./test/smoke_tests.html" && ./bin/start-tests-webserver && open "http://localhost:7666/smoke_tests.html"
+cp ./test/public/system_tests.html ./test/public/smoke_tests.html &&
+echo "Switch to Skypack resources in ./test/smoke_tests.html" &&
+sleep 1 && open "http://localhost:9292/smoke_tests.html" &
+./bin/start-tests-server
