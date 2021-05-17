@@ -8,32 +8,6 @@
 <body style="padding-top: 25px">
   <h1>Romo.UI.Form system tests</h1>
 
-  <form action="https://api.github.com/repos/redding/romo-js"
-        method="get"
-        accept-charset="UTF-8"
-        data-xhr-get-json-form
-        data-romo-ui-form
-        data-romo-ui-form-redirect-page="true"
-        data-romo-ui-form-disable-focus-on-init="true">
-    <input type="text" name="value" value="thing / something"
-           placeholder="Enter a value.">
-    <button type="submit"
-            data-romo-ui-spinner>Submit (redirects page)</button>
-  </form>
-
-  <form action="https://api.github.com/repos/redding/romo-js"
-        method="get"
-        accept-charset="UTF-8"
-        data-xhr-get-json-form
-        data-romo-ui-form
-        data-romo-ui-form-xhr-response-type="json"
-        data-romo-ui-form-disable-focus-on-init="true">
-    <input type="text" name="value" value="thing / something"
-           placeholder="Enter a value.">
-    <button type="submit"
-            data-romo-ui-spinner>Submit (won't redirect page by default)</button>
-  </form>
-
   <form method="get"
         accept-charset="UTF-8"
         data-romo-ui-form
@@ -43,6 +17,45 @@
            placeholder="Enter a value.">
     <button type="submit"
             data-romo-ui-spinner>Event Submit</button>
+  </form>
+
+  <form action="/ui/forms/info.json"
+        method="get"
+        accept-charset="UTF-8"
+        data-xhr-get-json-form
+        data-romo-ui-form
+        data-romo-ui-form-redirect-page="true"
+        data-romo-ui-form-disable-focus-on-init="true">
+    <input type="text" name="value" value="thing / something"
+           placeholder="Enter a value.">
+    <button type="submit"
+            data-romo-ui-spinner>Browser GET Submit (redirects page)</button>
+  </form>
+
+  <form action="/ui/forms/info.json"
+        method="get"
+        accept-charset="UTF-8"
+        data-xhr-get-json-form
+        data-romo-ui-form
+        data-romo-ui-form-xhr-response-type="json"
+        data-romo-ui-form-disable-focus-on-init="true">
+    <input type="text" name="value" value="thing / something"
+           placeholder="Enter a value.">
+    <button type="submit"
+            data-romo-ui-spinner>XHR GET Submit (won't redirect page by default)</button>
+  </form>
+
+  <form action="/ui/forms/resource"
+        method="post"
+        accept-charset="UTF-8"
+        data-xhr-post-json-form
+        data-romo-ui-form
+        data-romo-ui-form-xhr-response-type="json"
+        data-romo-ui-form-disable-focus-on-init="true">
+    <input type="text" name="value" value="thing / something"
+           placeholder="Enter a value.">
+    <button type="submit"
+            data-romo-ui-spinner>XHR POST Submit</button>
   </form>
 
   <div data-form-status>

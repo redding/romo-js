@@ -7,7 +7,7 @@
 </head>
 <body style="padding-top: 25px">
   <h1>Romo.UI.XHR system tests</h1>
-  <button href="https://api.github.com/repos/redding/romo-js"
+  <button href="/ui/xhr/info.json?some=value"
           data-romo-ui-xhr
           data-romo-ui-xhr-call-response-type="json">
     Example 1 (GET JSON via href)
@@ -15,35 +15,36 @@
   <br/><br/>
   <button data-romo-ui-xhr
           data-romo-ui-xhr-call-response-type="json"
-          data-romo-ui-xhr-call-url="https://api.github.com/repos/redding/romo-js">
+          data-romo-ui-xhr-call-url="/ui/xhr/info.json?some=value">
     Example 2 (GET JSON via data attr)
   </button>
   <br/><br/>
   <button data-romo-ui-xhr
           data-romo-ui-xhr-call-response-type="text"
-          data-romo-ui-xhr-call-url="https://api.github.com/repos/redding/romo-js">
+          data-romo-ui-xhr-call-url="/ui/xhr/info.json?some=value">
     Example 3 (text response type)
   </button>
   <br/><br/>
   <button data-romo-ui-xhr
           data-romo-ui-xhr-call-method="post"
           data-romo-ui-xhr-call-response-type="json"
-          data-romo-ui-xhr-call-url="https://api.github.com/repos/redding/romo-js">
-    Example 4 (POST, should fail)
+          data-romo-ui-xhr-call-url="/ui/xhr/resource?some=value">
+    Example 4 (POST)
   </button>
   <br/><br/>
   <button data-example-5-abort
           data-romo-ui-xhr
           data-romo-ui-xhr-call-response-type="json"
-          data-romo-ui-xhr-call-url="https://api.github.com/repos/redding/romo-js">
+          data-romo-ui-xhr-call-url="/ui/xhr/aborted.json">
     Example 5 (call, then abort)
   </button>
   <br/><br/>
   <button data-romo-ui-xhr
           data-romo-ui-xhr-call-on="underfined"
+          data-romo-ui-xhr-call-method="post"
           data-romo-ui-xhr-call-response-type="json"
-          data-romo-ui-xhr-call-url="https://api.github.com/repos/redding/romo-js">
-    Example 6 (clicking this does nothing)
+          data-romo-ui-xhr-call-url="/ui/xhr/resource?some=value">
+    Example 6 (POST, clicking this does nothing)
   </button>
   <button data-example-6-trigger-button>
     Trigger Example 6
@@ -52,21 +53,21 @@
   <button data-romo-ui-xhr
           data-romo-ui-xhr-call-only-once="true"
           data-romo-ui-xhr-call-response-type="json"
-          data-romo-ui-xhr-call-url="https://api.github.com/repos/redding/romo-js">
+          data-romo-ui-xhr-call-url="/ui/xhr/info.json?some=value">
     Example 7 (call only once)
   </button>
   <br/><br/>
   <button data-romo-ui-xhr
           data-romo-ui-xhr-confirm="Are you sure?"
           data-romo-ui-xhr-call-response-type="json"
-          data-romo-ui-xhr-call-url="https://api.github.com/repos/redding/romo-js">
+          data-romo-ui-xhr-call-url="/ui/xhr/info.json?some=value">
     Example 8 (with confirmation)
   </button>
   <br/><br/>
   <button data-romo-ui-xhr
           data-romo-ui-xhr-disable-with-spinner="true"
           data-romo-ui-xhr-call-response-type="json"
-          data-romo-ui-xhr-call-url="https://api.github.com/repos/redding/romo-js">
+          data-romo-ui-xhr-call-url="/ui/xhr/info.json?some=value">
     Example 9 (disable with spinner)
   </button>
   <button data-example-8-enable-button>
@@ -76,7 +77,7 @@
   <button data-romo-ui-xhr
           data-romo-ui-xhr-disabled="true"
           data-romo-ui-xhr-call-response-type="json"
-          data-romo-ui-xhr-call-url="https://api.github.com/repos/redding/romo-js">
+          data-romo-ui-xhr-call-url="/ui/xhr/info.json?some=value">
     Example 10 (disabled)
   </button>
   <br/><br/>
@@ -104,13 +105,13 @@
       })
       .on('Romo.UI.XHR:callSuccess', function(e, romoXHR, data, xhr) {
         statusDOM.appendHTML('<div>-> success</div>')
-        statusDOM.appendHTML(`<code>${data.toString()}</code>`)
+        statusDOM.appendHTML(`<code>${JSON.stringify(data)}</code>`)
         console.log('-> success, data:')
         console.log(data)
       })
       .on('Romo.UI.XHR:callError', function(e, romoXHR, data, xhr) {
         statusDOM.appendHTML('<div>-> error</div>')
-        statusDOM.appendHTML(`<code>${data.toString()}</code>`)
+        statusDOM.appendHTML(`<code>${JSON.stringify(data)}</code>`)
         console.log('-> error, data:')
         console.log(data)
       })
@@ -128,15 +129,25 @@
       })
 
     Romo.f('[data-example-5-abort]').on('click', function(e) {
-      Romo.dom(e.target).trigger('Romo.UI.XHR:triggerAbort')
+      Romo.pushFn(function() {
+        Romo
+          .dom(e.target)
+          .trigger('Romo.UI.XHR:triggerAbort')
+      })
     })
 
     Romo.f('[data-example-6-trigger-button]').on('click', function(e) {
-      Romo.dom(e.target).prev('[data-romo-ui-xhr]').trigger('Romo.UI.XHR:triggerCall')
+      Romo
+        .dom(e.target)
+        .prev('[data-romo-ui-xhr]')
+        .trigger('Romo.UI.XHR:triggerCall', [{ other: "value" }])
     })
 
     Romo.f('[data-example-8-enable-button]').on('click', function(e) {
-      Romo.dom(e.target).prev('[data-romo-ui-xhr]').trigger('Romo.UI.XHR:triggerEnable')
+      Romo
+        .dom(e.target)
+        .prev('[data-romo-ui-xhr]')
+        .trigger('Romo.UI.XHR:triggerEnable')
     })
   })
 </script>
