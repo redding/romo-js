@@ -1,4 +1,4 @@
 #!/bin/bash
 ./bin/cp-source-for-tests &&
-./bin/start-tests-webserver &&
-open "http://localhost:7666/system_tests.html"
+sleep 1 && open "http://localhost:9292/system_tests.html" &
+./bin/start-tests-server

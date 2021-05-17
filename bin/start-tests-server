@@ -1,0 +1,3 @@
+#!/bin/bash
+
+bundle exec --gemfile ./test/Gemfile rackup --host 0.0.0.0 --port 9292 ./test/config.ru
