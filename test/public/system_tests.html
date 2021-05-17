@@ -1055,7 +1055,7 @@
         const lifecycleEvents = []
         const romoXHR =
           Romo.xhr({
-            url: 'https://api.github.com/repos/redding/romo-js?some=value',
+            url: '/api/xhr/info.json?some=value',
             data: {
               other: 'value'
             },
@@ -1108,7 +1108,7 @@
         test.fail()
 
         Romo.xhr({
-          url: 'https://api.github.com/repos/redding/romo-js?some=value',
+          url: '/api/xhr/info.json?some=value',
           data: {
             other: 'value'
           },
@@ -1140,7 +1140,7 @@
 
         Romo
           .xhr({
-            url: 'https://api.github.com/repos/redding/romo-js?some=value',
+            url: '/api/xhr/info.json?some=value',
             data: {
               other: 'value'
             },
