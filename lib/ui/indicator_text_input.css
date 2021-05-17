@@ -21,7 +21,6 @@
 }
 
 [data-romo-ui-indicator-text-input-indicator].disabled {
-    color: var(--romo-ui-indicator-text-input-disabled-indicator-color);
-    cursor: var(--romo-ui-indicator-text-input-disabled-indicator-cursor);
-  }
+  color: var(--romo-ui-indicator-text-input-disabled-indicator-color);
+  cursor: var(--romo-ui-indicator-text-input-disabled-indicator-cursor);
 }
