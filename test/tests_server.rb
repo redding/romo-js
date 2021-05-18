@@ -18,6 +18,10 @@ class TestsServer < Sinatra::Base
     params.to_h.to_json
   end
 
+  put "/ui/forms/resource-422" do
+    halt 422, { field_name: ["can't be blank"] }.to_json
+  end
+
   # UI - XHR tests
 
   get "/ui/xhr/info.json" do

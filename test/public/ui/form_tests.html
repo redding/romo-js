@@ -56,6 +56,18 @@
             data-romo-ui-spinner>XHR POST Submit</button>
   </form>
 
+  <form action="/ui/forms/resource-422"
+        method="put"
+        accept-charset="UTF-8"
+        data-xhr-put-json-form
+        data-romo-ui-form
+        data-romo-ui-form-disable-focus-on-init="true">
+    <input type="text" name="value" value="thing / something"
+           placeholder="Enter a value.">
+    <button type="submit"
+            data-romo-ui-spinner>XHR PUT Submit w/ 422 response</button>
+  </form>
+
   <div data-form-status>
   </div>
 </body>
