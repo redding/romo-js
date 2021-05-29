@@ -1163,6 +1163,36 @@
           })
           .doAbort()
       })
+
+      tests.test('Given an erroring call', function(test) {
+        // expect an onSuccess handler to pass the test, fail if it isn't invoked
+        test.fail()
+
+        Romo
+          .xhr({
+            url: '/api/xhr/error.json?some=value',
+            data: {
+              other: 'value'
+            },
+            responseType: Romo.XMLHttpRequest.JSON,
+            onSuccess:
+              Romo.bind(function(data, status, xhr) {
+                test.fail('xhr success')
+              }, this),
+            onError:
+              Romo.bind(function(statusMsg, status, xhr) {
+                test.pass()
+              }, this),
+            onAbort:
+              Romo.bind(function(statusMsg, status, xhr) {
+                test.fail('xhr abort')
+              }, this),
+            onTimeout:
+              Romo.bind(function(statusMsg, status, xhr) {
+                test.fail('xhr timeout')
+              }, this),
+          })
+      })
     })
 
     tests.group('API: <code>Romo.url</code>', function() {

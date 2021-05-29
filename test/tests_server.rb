@@ -8,6 +8,10 @@ class TestsServer < Sinatra::Base
     { propertyName: "property-value" }.merge(params).to_json
   end
 
+  get "/api/xhr/error.json" do
+    raise "error"
+  end
+
   # UI - Form tests
 
   get "/ui/forms/info.json" do
